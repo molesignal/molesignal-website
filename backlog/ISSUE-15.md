@@ -2,7 +2,7 @@
 id: ISSUE-15
 type: feature
 title: [T14] 内容迁MDX(blog接线)
-status: in_review
+status: verifying
 priority: P1
 assignee: fullstack-engineer
 created: 2026-06-01
@@ -110,3 +110,27 @@ updated: 2026-06-02
   - **阻塞项**：无。注意点：Turbopack 下 remark 插件必须用字符串名（已处理）；blog 仍 EN-only（ZH 友好提示，属 T21）；body 富文本渲染（标题/列表/代码块/Shiki）属 T15，本工单 body 保持 string。
 - 2026-06-02 07:49:31 set status=in_review
 - 2026-06-02 代码审查完成（code-reviewer，full 道质量关）。**结论：通过，建议放行 QA。必改 0 / 建议改 1 / 可选 2**。本机实证复跑全绿：`typecheck` 0 错、`lint` 0 error（5 warning 在无关 toc.tsx）、`test:blog` 30/30、`build` Compiled successfully 且 blog/[slug] 产 2 slug 静态页无 MDX 告警。契约零改经 `git diff` 证 4 消费方无 diff；同步+模块级求值、ISO 日期降序排序、frontmatter 类型陷阱均核验正确；next.config `withNextIntl(withMDX())` 组合 + remark 字符串名规避 Turbopack 约束正确。**建议改 1**：`content/blog.ts:37` frontmatter 零校验（运营漏填字段会静默产坏 post），建议加最小校验 throw 定位文件——非当前 bug、属边界外健壮性增强含设计取舍，未自动改。**可选 2**：coverUrl 显式 undefined 键（无害）、提交顺带 ISSUE-14 bookkeeping（无害略不整洁）。亮点：快照逐字节迁移守卫 `check-blog-mdx.ts` 值得长期保留。详见 08-测试报告.md「代码审查 — ISSUE-15」。无必改、不阻断，放行独立 QA 验证。
+- 2026-06-02 07:52:57 set status=verifying
+
+## QA 验证结果：通过（qa-automation 独立验证，2026-06-02）
+
+**手段**：本地真实构建 + `next start` 生产服务器（端口 3137）驱动真实页面（HTTP 抓渲染产物），非单元/类型检查。Node v23.6.1 / pnpm 11.5（经 nvm）。
+
+### 运行证据（逐 AC）
+- **AC1 next.config 接线** ✅：`pnpm build` → `✓ Compiled successfully`，无任何 MDX 相关告警/报错。`@next/mdx`+`remark-gfm`(字符串名规避 Turbopack)+`pageExtensions` 含 md/mdx 生效。
+- **AC2/AC3 迁移内容** ✅：`content/blog/*.mdx` 2 篇被构建采集；渲染产物逐字核对原文——详情页首段「When we sketched the data plane」末段「five problems shallower」、第二篇「Over the holidays we read 100」「tab fatigue」均完整；列表卡 meta 与原数组一致（May 20 2026·9 min / Apr 8 2026·7 min、作者 molesignal team、excerpt 原文）。
+- **AC4 契约/消费方零改** ✅：`git diff main...HEAD` 对 4 消费方（blog/page.tsx、blog/[slug]/page.tsx、sitemap.ts、opengraph-image.tsx）= 空 diff。
+- **AC5 provider 行为** ✅：已知 slug → 200 且 body 非空渲染；`/en/blog/does-not-exist` → 404（getPostBySlug 返回 undefined 路径）；详情页「Related」区显示另一篇（getRelatedPosts 工作）。
+- **AC6 页面观感** ✅：`/en/blog` 列表 featured+卡片含两篇标题与 meta；详情页 meta 行+段落正文+相关文章；`/zh/blog` → 200 显示 EN-only 友好提示（"English"/"英文"）；`generateStaticParams` 产 2 slug × en/zh 静态页。
+- **AC7 SEO/OG** ✅：`/sitemap.xml` 含 2 篇 blog URL（why-parquet… / what-we-learned…）；`/en/blog/<slug>/opengraph-image` → `200 image/png`。
+- **AC8 门禁** ✅（构建门）：`pnpm build` rc=0 干净（其余 check/e2e 由开发棒已跑 66/66，本次以运行时为准复核构建关）。
+- **AC9 运营可改性自证** ✅：临时新增 `content/blog/qa-verify-temp-ac9.mdx`（**仅内容、零碰组件/TS**，`git status` 证仅新增 1 个 untracked mdx）→ `pnpm build` 后该篇成 `● /en/blog/qa-verify-temp-ac9` 静态页 → 服务器实测：列表页出现该卡、详情页 200 且正文「If you can read this paragraph」渲染、原 2 篇无回归；验证后删除临时文件，工作树恢复基线。
+
+### 探针（push-on-it）
+- 🔍 操作员误填 frontmatter（漏 slug/title）→ `pnpm build` **硬失败**（`A required parameter (slug) was not provided ... in generateStaticParams`，rc=1），坏内容**进不了发布**，部署门可拦。良性：失败优于静默产坏 post。
+- ⚠️ 该构建错误信息**不指明是哪个 .mdx 文件**（仅报 generateStaticParams 收到 undefined）——与代码审查「建议改 1（frontmatter 零校验）」同源。非本工单 bug、不阻断（T14 范围外的健壮性增强，留作后续），但运营定位坏文件会有摩擦。
+
+### 收尾
+进程/端口已清理（3137 free、无残留 next start）；临时探针文件已删；工作树仅 ISSUE-15.md（本记录）变更。无僵尸进程。
+
+**VERDICT: PASS**
