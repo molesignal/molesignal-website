@@ -42,13 +42,15 @@ const PRIMARY_ITEMS: PrimaryItem[] = [
 // Resources dropdown — honest destinations only (UX §2.2). The old "Docs"
 // entry pointed at docs.molesignal.io, which does not exist this milestone;
 // it is removed rather than left as a dead link (P0-4). "Download" stays but
-// anchors to the in-page binary tab on /start with a coming-soon sublabel,
-// instead of linking to an unpublished GitHub release.
+// anchors to the /start install section with a coming-soon sublabel, instead
+// of linking to an unpublished GitHub release. Uses #install (the Section's
+// real id), not #binary — Radix auto-ids its tab panels, so #binary resolves
+// to nothing.
 const RESOURCE_CHILDREN: ResourceChild[] = [
   { href: "/roadmap", labelKey: "roadmap", subKey: "roadmapSub" },
   { href: "/changelog", labelKey: "changelog", subKey: "changelogSub" },
   { href: "/blog", labelKey: "blog", subKey: "blogSub" },
-  { href: "/start#binary", labelKey: "download", subKey: "downloadSub" },
+  { href: "/start#install", labelKey: "download", subKey: "downloadSub" },
 ];
 
 /**

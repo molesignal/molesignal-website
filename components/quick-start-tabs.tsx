@@ -31,8 +31,10 @@ chmod +x /usr/local/bin/molesignal
 molesignal --listen 0.0.0.0:5080 --workdir /var/molesignal`;
 
 /**
- * The three install paths in tabs. Hash-anchored: `#docker`, `#helm`,
- * `#binary`. The hash sync runs client-side; the initial tab is `docker`.
+ * The three install paths in tabs (docker / helm / binary), initial tab
+ * `docker`. NOTE: these are Radix tab panels with auto-generated ids — there
+ * is no `#docker`/`#helm`/`#binary` anchor and no client-side hash sync. Link
+ * to the wrapping section (`/start#install`) to scroll here.
  *
  * Tab labels + CodeBlock filename strings resolve via `start.tabs.*` /
  * `start.tabFilenames.*` so they swap with the locale. The command bodies

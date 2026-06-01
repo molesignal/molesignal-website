@@ -41,8 +41,11 @@ const COLUMNS: Col[] = [
     titleKey: "resources",
     items: [
       { key: "blog", href: "/blog" },
-      // Anchors to the in-page binary tab; the "v1.0 target" notice lives there.
-      { key: "download", href: "/start#binary" },
+      // Anchors to the /start install section (Quick Start tabs). The binary
+      // tab's "v1.0 target" notice lives there. Uses #install — the Section's
+      // real id — because #binary maps to no DOM element (Radix auto-ids its
+      // tab panels and unmounts the inactive ones).
+      { key: "download", href: "/start#install" },
       { key: "designPartner", href: "/design-partner" },
     ],
   },
