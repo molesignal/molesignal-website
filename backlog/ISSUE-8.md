@@ -2,7 +2,7 @@
 id: ISSUE-8
 type: feature
 title: [T01] Cloud候补真入库(Resend Audience)
-status: verifying
+status: closed
 priority: P0
 assignee: backend-engineer
 created: 2026-06-01
@@ -161,3 +161,5 @@ updated: 2026-06-02
 - **AC8（真实联调）⏸**：本期无密钥，延后复验。
 
 辅助：非法 email→400、非法 JSON→400。无阻断级缺陷。服务已关闭，无僵尸进程占端口。
+- 2026-06-02 04:49:26 set status=closed
+- 2026-06-02 04:49:26 引擎周期#8: QA PASS, 关闭

@@ -2,7 +2,7 @@
 id: ISSUE-9
 type: feature
 title: [T02] Design Partner申请持久化
-status: in_review
+status: verifying
 priority: P0
 assignee: backend-engineer
 created: 2026-06-01
@@ -121,3 +121,15 @@ updated: 2026-06-02
   **独立验证(本机实跑)**：`tsx check-design-partner-route.ts` 全过(splitName 5 + AC1/AC2/AC5①/AC3/AC4/AC4通知/AC5③/AC5④)；`tsc --noEmit` rc=0；`test:audiences` 回归全过。
   **可选项(非阻塞，不在本单范畴)**：① 蜜罐 silent-200 分支为死代码——`website: z.string().max(0)` 使填充值在 zod 层即被拒为 400(与 ISSUE-8 cloud-waitlist 同构、已 QA PASS)；安全保证(零副作用)仍成立，AC5③ 实测亦确认，**建议维持现状**(若要真"silent 200"需改 schema，超本单范围)。② `lib/email.ts` 错误日志打印完整上游 body 未截断(pre-existing，本单不动 sendEmail)——现实中 Resend 错误响应不含调用方密钥风险低，建议另开工单统一截断。
   **放行建议**：交 qa-automation 做 E2E(AC6 埋点时序 + AC7 成功态原位持久卡)即可关单;AC8 真实 Resend 联调按本期政策延后,不阻塞 DONE。**阻塞项:无。**
+- 2026-06-02 05:10:55 set status=verifying
+- 2026-06-02 QA 验证结果（qa-automation）：**VERDICT: PASS**。阻断级缺陷 0。
+  **执行证据（全部真实运行）**：
+  - `pnpm test:design-partner`（scripts/check-design-partner-route.ts）全部断言通过 exit 0：splitName AC2 5 例（双词/单词/三词带中点/前后空格塌缩/纯空格→firstName 空被跳过）+ route AC1 zod 400×6/200×2 + AC2 入库 POST `/audiences/{id}/contacts` 精确 body（first_name=Ada/last_name=Lovelace，单词名仅 first）+ 通知 + AC5① body keys 最小化(email,first_name,last_name,unsubscribed) + AC3 缺 audience 降级 + AC4 缺 key 双 skip+warn + AC4 通知全 5 字段+replyTo+IP/时间戳 + AC5③ 蜜罐 400 零副作用 + AC5④ 密钥不入日志（截断）。
+  - `pnpm test:audiences` 回归全过 exit 0。
+  - 真服务 `next start` + curl 实测：valid→200 / 缺字段·非法email·非枚举·name>120·pain>400·坏JSON·honeypot填充→400 / 缺 RESEND env→200+warn(audiences+email 双 skip) / 伪 env 探针→200(fail-soft) 且日志证实确实对外发出 contacts POST(真实 Resend 返 400 "API key is invalid")+email POST(401)，错误日志已截断不含密钥。
+  - T11 限流回归：同 IP req#1–5→200、req#6→429。
+  - E2E 真实 Chromium `tests/e2e/analytics-funnel.spec.ts` 14/14 passed：#7 design_partner_submit 2xx 后 fire(props=null，AC6) + #8 500 不 fire(AC6) + 成功态 `getByRole("status")` 原位持久卡可见(AC7)。
+  - 闸门：`pnpm check` 0 报错（typecheck+lint+a11y 26/26 AA+i18n 506↔506 parity）；`pnpm build` exit 0。
+  **AC 结论**：AC1–AC7 全部经真实执行客观验证通过；AC8 真实 Resend 写入联调按本期缺密钥政策延后补密钥复验，不阻塞 DONE。
+  **非阻塞观察项**（复核确认不影响放行）：① 蜜罐 silent-200 分支为死代码（zod max(0) 使填充值在校验层即 400，与 cloud-waitlist 同构，安全保证仍成立）；② lib/email.ts 错误日志未截断 body（pre-existing，本单不动 sendEmail，风险低，建议另开工单）。详见 08-测试报告.md「ISSUE-9」节。
+- VERDICT: PASS
