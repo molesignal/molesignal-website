@@ -26,3 +26,33 @@ updated: 2026-06-02
 - 2026-06-02 05:18:47 LANE: light
 - 2026-06-02 05:18:47 EXTRA_ROLES: none
 - 2026-06-02 05:19:05 set status=in_progress
+- 2026-06-02 frontend 开发完成 (commit 7667446)
+
+### 开发进度记录 (frontend, T09)
+
+**改动文件**
+- `app/[locale]/page.tsx` — Hero / QuickStart teaser / Stats / DP CTA 视觉改造
+- `components/cross-signal-demo.tsx` — terminal card 改造
+- `components/github-stats-chip.tsx` — large 变体数字改 mono brand、去 glow
+- `messages/en.json` `messages/zh.json` — 新增 `hero.command`、`home.startPill`
+
+**按 05-UI §4.1/§4.3 实现的 6 项 AC**
+1. **Hero**：从居中改左对齐(`max-w-4xl`)；H1 高亮去渐变改纯 brand 色(`text-primary`)；副标题改 mono `$` 命令感(`font-mono`，`$` 用 brand 色)；CTA 下方新增真实 docker compose 命令预览(复用 CodeBlock)；主按钮 hover 由 glow 改 `bg-primary-muted` 色变。
+2. **CrossSignalDemo**：改 terminal card——顶部三点 chrome(red/amber/green) + heading mono 标签；tab bar 紧贴 header(`border-b`)，active 态由 pill 底色改为底部 3px brand 下划线(统一 active 规范)；trace_id 三视图保持 amber 高亮(`marketing-accent`=amber)；footer caption 加顶边 + amber 高亮 trace_id。
+3. **Why/Stats**：GitHubStatsChip `large` 数字改 `font-mono text-mono-2xl` + brand 色，副行 mono；stats 区已是两栏(chip + 贡献者墙)。
+4. **QuickStart 简介**：保持左对齐，新增 brand variant "5 minutes" pill。
+5. **DP CTA**：去 `shadow-glow-pink` + `marketing-hero-bg` 渐变，改 `bg-surface` + `border-l-4 border-l-primary` 左 accent 卡，`rounded-xl`，内容左对齐。
+6. **明暗双主题 + check**：全部用主题 token，无硬编码深色底(terminal card 用 `bg-bg-2` 主题自适应面板而非强制深色，规避亮色主题对比度失败)。
+
+**自测结果(均 PASS)**
+- `pnpm typecheck` → exit 0
+- `pnpm lint` → 0 error（仅 toc.tsx 既有 5 warning，非本次改动）
+- `pnpm a11y:contrast` → 26/26 AA 全过
+- `pnpm lint:i18n` → EN/ZH 508↔508 parity OK
+- `pnpm build` → ✓ Compiled successfully, exit 0
+- `next start` 真实渲染 `/en`+`/zh`：8 项视觉标记(mono 命令/docker 预览/brand 高亮/5min pill/border-l-primary/terminal 三点/3px 下划线/text-mono-2xl)全部命中；确认 `shadow-glow-pink` 已从 DP 卡移除；zh 文案 "自托管 · OpenTelemetry 原生"、"5 分钟" 正确。
+
+**说明/遗留**
+- terminal card 采用主题自适应面板(`bg-bg-2`)而非 05-UI 描述的"强制深色底"——因内部文字用主题 token，强制深底会令亮色主题文字不可见并破坏 a11y:contrast，故按可访问性优先做此权衡，明暗两态均正常。
+- demo 区原 `crossSignalDemo.pill`("five-second demo") 按 05-UI "去掉 label" 不再渲染(消除噪声)；message key 保留以维持 i18n parity，无副作用。
+- 浏览器端 E2E/截图回归留待 qa-automation 独立验证。
