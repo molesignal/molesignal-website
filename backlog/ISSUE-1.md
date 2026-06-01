@@ -2,7 +2,7 @@
 id: ISSUE-1
 type: feature
 title: [T11] 可靠限流后端(Upstash)
-status: verifying
+status: closed
 priority: P0
 assignee: backend-engineer
 created: 2026-06-01
@@ -165,3 +165,5 @@ updated: 2026-06-02
 
   **缺陷**：无（阻断级 0）。**回归套件**：`pnpm test:rate-limit`（内存兜底 + fail-open 子进程断言）；HTTP 层手动驱动脚本见 08-测试报告.md。**证据**：详见 `08-测试报告.md` §自动化测试。
   **放行建议**：本期 AC1–AC7 全过，AC8 延后，建议合并放行。
+- 2026-06-02 00:08:46 set status=closed
+- 2026-06-02 00:08:46 引擎周期#1: QA PASS, 关闭

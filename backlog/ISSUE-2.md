@@ -2,7 +2,7 @@
 id: ISSUE-2
 type: feature
 title: [T05] 转化漏斗埋点接线(11点位)
-status: in_progress
+status: verifying
 priority: P0
 assignee: frontend-engineer
 created: 2026-06-01
@@ -160,3 +160,23 @@ try {
 - `pnpm build`：✓ Compiled successfully。
 - 静态核对：8 处 `track("…")` 直调 + 27 处 `data-analytics-event` 标注，覆盖全部 11 事件，事件名全部 snake_case。
 - **遗留/待复验**：AC8（真实 Plausible network 上报）本期无域名延后；运行时交互级断言（spy `window.plausible`、表单 2xx/4xx/蜜罐三路径、去重）由 qa-automation E2E 覆盖。`track()` 缺域名时安全 no-op，本地交互不受影响。
+- 2026-06-02 00:54:54 set status=in_review
+- 2026-06-02 00:58:33 set status=verifying
+
+## QA 验证结果（qa-automation, 2026-06-02）
+
+**VERDICT: PASS**
+
+真实浏览器 E2E（Playwright + Chromium，对生产构建 `next start` 实跑），spy `window.plausible` 录制 `track()` 调用，14 用例全过，覆盖全部 11 事件 + AC3 表单时序三路径 + AC4 去重 + AC5 无 PII：
+
+- **AC1/AC7**：11 事件均以 §4.4 的 `snake_case` 名真实触发，无遗漏/无多余（静态 8 直调+27 委托标注核对一致；docstring kebab 已改 snake）。✅
+- **AC2 props**：`cta_click{label,source_page,destination}`、`demo_tab_switch.tab∈{trace,logs,metric}`、`cost_calculator_interact{ingest_gb,retention_days}`(number)、`quickstart_copy{tab:"docker",snippet_type:"install"}`、`theme_switch{theme:"dark"}`、`locale_switch{from:"en",to:"zh",page:"/"}`、`compare_table_expand/github_star_click{source_page}` 实测正确。✅
+- **AC3（核心）**：两表单仅在 API 2xx 后触发；429/500 不触发；蜜罐(zod `website:max(0)` 拦截 submit)无 API 调用且不触发。✅
+- **AC4 去重**：demo 同 tab 重复点不发、仅真变化发；计算器每挂载仅 1 次（连按 2 次仍 1）。✅
+- **AC5 无 PII**：两表单事件 props 实测 `null`。✅
+- **AC6**：`pnpm check` exit 0（typecheck/lint/a11y 26-26/i18n 461=461）+ `pnpm build` ✓，原交互无回归。✅
+- **AC8**：真实 Plausible 上报本期无域名，按判过政策延后复验，不阻断 DONE。
+
+**证据**：`08-测试报告.md` ＞「ISSUE-2 运行时 E2E 验证」小节（14/14 用例表）。
+**回归套件**：`playwright.config.ts` + `tests/e2e/analytics-funnel.spec.ts`；重跑 `pnpm build && pnpm exec playwright test`。
+**非阻断观察**：委托器 `source_page` 用未去 locale 的 `location.pathname`，与 `locale_switch.page` 去 locale 口径不一致（ZH 下漏斗或按语言分裂）——数据质量项，建议 data-analyst 补域名前统一，不卡本期 DONE。
