@@ -2,7 +2,7 @@
 id: ISSUE-5
 type: feature
 title: [T08] UI token迁移(globals.css+Geist Mono)
-status: verifying
+status: closed
 priority: P0
 assignee: frontend-engineer
 created: 2026-06-01
@@ -198,3 +198,5 @@ updated: 2026-06-02
 **证据**：报告 `08-测试报告.md`「自动化测试 — ISSUE-5」节；E2E 套件 `tests/e2e/issue5-ui-tokens.mjs`（29 断言全过，可重跑）；截图 `test-results/issue5/{home-light,home-dark,zh-home}.png`。
 
 **结论**：建议合并回 main，放行 T09/T10/T08b 组件改造。
+- 2026-06-02 03:36:13 set status=closed
+- 2026-06-02 03:36:13 引擎周期#5: QA PASS, 关闭

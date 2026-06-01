@@ -32,6 +32,10 @@ export type CompareCell = {
 
 export const COMPARE_ROWS: CompareRow[] = [
   {
+    // SaaS cost is a conservative ~$2k+/mo floor for a 100 GB/day workload with
+    // typical partial indexing; the /why#cost calculator models the all-indexed
+    // upper bound. Both trace to lib/cost-formula PRICING_SNAPSHOT (Datadog
+    // public list pricing). Keep this a defensible lower bound, not a max.
     id: "cost",
     saas: { value: "~$2k+/mo · grows linearly", verdict: "bad" },
     oss: { value: "infra only", verdict: "good" },

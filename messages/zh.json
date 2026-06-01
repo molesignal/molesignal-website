@@ -586,7 +586,9 @@
         },
         {
           "heading": "我们使用的第三方",
-          "body": ["我们仅与交付上述功能所必需的服务商共享数据，且绝不出售你的个人数据。"],
+          "body": [
+            "我们仅与交付上述功能所必需的服务商共享数据，且绝不出售你的个人数据。"
+          ],
           "bullets": [
             "Resend —— 我们的邮件服务商。它负责传输上述通知邮件。我们不会将你加入任何营销名单或受众（audience）。",
             "托管与基础设施 —— 本站运行于 Serverless 托管；请求 IP 地址会经过我们的限流层。"
@@ -694,8 +696,10 @@
       "savingsCard": "节省",
       "savingsLess": "少 {percent}%",
       "savingsDepends": "取决于工作负载",
-      "disclaimerPrefix": "基于 Datadog 公开费率的数量级估算，截至",
-      "disclaimerBody": "。Datadog：日志 ingest + 7 天索引事件 + APM span，带保留乘数。molesignal：S3 Standard 存储 + 基线 Postgres + 每 100 GB/天的计算扩展。实际账单受冗余、region、commit 折扣和负载形状影响。"
+      "disclaimerPrefix": "基于 Datadog 公开标价的数量级估算，截至",
+      "disclaimerBody": "。Datadog：日志 ingest + 15 天索引事件（假设全部 ingest 日志都被索引 —— 上限估算）+ APM span，带保留乘数。molesignal：S3 Standard 存储 + 基线 Postgres + 每 100 GB/天的计算扩展。实际账单受冗余、region、commit 折扣和负载形状影响。",
+      "disclaimerSourcePrefix": "来源：",
+      "disclaimerSource": "Datadog 公开定价"
     },
     "community": {
       "github": {

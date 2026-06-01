@@ -4,7 +4,12 @@ import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useRef, useState } from "react";
 
 import { track } from "@/lib/analytics";
-import { calculateCost, formatUsd } from "@/lib/cost-formula";
+import {
+  PRICING_SNAPSHOT,
+  PRICING_SOURCE_URL,
+  calculateCost,
+  formatUsd,
+} from "@/lib/cost-formula";
 import { cn } from "@/lib/utils";
 
 const DEFAULT_GB = 100;
@@ -52,10 +57,18 @@ export function CostCalculator({ className }: { className?: string }) {
     [gbPerDay, retention],
   );
 
-  const now = new Intl.DateTimeFormat(locale === "zh" ? "zh-CN" : "en-US", {
-    year: "numeric",
-    month: "short",
-  }).format(new Date());
+  // Fixed snapshot date — the day the Datadog list prices were last verified,
+  // not the render date. Avoids implying the numbers are re-checked on view.
+  const snapshot = new Intl.DateTimeFormat(
+    locale === "zh" ? "zh-CN" : "en-US",
+    {
+      year: "numeric",
+      month: "long",
+      // PRICING_SNAPSHOT is a UTC date; format in UTC so server and client
+      // render the same month regardless of runtime timezone (no hydration drift).
+      timeZone: "UTC",
+    },
+  ).format(new Date(`${PRICING_SNAPSHOT}T00:00:00Z`));
 
   return (
     <div
@@ -113,8 +126,17 @@ export function CostCalculator({ className }: { className?: string }) {
       </div>
 
       <p className="text-fg-muted text-xs leading-relaxed">
-        {t("disclaimerPrefix")} {now}
-        {t("disclaimerBody")}
+        {t("disclaimerPrefix")} {snapshot}
+        {t("disclaimerBody")} {t("disclaimerSourcePrefix")}{" "}
+        <a
+          href={PRICING_SOURCE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-fg underline"
+        >
+          {t("disclaimerSource")}
+        </a>
+        .
       </p>
     </div>
   );
@@ -141,15 +163,15 @@ function SliderField({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <label htmlFor={id} className="text-fg text-sm font-strong">
+        <label htmlFor={id} className="text-fg font-strong text-sm">
           {label}
         </label>
         <output
           htmlFor={id}
-          className="text-fg font-mono text-base font-display-strong"
+          className="text-fg font-display-strong font-mono text-base"
         >
           {value.toLocaleString("en-US")}{" "}
-          <span className="text-fg-muted text-xs font-body">{unit}</span>
+          <span className="text-fg-muted font-body text-xs">{unit}</span>
         </output>
       </div>
       {/* Desktop slider */}
@@ -200,7 +222,7 @@ function Card({
     >
       <div
         className={cn(
-          "text-xs font-strong uppercase tracking-wide",
+          "font-strong text-xs tracking-wide uppercase",
           tone === "good" && "text-green",
           tone === "bad" && "text-red",
           tone === "brand" && "text-primary",
@@ -208,7 +230,7 @@ function Card({
       >
         {label}
       </div>
-      <div className="text-fg font-display-strong mt-1 text-display-lg font-mono">
+      <div className="text-fg font-display-strong text-display-lg mt-1 font-mono">
         {value}
       </div>
       <div className="text-fg-muted mt-0.5 text-xs">{sub}</div>
