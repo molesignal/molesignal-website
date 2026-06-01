@@ -95,7 +95,7 @@ export default async function DesignPartnerPage({
                     className="border-bd-1 absolute top-9 bottom-0 left-4 hidden w-px border-l border-dashed md:block"
                   />
                 )}
-                <span className="bg-primary-bg text-primary z-10 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-mono text-lg font-strong tabular-nums">
+                <span className="bg-primary/10 text-primary z-10 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-mono text-lg font-strong tabular-nums">
                   {i + 1}
                 </span>
                 <span className="text-fg pt-1 text-sm leading-relaxed">

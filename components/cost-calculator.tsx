@@ -219,7 +219,10 @@ function Card({
       className={cn(
         "rounded-lg border p-4",
         tone === "bad" && "border-red/40 bg-red-dim",
-        tone === "brand" && "border-primary-muted bg-primary-bg",
+        // NOTE: --color-primary-bg/-muted are not registered in @theme, so
+        // bg-primary-bg / border-primary-muted compile to nothing (see 08 F-token).
+        // Use the registered --color-primary with opacity (same fix as ISSUE-10).
+        tone === "brand" && "border-primary/30 bg-primary/10",
         tone === "amber" && "border-amber/20 bg-amber-dim",
       )}
     >

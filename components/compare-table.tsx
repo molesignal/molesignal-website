@@ -70,7 +70,7 @@ export function CompareTable({
                 </th>
                 <th
                   scope="col"
-                  className="bg-primary-bg border-t-[3px] border-t-brand px-4 py-3 text-left ring-1 ring-primary-muted/30 ring-inset"
+                  className="bg-primary/10 border-t-[3px] border-t-brand px-4 py-3 text-left ring-1 ring-primary/30 ring-inset"
                 >
                   <ColumnHeader
                     name={colMole.name}
