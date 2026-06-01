@@ -1,12 +1,8 @@
+import { Construction } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 import { CodeBlock } from "@/components/ui/code-block";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
 const DOCKER_CMD = `# Postgres + MinIO + molesignal standalone, 1 command
@@ -42,6 +38,23 @@ molesignal --listen 0.0.0.0:5080 --workdir /var/molesignal`;
  * `start.tabFilenames.*` so they swap with the locale. The command bodies
  * themselves stay English — they're shell commands.
  */
+/**
+ * Honest "not yet shippable" banner for the Helm / binary tabs (P0-4). The
+ * Helm repo and prebuilt binaries are a v1.0 target; the Docker path works
+ * today. Shown above the command so nobody pastes a command that 404s.
+ */
+function V1TargetNotice({ message }: { message: string }) {
+  return (
+    <div
+      role="note"
+      className="border-border bg-surface-muted text-fg-muted mb-3 flex items-start gap-2 rounded-md border border-dashed p-3 text-sm"
+    >
+      <Construction size={15} aria-hidden className="mt-0.5 shrink-0" />
+      <span>{message}</span>
+    </div>
+  );
+}
+
 export async function QuickStartTabs({ className }: { className?: string }) {
   const t = await getTranslations("start");
   return (
@@ -62,6 +75,7 @@ export async function QuickStartTabs({ className }: { className?: string }) {
       </TabsContent>
 
       <TabsContent value="helm" className="mt-4">
+        <V1TargetNotice message={t("v1Notice")} />
         <CodeBlock
           code={HELM_CMD}
           language="bash"
@@ -71,6 +85,7 @@ export async function QuickStartTabs({ className }: { className?: string }) {
       </TabsContent>
 
       <TabsContent value="binary" className="mt-4">
+        <V1TargetNotice message={t("v1Notice")} />
         <CodeBlock
           code={BINARY_CMD}
           language="bash"

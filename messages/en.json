@@ -31,12 +31,14 @@
     "pricing": "Pricing",
     "cloud": "Cloud",
     "resources": "Resources",
-    "docs": "Docs",
-    "docsSub": "Reference & guides",
+    "roadmap": "Roadmap",
+    "roadmapSub": "What's coming",
+    "changelog": "Changelog",
+    "changelogSub": "Release notes",
     "blog": "Blog",
     "blogSub": "Engineering notes",
     "download": "Download",
-    "downloadSub": "Releases & binaries",
+    "downloadSub": "Coming soon · v1.0 target",
     "menu": "Menu",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
@@ -72,6 +74,8 @@
     "terms": "Terms",
     "cloudComing": "Cloud coming · Join waitlist",
     "copyright": "© {year} molesignal · Apache 2.0 licensed",
+    "launchingSoon": "Launching soon",
+    "soon": "soon",
     "links": {
       "why": "Why molesignal",
       "architecture": "Architecture",
@@ -79,7 +83,6 @@
       "changelog": "Changelog",
       "pricing": "Pricing",
       "cloud": "Cloud",
-      "docs": "Docs",
       "quickStart": "Quick Start",
       "blog": "Blog",
       "download": "Download",
@@ -249,7 +252,8 @@
     "nextTitle": "Where to next",
     "nextArch": "Read the architecture",
     "nextDp": "Become a Design Partner",
-    "nextDocs": "Browse the docs ↗",
+    "nextDocs": "Read the source on GitHub ↗",
+    "v1Notice": "Helm charts and prebuilt binaries ship with v1.0 and aren't published yet. Use the Docker Compose path above to run molesignal today.",
     "tabs": {
       "docker": "docker compose",
       "helm": "Helm chart",
@@ -602,7 +606,8 @@
       },
       "discord": {
         "title": "Discord — launching soon",
-        "body": "A small space for design partners and contributors to chat. Drop your email at /design-partner and we'll send an invite."
+        "body": "A small space for design partners and contributors to chat. Drop your email at /design-partner and we'll send an invite.",
+        "soonTitle": "Launching soon — drop your email at /design-partner for an invite"
       }
     },
     "contributorWall": {
