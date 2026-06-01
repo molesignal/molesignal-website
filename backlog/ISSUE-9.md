@@ -2,7 +2,7 @@
 id: ISSUE-9
 type: feature
 title: [T02] Design Partner申请持久化
-status: in_progress
+status: in_review
 priority: P0
 assignee: backend-engineer
 created: 2026-06-01
@@ -115,3 +115,9 @@ updated: 2026-06-02
   **自测结果**：`test:design-partner` 全过(splitName AC2 5例 + route AC1 zod 400/200 + AC2 入库&姓名拆分&通知 + AC5① PII最小化 + AC3/AC4 降级 + AC4 通知全5字段&replyTo&IP/时间戳 + AC5③ 蜜罐零副作用 + AC5④ 密钥不泄露)；`test:audiences` 回归全过；`pnpm check` 0报错(typecheck+lint+a11y 26/26 AA+i18n 506↔506 parity)；`pnpm build` exit 0(/api/design-partner 为 dynamic fn)；真实 `next start` curl 实测 valid→200 / bad·missing·honeypot→400 / 日志证缺 RESEND_API_KEY 时 audiences+email 双降级仍 200。
   **关键发现(供 QA/security 知悉, 非阻塞)**：① 蜜罐 `website` 的 `z.string().max(0)` 使填充值在 **zod 层即被拒为 400**(silent-200 分支为死代码)——与 cloud-waitlist(ISSUE-8 QA PASS)同构；AC5③ 安全保证(零入库/零通知/零track)仍成立(经 400 而非 silent 200，前端不触发 track 因非 2xx)。② `lib/email.ts` 错误日志打印完整上游 body 未截断(pre-existing，本单不动 sendEmail)——现实中 Resend 错误响应不含调用方密钥，风险低；addContact 路径已截断(已验)。
   **AC 状态**：AC1–AC7 缺密钥下经脚本/起服务客观验证通过；AC8(真实 Resend 写入联调)按本期政策延后补密钥复验，不阻塞 DONE。**阻塞项：无。** commit ea8d4dc。
+- 2026-06-02 05:08:39 set status=in_review
+- 2026-06-02 代码审查(code-reviewer): **结论 PASS，建议放行 QA/发布。必改问题 0。** 审 `main...feature/ISSUE-9` 全部改动(route.ts/split-name.ts/package.json/check-design-partner-route.ts)。
+  **复核通过项**：① 正确性——`splitName` 确定性首空白切分(trim+`\s+`塌缩+`indexOf(" ")`)与 §3.1 规则一致，双词/单词/三词带中点/前后空格/纯空格(firstName="" 由 addContact `firstName?{...}` 跳过)五例均经单测覆盖；route 在蜜罐判定后、返200前以 `Promise.allSettled([addContact, sendEmail])` 并行 fire-and-forget，缺 env 降级仍 200，无异常逃逸。② 契约——schema/`addContact` 签名/API 出入参全未动，audienceId 仅来自 `process.env.RESEND_PARTNER_AUDIENCE_ID`(不可被请求体覆盖)，与 06 §3.1/§4.6 契约一致；零数据模型/零接口变更属实。③ 安全(对齐 security G1/G2)——入库 body 仅 `email,first_name,last_name,unsubscribed`(经 AC5① 测试断言 keys 最小化 + 不含 companySize/currentStack/biggestPain/IP)；蜜罐填充→zod 400→零入库/零通知/零track；密钥不入日志(AC5④ 截断验证通过)。④ 可维护性——与 `cloud-waitlist/route.ts` 同构(同一并行降级模式)，注释充分，`splitName` 抽成纯函数便于单测，命名/风格与现有一致；无重复无过度复杂。⑤ 提交规范——`feat(ISSUE-9):`/`chore(ISSUE-9):` 符合 Conventional Commits。
+  **独立验证(本机实跑)**：`tsx check-design-partner-route.ts` 全过(splitName 5 + AC1/AC2/AC5①/AC3/AC4/AC4通知/AC5③/AC5④)；`tsc --noEmit` rc=0；`test:audiences` 回归全过。
+  **可选项(非阻塞，不在本单范畴)**：① 蜜罐 silent-200 分支为死代码——`website: z.string().max(0)` 使填充值在 zod 层即被拒为 400(与 ISSUE-8 cloud-waitlist 同构、已 QA PASS)；安全保证(零副作用)仍成立，AC5③ 实测亦确认，**建议维持现状**(若要真"silent 200"需改 schema，超本单范围)。② `lib/email.ts` 错误日志打印完整上游 body 未截断(pre-existing，本单不动 sendEmail)——现实中 Resend 错误响应不含调用方密钥风险低，建议另开工单统一截断。
+  **放行建议**：交 qa-automation 做 E2E(AC6 埋点时序 + AC7 成功态原位持久卡)即可关单;AC8 真实 Resend 联调按本期政策延后,不阻塞 DONE。**阻塞项:无。**
