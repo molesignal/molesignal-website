@@ -2,7 +2,7 @@
 id: ISSUE-2
 type: feature
 title: [T05] 转化漏斗埋点接线(11点位)
-status: verifying
+status: closed
 priority: P0
 assignee: frontend-engineer
 created: 2026-06-01
@@ -180,3 +180,5 @@ try {
 **证据**：`08-测试报告.md` ＞「ISSUE-2 运行时 E2E 验证」小节（14/14 用例表）。
 **回归套件**：`playwright.config.ts` + `tests/e2e/analytics-funnel.spec.ts`；重跑 `pnpm build && pnpm exec playwright test`。
 **非阻断观察**：委托器 `source_page` 用未去 locale 的 `location.pathname`，与 `locale_switch.page` 去 locale 口径不一致（ZH 下漏斗或按语言分裂）——数据质量项，建议 data-analyst 补域名前统一，不卡本期 DONE。
+- 2026-06-02 01:09:03 set status=closed
+- 2026-06-02 01:09:03 引擎周期#2: QA PASS, 关闭
