@@ -2,7 +2,7 @@
 id: ISSUE-3
 type: bug
 title: [T04] 死链/画饼治理
-status: verifying
+status: closed
 priority: P0
 assignee: frontend-engineer
 created: 2026-06-01
@@ -64,3 +64,5 @@ updated: 2026-06-02
   **放行建议：PASS 到 QA**——AC 全覆盖，唯一正确性 bug（死锚点）已修，无未决必改项。
 - 2026-06-02 01:47:05 set status=verifying
 - 2026-06-02 01:55:06 QA 验证结果：通过。qa-automation 运行时验证(分支 feature/ISSUE-3)。lint:i18n PASS(EN466/ZH466 parity OK·AC5)；T04 新增/改动内链 /roadmap /changelog /blog /start#install 全2xx(EN+ZH·AC1/AC6)；HTML 断言全绿(docs.molesignal.io=0·活 href#=0·#install 锚点目标存在·v1Notice 双语渲染)；Playwright+Chromium 真实浏览器交互 E2E 13/13 PASS(footer Discord/Twitter 及 community-callout Discord 卡均 aria-disabled 非锚点·Resources 下拉无 Docs·点击 Download 真实跳转 http://localhost:3000/start#install 并滚动至 #install(y=777)·helm/binary tab 点击后 v1.0 notice 可见而 docker tab 不显)。lint:links 唯一失败 /opengraph-image=404 经核为预存且与 T04 无关(app/opengraph-image.tsx 与 main 完全一致·seed 早在 main 即存在)，不阻断本工单；lint:quickstart 失败系脚本 ROOT 路径 bug，非 T04 范围。建议二者另立工单。环境注记：首跑全站 500 系残留 .next 产物与 Turbopack dev 冲突，rm -rf .next 后全 200。证据：08-测试报告.md(ISSUE-3 自动化小节)+test-results/issue3-t04-binary-notice.png+tests/e2e/issue3-t04-deadlinks.mjs。VERDICT: PASS
+- 2026-06-02 01:55:49 set status=closed
+- 2026-06-02 01:55:49 引擎周期#3: QA PASS, 关闭

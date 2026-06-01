@@ -2,7 +2,7 @@
 id: ISSUE-4
 type: feature
 title: [T06] 隐私/条款真实法务文本
-status: in_progress
+status: verifying
 priority: P0
 assignee: fullstack-engineer
 created: 2026-06-01
@@ -180,3 +180,57 @@ updated: 2026-06-02
   - `/opengraph-image` 404：预存、非本工单引入，影响「无死链门禁」聚合项（T04），与 T06 无关，留待对应工单处理。
   - `playwright.config.ts` 修复属 T12 E2E 范畴，本工单顺手解阻塞全仓构建；T12 落地时知悉此改动即可。
   - 交 code-reviewer 审查 + security-auditor 复审 AC5 文案忠于事实（F1/F2 口径）。
+- 2026-06-02 02:22:29 set status=in_review
+- 2026-06-02 code-reviewer 审查（feature/ISSUE-4，diff main...feature/ISSUE-4）：
+
+  **审查范围**：4 个源码文件（privacy/terms 页、legal-document 组件、playwright.config）+ 2 个文案文件（en/zh.json legal 命名空间）。
+
+  **客观验证（本地实跑）**
+  - `tsc --noEmit`：exit 0（含 `getMessages()` 后 `as { ... sections: LegalSection[] }` 断言路径，类型通过）。
+  - `eslint` 三个改动源文件：exit 0。
+  - `check-i18n-parity.ts`：EN/ZH 各 504 键 parity OK；legal 命名空间 42 键完全对齐，privacy sections 8/8、terms sections 5/5，`stub` 已删且全仓无残留引用，`LegalStub` 无残留。
+  - ZH legal 全部字符串叶子均含中文、无英文残块/占位（AC3 ✓）。
+
+  **正确性 / 契约**：✅ 通过
+  - i18n 内容契约（legal 分节形状）落地与架构师定义一致；`t()` 取字符串叶子、`getMessages()` 遍历数组的渲染路径正确。
+  - 富文本标签匹配无误：`disclaimer`/`*.contact` 用 `<email>`、`terms.license` 用 `<license>`，各页 `t.rich` 的 tag handler 一一对应。
+  - `section.heading` 唯一（已核 8+5 标题不重复），用作 key 安全；body/bullets 用 index key 属静态列表可接受。
+  - 数据模型/API 零变更，符合架构评估结论。
+
+  **文案忠于事实（AC5）**：✅ 与 security-auditor F1–F4 纠偏一致
+  - F1：Resend 表述=「仅传输通知邮件，不加入营销名单/audience」✓
+  - F2：「How your submission is handled」如实披露 表单字段+IP+时间戳 作为通知邮件发给创始团队并留存、邮箱设 reply-to ✓
+  - F3：同节披露服务器日志（cloud=email；DP=email/size/stack）✓
+  - F4：许可链接指向 apache.org 官方 URL（恒 2xx），规避 GitHub LICENSE 死链风险 ✓
+  - 六覆盖点齐全；不出售数据、Apache-2.0、© 2026 molesignal contributors 均如实。
+  > 注：AC5 的最终事实一致性裁定归 security-auditor 复审；此处仅记代码审查侧确认覆盖点齐备且与 F1–F4 口径吻合。
+
+  **可维护性发现**
+  - 〔已直接修复·refactor commit bbd8575〕terms/page.tsx 内联硬编码 `mailto:founders@molesignal.io`，与 privacy/page.tsx 的 `emailLink` helper + `FOUNDERS_EMAIL` 常量风格不一致。抽出同款 helper 对齐 sibling 页，行为不变。
+  - 〔可选·不阻塞〕`emailLink` 在 privacy/terms 两页各自定义一份（DRY 轻微重复）；如后续新增第三个法务页，建议把 `emailLink`/`licenseLink` 提到 `legal-document.tsx` 或共享小模块。本期两页规模小，不强制。
+  - 〔可选·与本工单无关〕全仓 `pnpm check` 不含 `format:check`，privacy/terms 两页 committed 态均不满足 prettier（单行 import 超 printWidth 等）。非本工单引入、不影响门禁，留意即可。
+
+  **提交规范**：✅ Conventional Commits 合规（feat/fix/chore + ISSUE-4，playwright 修复单独 commit 便于 T12 追溯）。
+
+  **结论**：必改问题 0；已直接修复 1 处可维护性不一致并按规范提交（bbd8575）。无关键 bug。**建议放行到 QA 验证**（security-auditor 对 AC5 文案的最终复审为并行/前置门，二者齐过即可关单）。
+- 2026-06-02 02:27:17 set status=verifying
+- 2026-06-02 qa-automation 独立验证（feature/ISSUE-4，生产构建 + 真 Chromium E2E）：
+
+  **QA 验证结果：通过（PASS）** —— AC1–AC8 全部实测通过，证据如下：
+  - **AC1 隐私六覆盖点**：EN privacy 渲染 HTML 16/16 grep PASS（cloud=email、DP 字段、Plausible「no cookies/does not store IP/不跨站/Do-Not-Track」、Resend、「do not add you to any marketing list」、rate-limit、「stored locally in your browser」+「not tracking」、「never sell」、founders@）；E2E 断言全绿；无 `placeholder for v1 launch` 残留。
+  - **AC2 条款独立**：terms 渲染 Apache License 2.0 / as is / without warranties / 可更新；与 privacy 彻底分开；stub 已删（全仓无引用）。
+  - **AC3 双语 parity**：`pnpm lint:i18n` EN/ZH 各 504 键 OK；legal 数组同构（privacy 8/8、terms 5/5）；ZH 为对等翻译（你主动提供的信息/你的提交如何被处理/担保…），无残英、无占位。
+  - **AC4 日期**：四页均显示 `2026-06-02`。
+  - **AC5 忠于事实**：messages 文本逐条核验——F1 Resend「仅作邮件服务商传输通知邮件，不加入营销名单/audience」✓；F2「How your submission is handled」如实披露 表单字段+IP+时间戳作通知邮件发创始团队并留存、邮箱设 reply-to ✓；F3 服务器日志披露 ✓；无虚假「cookie 追踪/出售数据」表述。与 security-auditor F1–F4 纠偏完全一致。
+  - **AC6 链接**：mailto:founders@molesignal.io（四页）、apache.org/licenses/LICENSE-2.0（两 terms 页）均为真实 `<a href>` 锚点、无裸 URL；apache 外链 200；`lint:links`（生产构建）四法务页+站内链全 2xx。唯一 FAIL=`/opengraph-image 404`，预存（ISSUE-3/T04）、非本页链接、与 T06 无关。
+  - **AC7 构建/回归**：`pnpm check` exit 0、`pnpm build` exit 0（privacy/terms SSG 预渲染 en+zh 四页）；E2E 主题切换无 pageerror；全量 E2E **20/20 绿**（14 既有 analytics-funnel + 6 新增 legal），证明本分支 `playwright.config.ts` 改动未回归。
+  - **AC8 免责声明**：disclaimer「plain-language summary, not formal legal advice…email founders@」渲染于两页。
+
+  **新增回归套件**：`tests/e2e/issue4-legal.spec.ts`（6 用例）。重跑：`PATH 含 node v23.6.1 → pnpm exec playwright test`（门禁 `pnpm check && pnpm build`；链接须生产构建 `SITE=… pnpm lint:links`）。
+
+  **观察项（非阻断·dev-only）**：`pnpm dev`（Turbopack）被 lint:links 并发爬时进全站 JSON.parse 500 坏态且不自愈；生产 build+start 全程 200、E2E 全绿不可复现 → 判 dev/HMR 并发坏态，与内容无关，不影响上线。建议另立工单查 dev 体验。
+
+  **阻断级缺陷：0。放行建议：合并回 main。**
+  详见 08-测试报告.md「ISSUE-4 [T06] … 运行时验证」节。
+
+  VERDICT: PASS
