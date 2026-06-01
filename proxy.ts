@@ -18,6 +18,11 @@ export const config = {
   // Match all pathnames except for:
   // - API routes (we handle locale-agnostic JSON elsewhere)
   // - Next internals (_next, _vercel)
-  // - Static files at root (favicon.svg, robots.txt, etc.)
-  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
+  // - Root-level metadata routes that are *dotless* (so the `.*\..*` rule below
+  //   misses them): the site-wide `/opengraph-image`. Without this exclusion the
+  //   next-intl middleware swallows it into locale routing → 404 (the locale-
+  //   scoped `/[locale]/blog/[slug]/opengraph-image` is unaffected — it doesn't
+  //   start with `opengraph-image`).
+  // - Static files at root (favicon.svg, robots.txt, sitemap.xml, etc. — any path with a dot)
+  matcher: ["/((?!api|_next|_vercel|opengraph-image|.*\\..*).*)"],
 };
