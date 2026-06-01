@@ -197,6 +197,7 @@
   /* 🔑 Bright teal/amber need DARK foreground (white = ~1.7:1 FAIL). 05-UI §5. */
   --primary-fg:          #0e1117;   /* 11.6:1 on teal ✓ */
   --accent-fg:           #0e1117;   /* accent == brand in dark → dark fg */
+  --amber-fg:            #0e1117;   /* canonical twin of --marketing-accent-fg; dark fg on bright amber */
   --marketing-accent-fg: #0e1117;   /* 12.3:1 on amber ✓ */
 
   --red:        #f25b56;
@@ -261,6 +262,7 @@
     --marketing-accent-dim:  var(--amber-dim);
     --primary-fg:          #0e1117;
     --accent-fg:           #0e1117;
+    --amber-fg:            #0e1117;
     --marketing-accent-fg: #0e1117;
     --red:        #f25b56;
     --red-soft:   #f78784;
