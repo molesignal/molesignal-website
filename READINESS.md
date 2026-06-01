@@ -1,4 +1,4 @@
-READINESS_SCORE: 5/31
+READINESS_SCORE: 6/31
 
 # READINESS · molesignal-website 上线就绪清单
 
@@ -40,7 +40,7 @@ READINESS_SCORE: 5/31
 - [ ] **导航/页脚/Pill/Button 视觉改造**：TopNav 56px+brand mono+active 下划线+滚动 blur、Footer 四列+禁用态链接样式、Button/Pill/Badge variants 按规格，与 T04 死链改动不冲突；`check` 过（T08b）
 
 ### 数字 / 兜底可信（D1/D5 · T03/T07）
-- [ ] **成本/对比数字校准**：`lib/cost-formula.ts`+`lib/compare-data.ts` 的 Datadog 定价核对为最新公开值并在 UI 显示定价快照日期/来源 disclaimer；计算结果无溢出/无 NaN；EN/ZH 文案同步（T03）
+- [x] **成本/对比数字校准**：`lib/cost-formula.ts`+`lib/compare-data.ts` 的 Datadog 定价核对为最新公开值并在 UI 显示定价快照日期/来源 disclaimer；计算结果无溢出/无 NaN；EN/ZH 文案同步（T03） ✅ ISSUE-6 closed · QA PASS 2026-06-02（full 道：开发→代码审查→独立 QA。定价校准索引 1.27→1.70/span 1.0→1.70 核对 2026-06-02 官方公开值；`PRICING_SNAPSHOT`/`PRICING_SOURCE_URL` 常量入 UI、disclaimer 渲染固定快照月份+来源外链（UTC 格式化无水合漂移）；`pnpm test:cost` 16 断言全过——全输入域(gb1–5000×ret1–365)无 NaN/溢出峰值$2.01M 有界、敌意输入净化、`formatUsd(NaN)="$0"`、代表点 100GB/30d datadog$7.4k/molesignal$150/savings98%；真实 Chromium E2E 6/6+全量回归 26 passed；lint:i18n 506↔506 parity；typecheck/build exit 0。主管复跑 test:cost 确认全过）
 - [ ] **GitHub stats/changelog 兜底标注**：`getRepoStats().fallback`/空 contributors/空 releases 三兜底态被 UI 正确消费不伪造数字；changelog 加 "live from GitHub"/"previewing" pill、stats chip 兜底显示 "★ on GitHub" 无数字、贡献者墙空态 "Be the first contributor"；仓库公开+token 时无需改代码即切真实（T07）〔需外部:GITHUB_TOKEN + 仓库公开状态 才能验真实数据切换；缺失时验兜底态〕
 
 ### 自动化守护（D8/D9 · T12/T13）
