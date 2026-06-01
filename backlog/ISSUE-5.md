@@ -2,7 +2,7 @@
 id: ISSUE-5
 type: feature
 title: [T08] UI token迁移(globals.css+Geist Mono)
-status: in_review
+status: verifying
 priority: P0
 assignee: frontend-engineer
 created: 2026-06-01
@@ -175,3 +175,26 @@ updated: 2026-06-02
   ② `--marketing-grid-line`（L123/223/283，明暗镜像三处已同步 ✓）未桥接到 `--color-*`，仅供 `var()` 直引；当前 components/ 零消费，属 T09 前瞻 token，非问题，提示下游按 `var(--marketing-grid-line)` 直引而非工具类。
   **风格/可维护性**：值重指向用 `var(--brand)` 链 + 注释标注 legacy 别名意图，可读性好；`--font-weight-body` 500→400 属 §5 范围内全站正文字重变化，交 QA 目测正文可读性。**无其他坏味道。**
   **移交 QA**：AC7（真浏览器明暗双主题关键区块目测：Hero/CrossSignalDemo/Why-Stats/QuickStart/DP CTA/导航/页脚，无掉色/丢边框/主题切换闪烁）+ AC1 DevTools 核 font-mono 计算字体 = Geist Mono + 抽查旧工具类元素 computed 色已 Teal/Amber。建议放行 QA。
+- 2026-06-02 03:28:47 set status=verifying
+
+## QA 验证结果（qa-automation · 2026-06-02）
+
+**VERDICT: PASS**
+
+**验证手段**：静态门禁 + 真实 Chromium E2E（Playwright 1.60，明暗双主题）。被测=生产构建 `pnpm build && pnpm start`（端口 3100 被 kubectl port-forward 占用 → 改 3217）；locale `as-needed`：EN=`/`、ZH=`/zh`。测后已关服务无僵尸。
+
+**逐项 AC 结果（全过）**：
+- **AC1 字体** ✓：`@fontsource/geist-mono`@5.2.8 在 deps、`node_modules` 有 400/600.css；`app/layout.tsx` import 400+600；`--font-mono` 首位 `"Geist Mono"`。真实浏览器：`document.fonts.check('16px "Geist Mono"')=true`（明/暗），真实 `.font-mono` 元素 computed `font-family` 为 `"Geist Mono", ui-monospace…`（明/暗，样本含命令/代码）。
+- **AC2 新 token** ✓：`--brand/--amber/--warn`（明暗双块）、桥接 `--color-brand*/--color-amber*/--color-warn*`、radius 降档 computed `--radius-sm-token=3px`/`--radius-xl-token=12px`、mono-text-scale（12–56px 字面值）、display-sm=18px。
+- **AC3 旧消费者整体变色** ✓：computed `--brand`=light#0f766e/dark#2dd4bf、`--amber`=light#b45309/dark#fbbf24；legacy `--indigo`→teal、`--marketing-accent`→amber；`--marketing-hero-bg=none`（glow 移除）。**真实 16 处 `text-marketing-accent` 元素 computed color 实测 Amber**（light rgb(180,83,9)/dark rgb(251,191,36)）。
+- **AC4 别名保留** ✓：`@theme inline` 旧 `--color-indigo*/--color-marketing-accent*/--shadow-glow-indigo/-pink` 桥接全在；E2E 0 元素掉样式。
+- **AC5 对比度 AA** ✓：`pnpm a11y:contrast` **26/26** 明暗全过。
+- **AC6 构建/类型/lint** ✓：`pnpm check` exit 0（i18n 504/504）、`pnpm build` exit 0。
+- **AC7 无视觉崩坏（双主题目测）** ✓：明暗全屏截图（`test-results/issue5/`）关键区块（Hero/CrossSignalDemo/vs 表/管线/QuickStart/DP CTA/导航/页脚）均利落克制、无掉色/丢边框；dark Teal/Amber 按钮深色文字可读（`--primary-fg:#0e1117` 覆盖生效）；下拉切换 light→dark `data-theme` 实测翻转；ZH/start/why 渲染正常；控制台 0 错误。
+- **AC8 隔离性** ✓：`git diff --name-only main...HEAD` 仅 `app/globals.css`/`app/layout.tsx`/`package.json`/`pnpm-lock.yaml`；`components/`、`messages/`、`app/api/`、`i18n/`、`lib/`、`scripts/` 零变更。
+
+**缺陷**：0（0 阻断 / 0 严重 / 0 一般）。审查阶段修复的 dark `--amber-fg`（487bbba）经 a11y 26/26 + 暗色可读性目测复核闭合。
+
+**证据**：报告 `08-测试报告.md`「自动化测试 — ISSUE-5」节；E2E 套件 `tests/e2e/issue5-ui-tokens.mjs`（29 断言全过，可重跑）；截图 `test-results/issue5/{home-light,home-dark,zh-home}.png`。
+
+**结论**：建议合并回 main，放行 T09/T10/T08b 组件改造。

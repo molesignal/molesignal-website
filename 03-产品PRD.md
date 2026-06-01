@@ -201,6 +201,14 @@ molesignal 凭什么、用户为什么用/留下：
 - **密钥政策**：纯文案 + i18n，**不依赖任何外部 env**，QA 可全程验证（浏览器核对六覆盖点 + 链接 2xx + 双语 parity）。
 - 完整用户故事与 AC1–AC8 见 `backlog/ISSUE-4.md`。
 
+### ISSUE-5 · UI token 迁移（globals.css + Geist Mono）— T08 / P0（2026-06-02）
+- **承接 PRD**：§4.1 P0「UI 改版」（D1 信任 / D8 可信视觉）的**地基工单**。`07` 全局前置：T08 是所有 UI 组件视觉改造（T09/T10/T08b）的前置。仅改设计 token 层（`globals.css` + 字体），不动组件。命中红线④（影响全站视觉基座）+ 涉界面 → full 道，增派 ui-designer 把关 token 值忠于 05-UI §5。
+- **细化结论**：按 05-UI §5 把全站从 Indigo/品红/重 glow/大圆角/Inter 伪 mono 切到 **Teal 主色 / Amber 强调 / 暖中性 / 圆角降档 / 阴影简化去 glow / 真 Geist Mono**。token 值照抄 05-UI §5 的 oklch 片段（light `:root` + dark `[data-theme]` + `prefers-color-scheme` 镜像 + `@theme inline` 四处同步）。
+- **关键约束（本工单成立的核心）**：当前 canonical token 名是 `--indigo*`/`--marketing-accent*`（**无 `--brand/--amber/--warn`**），全仓 **83 处组件工具类直接消费旧名**。故采**加法式 + 值重指向**策略——① 旧 token 的**值**改为新 Teal/Amber（83 处旧工具类零改代码即整体变色 → "全站无视觉崩坏"可达且可验）；② 按 05-UI §5 **新增** `--brand/--amber/--warn` 及 `--color-*` 桥接给下游用；③ 旧 `--color-*` 桥接**保留为过渡别名**。直接删/重命名旧 token 会让 83 处工具类静默掉样式（build 仍 green 但视觉崩）——**删除旧名 = T09/T10/T08b 收尾事项，非本工单**。
+- **明确不做**：不改任何组件/页面 JSX（视觉改造归 T09/T10/T08b）、不批量改组件工具类名、不删旧 token/旧桥接、不动 Inter/不加字体外新依赖、零 i18n/零 API/零 schema 改动。
+- **密钥政策**：纯前端 token + 字体，**不依赖任何外部 env**，QA 可全程本地验证（明暗双主题目测 + `a11y:contrast` + DevTools 核 mono 字体/旧工具类计算色）。开放项：新色若 `a11y:contrast` AA 不达标 → 回报 ui-designer 调 token 值（设计决策），不擅改组件。
+- 完整用户故事与 AC1–AC8 见 `backlog/ISSUE-5.md`。
+
 ---
 
 **产出路径**：`/Users/ukulele/claude-project/self-code/workspace/molesignal-website/03-产品PRD.md`
