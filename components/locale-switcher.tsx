@@ -38,7 +38,10 @@ export function LocaleSwitcher({ className }: { className?: string }) {
     if (next === locale) return;
     track("locale_switch", { from: locale, to: next, page: pathname });
     startTransition(() => {
-      router.replace(pathname, { locale: next });
+      // `scroll: false` keeps the reader where they were (PRD D6 / UX C-1:
+      // "保留滚动位置"). Without it Next's default jumps to the top on the
+      // en↔zh path change.
+      router.replace(pathname, { locale: next, scroll: false });
     });
   };
 

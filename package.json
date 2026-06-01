@@ -20,6 +20,7 @@
     "test:github": "tsx scripts/check-github-fallback.ts",
     "test:audiences": "tsx scripts/check-resend-audiences.ts",
     "test:design-partner": "tsx scripts/check-design-partner-route.ts",
+    "test:e2e": "playwright test",
     "check": "pnpm typecheck && pnpm lint && pnpm a11y:contrast && pnpm lint:i18n"
   },
   "dependencies": {
