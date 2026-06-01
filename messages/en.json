@@ -545,7 +545,105 @@
     "privacyTitle": "Privacy",
     "termsTitle": "Terms",
     "lastUpdated": "Last updated {date}",
-    "stub": "Full legal text under review. This is a placeholder for v1 launch. Email founders@molesignal.io with questions."
+    "disclaimer": "This is a plain-language summary, not formal legal advice. Have a question? Email <email>founders@molesignal.io</email>.",
+    "privacy": {
+      "title": "Privacy Policy",
+      "intro": "molesignal is an open-source project. This site collects only the minimum data needed to run a waitlist and follow up with design partners — nothing more. This page describes exactly what we collect, who processes it, and how to have it removed.",
+      "sections": [
+        {
+          "heading": "Information you give us",
+          "body": ["We only store what you choose to submit through our forms:"],
+          "bullets": [
+            "Cloud waitlist (/cloud): your email address.",
+            "Design Partner application (/design-partner): your name, email, company size, current observability stack, and (optionally) your biggest pain point.",
+            "Each form includes a hidden anti-spam field. If it is filled in, the submission is silently discarded and nothing is stored."
+          ]
+        },
+        {
+          "heading": "How your submission is handled",
+          "body": [
+            "When you submit a form, the details above — together with your IP address and a timestamp — are sent as a notification email to our founding team and kept in that mailbox so we can follow up. Your email address is set as the reply-to address.",
+            "We also write a short server log entry for each submission (for the waitlist, your email address; for a Design Partner application, your email address, company size, and current stack)."
+          ]
+        },
+        {
+          "heading": "IP addresses and abuse prevention",
+          "body": [
+            "We count requests per IP address to rate-limit our form endpoints and prevent abuse. This is short-lived and is not used to build a profile of you. As noted above, the IP address of a successful submission is also included in the notification email to our team."
+          ]
+        },
+        {
+          "heading": "Analytics (Plausible)",
+          "body": [
+            "When analytics is enabled, we use Plausible — a privacy-friendly analytics tool that uses no cookies, does not store IP addresses, does not track you across sites, and respects the Do-Not-Track signal. It records only aggregate page views and a few defined conversion events, and those events contain no personal information. Analytics loads only when an analytics domain is configured for the site."
+          ]
+        },
+        {
+          "heading": "Browser local storage",
+          "body": [
+            "Your theme preference and whether you have dismissed the pre-release banner are stored locally in your browser and are never sent to our servers. This is a convenience setting, not tracking."
+          ]
+        },
+        {
+          "heading": "Third parties we use",
+          "body": ["We share data only with the providers needed to deliver the above, and we never sell your personal data."],
+          "bullets": [
+            "Resend — our email provider. It transmits the notification email described above. We do not add you to any marketing list or audience.",
+            "Hosting and infrastructure — the site runs on serverless hosting; request IP addresses pass through our rate-limiting layer."
+          ]
+        },
+        {
+          "heading": "How we use your data",
+          "body": [
+            "We use your information only for the purpose for which you submitted it: to notify you when Cloud opens, to follow up on a Design Partner application, and for necessary product-update communication. We do not use it beyond that purpose."
+          ]
+        },
+        {
+          "heading": "Retention and your rights",
+          "body": [
+            "We keep your data only as long as needed for that purpose — waitlist entries until after we notify you that the product is ready, applications until after the evaluation is complete. You can ask us to access, correct, or delete your data at any time."
+          ]
+        }
+      ],
+      "contact": "To exercise any of these rights, or for any privacy question, email <email>founders@molesignal.io</email>."
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "intro": "These terms cover your use of the molesignal project website. molesignal is an open-source project, and this site is its marketing and documentation home.",
+      "sections": [
+        {
+          "heading": "Open source and \"as is\"",
+          "body": [
+            "The molesignal software is open source. Content on this site — including cost comparisons and other figures — is provided on an \"as is\" basis, may change at any time, and is for general reference only. It is not a commercial commitment or a guarantee of any particular result."
+          ]
+        },
+        {
+          "heading": "License",
+          "body": [
+            "The molesignal software is released under the Apache License 2.0. Website content and copy are © 2026 molesignal contributors."
+          ]
+        },
+        {
+          "heading": "Acceptable use",
+          "body": [
+            "Please do not abuse the site or its form endpoints. Automated scraping, spam, and attempts to overwhelm our forms are not permitted, and requests are rate-limited to protect the service."
+          ]
+        },
+        {
+          "heading": "No warranty and limitation of liability",
+          "body": [
+            "The site and its content are provided without warranties of any kind, to the extent permitted by law. We are not liable for any loss arising from your use of the site or your reliance on its content."
+          ]
+        },
+        {
+          "heading": "Changes to these terms",
+          "body": [
+            "We may update these terms from time to time. The \"last updated\" date at the top of this page shows when they last changed; continued use of the site means you accept the current version."
+          ]
+        }
+      ],
+      "license": "The full license text is available at <license>apache.org/licenses/LICENSE-2.0</license>."
+    }
   },
 
   "components": {

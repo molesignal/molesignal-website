@@ -192,6 +192,15 @@ molesignal 凭什么、用户为什么用/留下：
 - **密钥政策**：本期不提供 `NEXT_PUBLIC_PLAUSIBLE` 域名，按"`track()` 在正确交互+时序下被调用（E2E/单测 spy/mock 客观验证）"即判 `[x]`；真实 Plausible network 上报（AC8）延后补域名复验。
 - 完整用户故事与 AC1–AC8 见 `backlog/ISSUE-2.md`。
 
+### ISSUE-4 · 隐私/条款真实法务文本 — T06 / P0-6（2026-06-02）
+- **承接 PRD**：§4.1 P0-6「隐私/条款真实法务文本」（D8 信任/合规域）。当前 `/privacy` `/terms` 共用占位 `LegalStub`，站点收邮箱却无真实隐私说明 = 合规红线 + 失信（"Proof over promise"）。命中红线①涉隐私/合规 → full 道，增派 security-auditor。
+- **细化结论**：把占位替换为**与真实数据流一致**的隐私政策 + 独立服务条款，EN/ZH 双语经 `messages.legal` 命名空间（键结构 parity）。
+- **真实数据流绳准**（文本不得多写/漏写）：① 主动收集——cloud=邮箱、DP=姓名/邮箱/公司规模/栈/痛点(选填)，蜜罐 `website` 丢弃；② 自动——IP 仅用于防滥用限流、Plausible **无 cookie/不存 IP/不跨站/尊重 DNT**、localStorage 仅存主题与 banner 关闭态(不回传)；③ 第三方——**Resend**(邮件+名单存储)、Plausible；**不出售数据**；④ 用途不超提交预期；⑤ 删除/联系 `founders@molesignal.io`。条款覆盖开源/as-is/Apache-2.0/可接受使用/无担保/可更新。
+- **关键约束**：① 文本忠于代码事实——禁称站点不存在的行为（cookie 追踪/卖数据等），security-auditor 据此审查（AC5 合规核心）；② `/terms` 须独立于 `/privacy`（现共用同一 `stub`）；③ EN/ZH 键 parity 无缺口；④ `LAST_UPDATED` 改真实发布日期；⑤ 法务来源——用户成稿优先，否则模板自拟 + 免责声明，属"诚实文案"不阻塞 M1。
+- **明确不做**：不做 cookie 同意横幅(本无追踪 cookie)/不引第三方法务 SaaS/不做 GDPR 全套权利 UI(走邮件人工，呼应 T18)/不新增收集或改表单字段/不迁 MDX。
+- **密钥政策**：纯文案 + i18n，**不依赖任何外部 env**，QA 可全程验证（浏览器核对六覆盖点 + 链接 2xx + 双语 parity）。
+- 完整用户故事与 AC1–AC8 见 `backlog/ISSUE-4.md`。
+
 ---
 
 **产出路径**：`/Users/ukulele/claude-project/self-code/workspace/molesignal-website/03-产品PRD.md`

@@ -1,8 +1,18 @@
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 
-import { Section } from "@/components/ui/section";
+import { LegalDocument, type LegalSection } from "@/components/legal/legal-document";
 
-const LAST_UPDATED = "2026-05-29";
+const LAST_UPDATED = "2026-06-02";
+const FOUNDERS_EMAIL = "founders@molesignal.io";
+
+const emailLink = (chunks: React.ReactNode) => (
+  <a
+    href={`mailto:${FOUNDERS_EMAIL}`}
+    className="text-primary underline-offset-2 hover:underline"
+  >
+    {chunks}
+  </a>
+);
 
 export async function generateMetadata({
   params,
@@ -22,27 +32,21 @@ export default async function PrivacyPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("legal");
-  return <LegalStub title={t("privacyTitle")} body={t("stub")} lastUpdated={t("lastUpdated", { date: LAST_UPDATED })} />;
-}
 
-function LegalStub({
-  title,
-  body,
-  lastUpdated,
-}: {
-  title: string;
-  body: string;
-  lastUpdated: string;
-}) {
+  // `t()` only returns string leaves, so the structured `sections` array is
+  // read from the full message bundle and navigated to directly.
+  const messages = await getMessages();
+  const sections = (messages.legal as { privacy: { sections: LegalSection[] } })
+    .privacy.sections;
+
   return (
-    <Section padding="lg">
-      <div className="prose-container space-y-4">
-        <h1 className="text-display-lg font-display-strong tracking-tighter">
-          {title}
-        </h1>
-        <p className="text-fg-muted text-sm">{lastUpdated}</p>
-        <p className="text-fg text-base">{body}</p>
-      </div>
-    </Section>
+    <LegalDocument
+      title={t("privacy.title")}
+      lastUpdated={t("lastUpdated", { date: LAST_UPDATED })}
+      disclaimer={t.rich("disclaimer", { email: emailLink })}
+      intro={t("privacy.intro")}
+      sections={sections}
+      footer={t.rich("privacy.contact", { email: emailLink })}
+    />
   );
 }

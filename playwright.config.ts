@@ -18,7 +18,9 @@ export default defineConfig({
   timeout: 30_000,
   use: {
     baseURL: `http://localhost:${PORT}`,
-    reducedMotion: "reduce", // disables CrossSignalDemo auto-tour → deterministic tab tests
+    // disables CrossSignalDemo auto-tour → deterministic tab tests.
+    // `reducedMotion` lives under `contextOptions` as of @playwright/test 1.60.
+    contextOptions: { reducedMotion: "reduce" },
     colorScheme: "light",
     trace: "off",
   },
