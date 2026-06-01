@@ -1,0 +1,25 @@
+---
+slug: why-parquet-for-three-signals
+title: 'Why we put logs, metrics, and traces in the same Parquet store'
+excerpt: >-
+  The cost of having three signals live in three stores isn't query latency.
+  It's the engineering you don't ship because the integration tax ate the
+  quarter.
+date: '2026-05-20'
+author: molesignal team
+readTimeMinutes: 9
+tags:
+  - Architecture
+  - Storage
+---
+When we sketched the data plane, the easy answer was three stores: one for logs (column-oriented), one for metrics (TSDB), one for traces (graph-aware). Industry default. That's what the OSS stack does (Loki + Mimir + Tempo), and it's what most SaaS does under the hood.
+
+But every cross-signal jump in that world is a join across three engines. trace_id → log line → host metric becomes three queries with three semantics. Schema evolves separately on each side. The thing your SRE actually needs at 3am — "show me everything for trace_id abc123 in this minute" — turns into copy-paste.
+
+We tried the alternative: all three signals serialize to Parquet on object storage. Logs are wide, sparse rows. Metrics are narrow, dense rows. Traces are nested but flatten under Arrow lists. The columnar layout means prune-and-scan stays cheap even when 90% of the columns are empty.
+
+The cost-of-correlation question becomes a planner question, not a serialization question. We get to write one query language (SQL) once, push down to DataFusion, and let the planner figure out which columns and which time windows to touch.
+
+It's not free. The Parquet rotation under spiky ingest is harder than partition-tuning Loki. Cardinality limits on metrics are harder when they share a writer with logs. We're solving these in the open (see /roadmap).
+
+But we'd rather solve fewer problems harder than five problems shallower.

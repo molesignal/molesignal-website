@@ -1,0 +1,27 @@
+---
+slug: what-we-learned-from-100-incident-reviews
+title: What we learned reading 100 incident reviews
+excerpt: >-
+  We read every public Datadog/Grafana/Splunk incident review we could find. The
+  top finding wasn't query latency — it was context switching.
+date: '2026-04-08'
+author: molesignal team
+readTimeMinutes: 7
+tags:
+  - Research
+  - Community
+---
+Over the holidays we read 100 publicly written incident reviews — Cloudflare, GitHub, Shopify, Discord, smaller startups. The pattern that surprised us wasn't query latency. It was tab fatigue.
+
+In 73 of 100 reviews, the responder mentioned switching between three or more dashboards or query interfaces during the active incident. In 41, they specifically called out "we lost time pasting trace IDs / timestamps" or equivalent.
+
+This is the gap molesignal exists to close.
+
+A few other findings, sorted by surprise:
+
+- 18 reviews praised their tooling's UI explicitly. The rest either complained or didn't mention it.
+- 9 reviews said the observability cost was a factor in choosing not to retain enough data to debug fully.
+- 6 mentioned that bringing context to on-call was the most expensive part of being on-call.
+- 0 reviews praised the alert evaluation latency. (Conspicuous silence.)
+
+We're publishing the open list of links in /docs after v1.0. Until then, if you've read more than we have, come tell us at /design-partner.
