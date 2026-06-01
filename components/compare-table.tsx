@@ -1,4 +1,4 @@
-import { ArrowRight, Check, Minus, X } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
@@ -59,7 +59,10 @@ export function CompareTable({
                 >
                   {t("dimension")}
                 </th>
-                <th scope="col" className="px-4 py-3 text-left">
+                <th
+                  scope="col"
+                  className="border-t-[3px] border-t-red-soft px-4 py-3 text-left"
+                >
                   <ColumnHeader name={colSaas.name} sub={colSaas.sub} />
                 </th>
                 <th scope="col" className="px-4 py-3 text-left">
@@ -67,7 +70,7 @@ export function CompareTable({
                 </th>
                 <th
                   scope="col"
-                  className="bg-primary-bg px-4 py-3 text-left ring-1 ring-primary-muted/30 ring-inset"
+                  className="bg-primary/10 border-t-[3px] border-t-brand px-4 py-3 text-left ring-1 ring-primary/30 ring-inset"
                 >
                   <ColumnHeader
                     name={colMole.name}
@@ -187,17 +190,18 @@ function Cell({
   );
 }
 
+// Verdict markers are literal mono glyphs (not an icon library) per 05-UI §3.7
+// — the monospace ✓ / ✗ / ~ reads as "data", reinforcing the engineering feel.
 function VerdictIcon({ verdict }: { verdict: CompareCell["verdict"] }) {
-  const cls = "mt-0.5 shrink-0";
+  const cls =
+    "mt-0.5 inline-block w-3.5 shrink-0 text-center font-mono font-strong leading-none";
   switch (verdict) {
     case "good":
-      return <Check size={14} className={cn(cls, "text-green")} aria-hidden />;
+      return <span className={cn(cls, "text-green")} aria-hidden>✓</span>;
     case "bad":
-      return <X size={14} className={cn(cls, "text-red")} aria-hidden />;
+      return <span className={cn(cls, "text-red-soft")} aria-hidden>✗</span>;
     case "mixed":
-      return (
-        <Minus size={14} className={cn(cls, "text-fg-muted")} aria-hidden />
-      );
+      return <span className={cn(cls, "text-warn")} aria-hidden>~</span>;
     default:
       return null;
   }

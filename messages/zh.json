@@ -338,6 +338,7 @@
       "successTitle": "感谢你。我们会在 48 小时内回复。",
       "successBody": "回信会从 founders@molesignal.io 发到你的邮箱，附 30 分钟 discovery call 的预约链接和 onboarding 文档。",
       "errorToast": "提交失败 —— 请重试，或直接发邮件到 founders@molesignal.io。",
+      "rateLimit": "你所在网络的提交太频繁了。请稍等一分钟再试 —— 你填的内容没有丢失。",
       "validationName": "请告诉我们你的名字",
       "validationEmail": "看起来有打字错误 —— 请用真实邮箱"
     }
@@ -367,8 +368,10 @@
       "submit": "可用时通知我 →",
       "submitInline": "通知我",
       "successPrefix": "你已在名单上。",
+      "successBody": "Cloud 一开放我们就发邮件给你。其间不打扰。",
       "successAction": "在 GitHub 上 Star",
-      "successSuffix": "以示支持。"
+      "successSuffix": "以示支持。",
+      "rateLimit": "你发送得有点快。请稍等一分钟再试。"
     }
   },
 

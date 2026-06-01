@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CheckCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -35,6 +36,7 @@ export function CloudWaitlistForm({
   const tc = useTranslations("common");
   const tf = useTranslations("cloud.form");
   const [submitted, setSubmitted] = useState(false);
+  const [rateLimited, setRateLimited] = useState(false);
   const {
     register,
     handleSubmit,
@@ -45,6 +47,7 @@ export function CloudWaitlistForm({
   });
 
   const onSubmit = async (data: CloudWaitlistInput) => {
+    setRateLimited(false);
     if (data.website && data.website.length > 0) {
       // Honeypot tripped — silent success (UI only). No API call, no 2xx,
       // and deliberately no track(): bot traffic must not pollute the funnel.
@@ -57,9 +60,15 @@ export function CloudWaitlistForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: data.email }),
       });
+      // 429 is a gentle, expected state — show an amber notice (not a red error)
+      // and keep the form so the user can simply retry in a moment.
+      if (res.status === 429) {
+        setRateLimited(true);
+        return;
+      }
       if (!res.ok) throw new Error("Request failed");
       // Only a real 2xx counts as a conversion. zod failures never reach here
-      // (react-hook-form blocks onSubmit); 429/5xx/network errors fall to catch.
+      // (react-hook-form blocks onSubmit); 5xx/network errors fall to catch.
       // No props — email is PII and must never be sent to analytics.
       track("waitlist_submit");
       setSubmitted(true);
@@ -69,62 +78,101 @@ export function CloudWaitlistForm({
   };
 
   if (submitted) {
+    // Footer keeps the compact inline confirmation; the standalone /cloud form
+    // gets the persistent green success card (05-UI §4.4).
+    if (tone === "footer") {
+      return (
+        <p role="status" className={cn("text-green text-xs", className)}>
+          {tf("successPrefix")} ★{" "}
+          <a
+            href="https://github.com/molesignal/molesignal"
+            target="_blank"
+            rel="noreferrer"
+            data-analytics-event="github_star_click"
+            data-analytics-source-page
+            className="text-marketing-accent underline-offset-2 hover:underline"
+          >
+            {tf("successAction")}
+          </a>{" "}
+          {tf("successSuffix")}
+        </p>
+      );
+    }
     return (
-      <p
+      <div
         role="status"
         className={cn(
-          "text-fg-muted text-sm",
-          tone === "default" && "rounded-lg bg-green-dim text-green px-4 py-3",
+          "border-green/20 bg-green-dim w-full max-w-md rounded-lg border p-5",
           className,
         )}
       >
-        {tf("successPrefix")} ★{" "}
-        <a
-          href="https://github.com/molesignal/molesignal"
-          target="_blank"
-          rel="noreferrer"
-          data-analytics-event="github_star_click"
-          data-analytics-source-page
-          className="text-marketing-accent underline-offset-2 hover:underline"
-        >
-          {tf("successAction")}
-        </a>{" "}
-        {tf("successSuffix")}
-      </p>
+        <div className="flex items-start gap-3">
+          <CheckCircle
+            className="text-green mt-0.5 shrink-0"
+            size={24}
+            aria-hidden
+          />
+          <div className="space-y-1.5">
+            <p className="text-fg text-display-sm font-display-strong">
+              {tf("successPrefix")}
+            </p>
+            <p className="text-fg-muted text-sm">{tf("successBody")}</p>
+            <p className="text-fg-muted text-sm">
+              ★{" "}
+              <a
+                href="https://github.com/molesignal/molesignal"
+                target="_blank"
+                rel="noreferrer"
+                data-analytics-event="github_star_click"
+                data-analytics-source-page
+                className="text-marketing-accent underline-offset-2 hover:underline"
+              >
+                {tf("successAction")}
+              </a>{" "}
+              {tf("successSuffix")}
+            </p>
+          </div>
+        </div>
+      </div>
     );
   }
 
   if (tone === "footer") {
     return (
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className={cn("flex w-full max-w-md gap-2", className)}
-        noValidate
-      >
-        <input
-          {...register("website")}
-          type="text"
-          tabIndex={-1}
-          aria-hidden
-          className="absolute -left-[9999px] h-0 w-0"
-          autoComplete="off"
-        />
-        <input
-          {...register("email")}
-          type="email"
-          placeholder={tf("placeholder")}
-          aria-invalid={!!errors.email || undefined}
-          aria-describedby={errors.email ? "footer-waitlist-error" : undefined}
-          className="border-border bg-surface text-fg placeholder:text-tx-3 focus-visible:border-primary min-w-0 flex-1 rounded-md border px-3 text-xs h-8 outline-none"
-        />
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="bg-primary text-primary-foreground hover:shadow-glow-indigo duration-fast inline-flex h-8 shrink-0 items-center rounded-md px-3 text-xs font-strong transition-shadow disabled:opacity-60"
+      <div className={cn("w-full max-w-md", className)}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex w-full gap-2"
+          noValidate
         >
-          {isSubmitting ? tc("submitting") : tf("submitInline")}
-        </button>
-      </form>
+          <input
+            {...register("website")}
+            type="text"
+            tabIndex={-1}
+            aria-hidden
+            className="absolute -left-[9999px] h-0 w-0"
+            autoComplete="off"
+          />
+          <input
+            {...register("email")}
+            type="email"
+            placeholder={tf("placeholder")}
+            aria-invalid={!!errors.email || undefined}
+            aria-describedby={
+              errors.email ? "footer-waitlist-error" : undefined
+            }
+            className="border-border bg-surface text-fg placeholder:text-tx-3 focus-visible:border-primary min-w-0 flex-1 rounded-md border px-3 text-xs h-8 outline-none"
+          />
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="bg-primary text-primary-foreground hover:shadow-glow-indigo duration-fast inline-flex h-8 shrink-0 items-center rounded-md px-3 text-xs font-strong transition-shadow disabled:opacity-60"
+          >
+            {isSubmitting ? tc("submitting") : tf("submitInline")}
+          </button>
+        </form>
+        {rateLimited && <RateLimitNotice message={tf("rateLimit")} compact />}
+      </div>
     );
   }
 
@@ -161,6 +209,7 @@ export function CloudWaitlistForm({
           </p>
         )}
       </div>
+      {rateLimited && <RateLimitNotice message={tf("rateLimit")} />}
       <button
         type="submit"
         disabled={isSubmitting}
@@ -169,5 +218,29 @@ export function CloudWaitlistForm({
         {isSubmitting ? tc("submitting") : tf("submit")}
       </button>
     </form>
+  );
+}
+
+/**
+ * Gentle amber rate-limit notice (05-UI §4.4) — warm tone, not a red error.
+ * `compact` trims padding for the inline footer variant.
+ */
+function RateLimitNotice({
+  message,
+  compact = false,
+}: {
+  message: string;
+  compact?: boolean;
+}) {
+  return (
+    <p
+      role="status"
+      className={cn(
+        "bg-amber-dim text-fg border-l-[3px] border-amber text-sm",
+        compact ? "mt-2 rounded-r-md px-3 py-2 text-xs" : "rounded-r-md px-3 py-2.5",
+      )}
+    >
+      {message}
+    </p>
   );
 }

@@ -30,6 +30,7 @@ export function DesignPartnerForm({ className }: { className?: string }) {
   const tc = useTranslations("common");
   const tf = useTranslations("designPartner.form");
   const [submitted, setSubmitted] = useState(false);
+  const [rateLimited, setRateLimited] = useState(false);
   const {
     register,
     handleSubmit,
@@ -47,6 +48,7 @@ export function DesignPartnerForm({ className }: { className?: string }) {
   });
 
   const onSubmit = async (data: DesignPartnerInput) => {
+    setRateLimited(false);
     if (data.website && data.website.length > 0) {
       // Honeypot tripped — silent success (UI only). No API call, no 2xx,
       // and deliberately no track(): bot traffic must not pollute the funnel.
@@ -59,9 +61,15 @@ export function DesignPartnerForm({ className }: { className?: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
+      // 429 is a gentle, expected state — show an amber notice (not a red toast)
+      // and keep the filled form so nothing the user typed is lost.
+      if (res.status === 429) {
+        setRateLimited(true);
+        return;
+      }
       if (!res.ok) throw new Error("Request failed");
       // Only a real 2xx counts as a conversion. zod failures never reach here
-      // (react-hook-form blocks onSubmit); 429/5xx/network errors fall to catch.
+      // (react-hook-form blocks onSubmit); 5xx/network errors fall to catch.
       // No props — name/email are PII and must never be sent to analytics.
       track("design_partner_submit");
       setSubmitted(true);
@@ -75,18 +83,18 @@ export function DesignPartnerForm({ className }: { className?: string }) {
       <div
         role="status"
         className={cn(
-          "border-primary-muted bg-primary-bg rounded-lg border p-6",
+          "border-green/20 bg-green-dim rounded-lg border p-6",
           className,
         )}
       >
         <div className="flex items-start gap-3">
           <CheckCircle
-            className="text-primary mt-0.5 shrink-0"
-            size={20}
+            className="text-green mt-0.5 shrink-0"
+            size={24}
             aria-hidden
           />
           <div className="space-y-2">
-            <p className="text-fg font-strong text-lg">
+            <p className="text-fg font-display-strong text-display-sm">
               {tf("successTitle")}
             </p>
             <p className="text-fg-muted text-sm">{tf("successBody")}</p>
@@ -199,6 +207,15 @@ export function DesignPartnerForm({ className }: { className?: string }) {
           className="border-border bg-bg-0 text-fg placeholder:text-tx-3 focus-visible:border-primary block w-full resize-y rounded-md border px-3 py-2 text-base outline-none"
         />
       </Field>
+
+      {rateLimited && (
+        <p
+          role="status"
+          className="bg-amber-dim text-fg border-l-[3px] border-amber rounded-r-md px-3 py-2.5 text-sm"
+        >
+          {tf("rateLimit")}
+        </p>
+      )}
 
       <button
         type="submit"

@@ -106,13 +106,13 @@ export function CostCalculator({ className }: { className?: string }) {
           sub={t("datadogSub")}
         />
         <Card
-          tone="good"
+          tone="brand"
           label={t("moleCard")}
           value={formatUsd(result.molesignalMonthly)}
           sub={t("moleSub")}
         />
         <Card
-          tone="brand"
+          tone="amber"
           label={t("savingsCard")}
           value={
             result.savingsMonthly > 0 ? formatUsd(result.savingsMonthly) : "—"
@@ -174,7 +174,8 @@ function SliderField({
           <span className="text-fg-muted font-body text-xs">{unit}</span>
         </output>
       </div>
-      {/* Desktop slider */}
+      {/* Desktop slider. h-11 gives a 44px touch target (WCAG 2.5.5) without
+          enlarging the native track — the thin track stays centered. */}
       <input
         id={id}
         type="range"
@@ -183,7 +184,7 @@ function SliderField({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.currentTarget.value))}
-        className="accent-primary block w-full"
+        className="accent-primary block h-11 w-full cursor-pointer"
       />
       {/* Mobile number input alternative for fine control */}
       <input
@@ -206,7 +207,9 @@ function Card({
   value,
   sub,
 }: {
-  tone: "good" | "bad" | "brand";
+  // Semantic colour per 05-UI §3.8 / §4.2: Datadog = red (expensive),
+  // molesignal = brand teal (cheap), Savings = amber (the money moment).
+  tone: "bad" | "brand" | "amber";
   label: string;
   value: string;
   sub: string;
@@ -215,22 +218,30 @@ function Card({
     <div
       className={cn(
         "rounded-lg border p-4",
-        tone === "good" && "border-green/40 bg-green-dim",
         tone === "bad" && "border-red/40 bg-red-dim",
-        tone === "brand" && "border-primary-muted bg-primary-bg",
+        // NOTE: --color-primary-bg/-muted are not registered in @theme, so
+        // bg-primary-bg / border-primary-muted compile to nothing (see 08 F-token).
+        // Use the registered --color-primary with opacity (same fix as ISSUE-10).
+        tone === "brand" && "border-primary/30 bg-primary/10",
+        tone === "amber" && "border-amber/20 bg-amber-dim",
       )}
     >
       <div
         className={cn(
           "font-strong text-xs tracking-wide uppercase",
-          tone === "good" && "text-green",
           tone === "bad" && "text-red",
           tone === "brand" && "text-primary",
+          tone === "amber" && "text-amber",
         )}
       >
         {label}
       </div>
-      <div className="text-fg font-display-strong text-display-lg mt-1 font-mono">
+      <div
+        className={cn(
+          "font-display-strong text-display-lg mt-1 font-mono tabular-nums",
+          tone === "amber" ? "text-amber" : "text-fg",
+        )}
+      >
         {value}
       </div>
       <div className="text-fg-muted mt-0.5 text-xs">{sub}</div>
