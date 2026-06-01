@@ -2,7 +2,7 @@
 id: ISSUE-8
 type: feature
 title: [T01] Cloud候补真入库(Resend Audience)
-status: in_progress
+status: verifying
 priority: P0
 assignee: backend-engineer
 created: 2026-06-01
@@ -113,3 +113,51 @@ updated: 2026-06-02
 
 ### 非阻断观察（供 security-auditor / QA 知悉，非本工单引入）
 - 蜜罐 `website` 字段 schema 为 `z.string().max(0).optional()`：填值时 zod 直接判 400（早于 route 内 silent-200 分支，该分支因此为死代码）。结果上仍满足安全要求——蜜罐命中 → 不入库/不通知/不触发 track（400 在我接线之前返回）。此为既有行为，本工单按"维持现状/不改 schema"未改动；若需统一为 silent-200 应另开工单。
+- 2026-06-02 04:42:07 set status=in_review
+
+## 代码审查（code-reviewer, 2026-06-02）
+
+**审查范围**：`git diff main...feature/ISSUE-8` — `lib/resend-audiences.ts`(新)、`app/api/cloud-waitlist/route.ts`、`scripts/check-resend-audiences.ts`(新)、`package.json`(+test:audiences)、文档(03/06/09/READINESS)。
+
+**复核动作（亲跑，非转述）**：
+- `pnpm test:audiences` → ✅ 26/26 全过（已亲跑确认，非仅看自测记录）。
+- `pnpm typecheck` → 0 error；`pnpm lint` → 0 error / 5 warning，5 条全在无关组件（既有 `react-hooks/set-state-in-effect`），**非本工单引入**。
+- 逐行核对 AC1–AC7 与 06 §4.6 provider 契约一致性。
+
+### 结论：✅ 放行到 QA（必改 0 件）
+
+正确性、契约、安全、可维护性均达标，代码质量高（注释清晰说明降级哲学与安全意图，与 `lib/email.ts` 风格一致）。提交规范合规（Conventional Commits，标题含工单号）。
+
+**契约/正确性核验**：
+- AC1 幂等：`res.status===409 || /already exists/i.test(body)` → `{ok:true}` 不抛 ✓
+- AC2 接线：route 用 `Promise.allSettled` 并行 addContact + sendEmail，URL/body/Bearer 均经单测断言 ✓
+- AC3/AC4 降级：缺 audienceId / 缺 RESEND_API_KEY → warn + skip + 不发请求 + `{ok:false,skipped:true}` ✓
+- AC5 安全：`audienceId`/`apiKey` 仅源自 env/参数，请求体（schema 仅 email+website）无法覆盖，无 SSRF/注入面；`audienceId` 额外 `encodeURIComponent` 防路径注入；错误日志 `body.slice(0,200)` 截断且永不打印 key（单测含"恶意 body 回显 key"用例验证）✓
+- AC7 构建：typecheck/lint exit 0 ✓
+
+**建议改（可选，不阻塞放行）**：
+1. **`route.ts:56` 注释措辞**：写作 "fire-and-forget"，但实现是 `await Promise.allSettled(...)` ——响应**会等待**两个调用 settle（只是忽略失败、永不 5xx）。在 serverless（Vercel）下"返回后再跑后台任务"会被冻结/杀死，故此处 await 是**正确做法**；仅是"fire-and-forget"用词易误导，建议改为"await-but-ignore-failures / 失败不阻塞 200"更准确。功能无误，纯文档。
+2. **AC7「纳入 pnpm test」**：本仓库无聚合 `pnpm test`，沿用既有 `test:*` 独立脚本模式（test:rate-limit/cost/github 同），`test:audiences` 亦未纳入 `pnpm check`。与现状一致、可接受；若团队希望回归不漏跑，后续可考虑加一个聚合 `test` 脚本串起所有 `test:*`（非本工单职责）。
+
+**确认开发自述的非阻断观察**：蜜罐 `website` 死代码分支（`route.ts:50-52`）确为既有行为——schema `z.string().max(0)` 使任何非空值在 zod 阶段即 400，早于 silent-200 分支。结果上安全要求仍满足（命中 → 400 → 不入库/不通知/不触发 track）。本工单按"不改 schema"正确未动，开发已如实标注，无需在本单处理。
+
+**给 QA 的重点**：AC6（前端 2xx 后才 track、蜜罐/429/5xx 不 track）本工单未触碰前端，须由 qa-automation E2E 实测复核不回归；AC8 真实入库联调按密钥政策延后。
+- 2026-06-02 04:44:18 set status=verifying
+
+## QA 验证结果（qa-automation, 2026-06-02）
+
+**VERDICT: PASS** —— 本期 AC1–AC7 全部客观通过（真实执行取证），AC8 真实 Resend 联调按密钥政策延后，不阻塞 DONE。
+
+**执行环境**：Node v23.6.1 / pnpm 11.5.0 / Next.js 16.2.6；`pnpm build`→`pnpm start` 生产构建真起服务。详见 `08-测试报告.md`「ISSUE-8 [T01]」小节。
+
+**逐项结果**：
+- **AC1（幂等）✅**：`pnpm test:audiences` 26/26 —— 409 与 "already exists" 体均 → `{ok:true}` 不抛。
+- **AC2（真入库接线）✅**：注入伪 env 起服务，提交合法 email → 服务端日志 `[audiences] resend failed 400 API key is invalid` 证明路由**确实发出**了向 `RESEND_CLOUD_AUDIENCE_ID` 端点的 POST；通知邮件亦触发（`[email] resend failed 401`）；响应仍 **HTTP 200**（fail-soft）。
+- **AC3（缺 audience id 降级）✅**：仅配 key、无 audience id → `[audiences] audience id missing — skipping list insert` + 通知仍触发 + **200**。
+- **AC4（缺 API key 降级）✅**：无任何 RESEND env → 入库+通知皆 skip+warn + **200**，不抛、不 5xx。
+- **AC5（PII/安全）✅**：请求体注入 `audienceId:"attacker_aud"`/`apiKey` 被忽略（仅用 env，attacker_aud 未出现在任何请求）；日志无完整 key、错误 body 截断；蜜罐 `website` 非空 → 400（不入库/不通知/不 track）。
+- **AC6（埋点时序不回归）✅**：Playwright `waitlist` 3/3 + 全漏斗 14/14 —— `waitlist_submit` 仅 2xx 后触发（无 props），429/蜜罐不触发。
+- **AC7（构建/类型/回归）✅**：`pnpm check` exit 0（lint+typecheck+a11y 26/26+i18n 506↔506）；`pnpm build` exit 0；新单测纳入 `test:audiences` 全过。
+- **AC8（真实联调）⏸**：本期无密钥，延后复验。
+
+辅助：非法 email→400、非法 JSON→400。无阻断级缺陷。服务已关闭，无僵尸进程占端口。
