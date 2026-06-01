@@ -1,4 +1,4 @@
-READINESS_SCORE: 4/31
+READINESS_SCORE: 5/31
 
 # READINESS · molesignal-website 上线就绪清单
 
@@ -34,7 +34,7 @@ READINESS_SCORE: 4/31
 - [x] **隐私 / 条款真实法务文本**：`/privacy` `/terms` 已用真实文本替换 LegalStub（覆盖邮箱收集、Plausible 无 cookie 分析、第三方 Resend），EN/ZH 双语在 `messages/*` 齐全，更新日期准确，页内链 2xx（T06）〔需外部:法务文本来源由用户/模板审核确认〕 ✅ ISSUE-4 closed · QA PASS 2026-06-02（AC1–AC8 全实测通过：LegalStub 已彻底移除→改用 `LegalDocument` 组件、LAST_UPDATED=2026-06-02、founders@ 为真实 mailto 锚点；隐私六覆盖点 EN 渲染 HTML 16/16 grep PASS；EN/ZH `legal` keyset 完全一致；本工单四法务页+站内链 lint:links 全 2xx；security-auditor AC5 事实核验纠偏后通过。模板自拟法务文本依本期诚实文案政策判 [x]，日后法务定稿可复审）
 
 ### UI 按 05 改版（D1/D8 · T08/T09/T10/T08b）
-- [ ] **UI token 迁移**：装 `@fontsource/geist-mono` 并在 layout import 400/600；`globals.css` 按 05-UI §5 完成迁移（Teal 主色/Amber 强调/暖中性/圆角降档/阴影简化/去 indigo+pink glow）、`--font-mono` 指向 Geist Mono；`pnpm a11y:contrast` 全过 AA；`pnpm build`/`check` 过；明暗双主题无视觉崩坏（T08）
+- [x] **UI token 迁移**：装 `@fontsource/geist-mono` 并在 layout import 400/600；`globals.css` 按 05-UI §5 完成迁移（Teal 主色/Amber 强调/暖中性/圆角降档/阴影简化/去 indigo+pink glow）、`--font-mono` 指向 Geist Mono；`pnpm a11y:contrast` 全过 AA；`pnpm build`/`check` 过；明暗双主题无视觉崩坏（T08） ✅ ISSUE-5 closed · QA PASS 2026-06-02（代码核实：geist-mono@5.2.8 入 deps、layout import 400/600、`--font-mono` 首位 Geist Mono、新增 `--brand/--amber/--warn` hex token+保留旧桥接为别名零删除。真实 Chromium E2E 29 断言全过明暗双主题：`document.fonts.check('16px "Geist Mono"')=true`、旧工具类元素 computed 已 Teal/Amber；`a11y:contrast` 26/26、`pnpm check`/`build` exit 0。组件级视觉改造 T09/T10/T08b 仍属下游工单保持 [ ]）
 - [ ] **核心页面视觉改造**：Hero 左对齐+mono `$` 命令预览、CrossSignalDemo terminal card+amber trace_id、Why/Stats 两栏+mono 数字、QuickStart 简介左对齐、DP CTA 左 border accent 卡（去 glow）；明暗双主题 OK，`check` 过（T09）
 - [ ] **表单页 + 成本/对比视觉改造**：CostCalculator amber mono 大数+三结果卡语义色+滑块 44px 触摸区、CompareTable molesignal 列 brand 顶边+✓✗ mono、两表单成功态持久绿卡 + 限流温和 amber 提示、DP 三步 "What happens after"；`check` 过（T10）
 - [ ] **导航/页脚/Pill/Button 视觉改造**：TopNav 56px+brand mono+active 下划线+滚动 blur、Footer 四列+禁用态链接样式、Button/Pill/Badge variants 按规格，与 T04 死链改动不冲突；`check` 过（T08b）

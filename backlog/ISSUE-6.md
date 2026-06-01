@@ -2,7 +2,7 @@
 id: ISSUE-6
 type: bug
 title: [T03] 成本计算器/对比表数字校准
-status: in_review
+status: verifying
 priority: P0
 assignee: fullstack-engineer
 created: 2026-06-01
@@ -97,3 +97,19 @@ updated: 2026-06-02
 - `clamp()` 对 `+Infinity` 输入回落到下界 `lo`（而非上界 `hi`）——语义上略反直觉，但仅为防御性兜底（UI 输入域已受 1–5000 约束），不影响结果有界性，可不改。
 
 放行建议：✅ 移交 qa-automation 做 UI/接口验证（重点核对 disclaimer 文案 EN/ZH 渲染、外链可点、计算器边界输入无 NaN）。
+- 2026-06-02 03:59:04 set status=verifying
+
+### QA 验证结果（qa-automation）
+
+**VERDICT: PASS** — 验收标准全部实测通过，无阻断缺陷，无回归。
+
+证据（被测分支 `feature/ISSUE-6`，Node v23.6.1 / Next 16.2.6 / Chromium）：
+- `pnpm test:cost`：16 断言全过 —— 快照 `2026-06-02`/来源 https URL、全输入域(gb 1–5000 × ret 1–365)无 NaN/溢出（峰值 $2.01M 有界）、敌意输入(NaN/Infinity/0/负/超界)净化、`formatUsd(NaN)="$0"`、代表点 100GB/30d **datadog $7.4k / molesignal $150 / savings 98%**。
+- `pnpm lint:i18n`：EN/ZH 506↔506 parity OK（含新增 `disclaimerSourcePrefix`/`disclaimerSource`）。
+- `pnpm typecheck` exit 0；`pnpm build` exit 0。
+- **E2E（真实 Chromium，production build，新增 `tests/e2e/issue6-cost-calculator.spec.ts`，6 用例全 PASS）**：
+  - EN `/why` + ZH `/zh/why` 默认负载渲染校准代表点 $7.4k / $150 / 98%；
+  - disclaimer 显示**固定快照月份**（EN "June 2026" / ZH "2026年6月"，非访问当天，UTC 格式化无水合漂移）、"15天索引"口径；来源外链可见，断言 `href=https://www.datadoghq.com/pricing/` + `target=_blank` + `rel` 含 `noopener`；
+  - 滑块极值 + 数字输入清空/敌意输入(`""`/`abc`/`1e`/`-50`)后页面无 `NaN`/`$NaN`/`Infinity`。
+- **全量 E2E 回归 26 passed**（含 `cost_calculator_interact` 漏斗用例），无回归。
+- 自动化报告见 `08-测试报告.md` → "自动化测试 — ISSUE-6"。测试结束已清理 3000/3210 端口进程，无僵尸。
