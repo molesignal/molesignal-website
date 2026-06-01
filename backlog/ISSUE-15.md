@@ -2,7 +2,7 @@
 id: ISSUE-15
 type: feature
 title: [T14] 内容迁MDX(blog接线)
-status: in_progress
+status: in_review
 priority: P1
 assignee: fullstack-engineer
 created: 2026-06-01
@@ -108,3 +108,5 @@ updated: 2026-06-02
   - **AC7** `/sitemap.xml` 列出 2 篇 blog URL；`.../opengraph-image` 返回 `200 image/png`。
   - **AC9** 运营可改性自证：临时新增 `content/blog/ac9-temp-operator-check.mdx`（仅内容、零碰组件/TS）→ `pnpm build` 后该篇成 `● /en/blog/ac9-temp-operator-check` 静态页、列表页作 featured 卡显示、详情页 200+正文渲染；验证后删除该临时文件，`build` 恢复 2 篇。
   - **阻塞项**：无。注意点：Turbopack 下 remark 插件必须用字符串名（已处理）；blog 仍 EN-only（ZH 友好提示，属 T21）；body 富文本渲染（标题/列表/代码块/Shiki）属 T15，本工单 body 保持 string。
+- 2026-06-02 07:49:31 set status=in_review
+- 2026-06-02 代码审查完成（code-reviewer，full 道质量关）。**结论：通过，建议放行 QA。必改 0 / 建议改 1 / 可选 2**。本机实证复跑全绿：`typecheck` 0 错、`lint` 0 error（5 warning 在无关 toc.tsx）、`test:blog` 30/30、`build` Compiled successfully 且 blog/[slug] 产 2 slug 静态页无 MDX 告警。契约零改经 `git diff` 证 4 消费方无 diff；同步+模块级求值、ISO 日期降序排序、frontmatter 类型陷阱均核验正确；next.config `withNextIntl(withMDX())` 组合 + remark 字符串名规避 Turbopack 约束正确。**建议改 1**：`content/blog.ts:37` frontmatter 零校验（运营漏填字段会静默产坏 post），建议加最小校验 throw 定位文件——非当前 bug、属边界外健壮性增强含设计取舍，未自动改。**可选 2**：coverUrl 显式 undefined 键（无害）、提交顺带 ISSUE-14 bookkeeping（无害略不整洁）。亮点：快照逐字节迁移守卫 `check-blog-mdx.ts` 值得长期保留。详见 08-测试报告.md「代码审查 — ISSUE-15」。无必改、不阻断，放行独立 QA 验证。
