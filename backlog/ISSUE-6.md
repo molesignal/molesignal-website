@@ -2,7 +2,7 @@
 id: ISSUE-6
 type: bug
 title: [T03] 成本计算器/对比表数字校准
-status: verifying
+status: closed
 priority: P0
 assignee: fullstack-engineer
 created: 2026-06-01
@@ -113,3 +113,5 @@ updated: 2026-06-02
   - 滑块极值 + 数字输入清空/敌意输入(`""`/`abc`/`1e`/`-50`)后页面无 `NaN`/`$NaN`/`Infinity`。
 - **全量 E2E 回归 26 passed**（含 `cost_calculator_interact` 漏斗用例），无回归。
 - 自动化报告见 `08-测试报告.md` → "自动化测试 — ISSUE-6"。测试结束已清理 3000/3210 端口进程，无僵尸。
+- 2026-06-02 04:04:04 set status=closed
+- 2026-06-02 04:04:04 引擎周期#6: QA PASS, 关闭
