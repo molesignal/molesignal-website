@@ -2,14 +2,22 @@ import { NextResponse } from "next/server";
 
 import { foundersEmail, sendEmail } from "@/lib/email";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
+import { addContact } from "@/lib/resend-audiences";
 import { designPartnerSchema } from "@/lib/schemas/design-partner";
+import { splitName } from "@/lib/split-name";
 
 /**
  * POST /api/design-partner
  *
  * Accepts a Design Partner application, validates with Zod, rate-limits
- * per IP (5 per hour), drops honeypot submissions silently, and emails
- * the founders alias via Resend.
+ * per IP (5 per hour), drops honeypot submissions silently, then — only for
+ * genuine submissions — does two things in parallel, both fire-and-forget:
+ * (a) adds the applicant to the Resend partner audience so they're actually
+ * reachable (the `name` is split into first/last via `splitName`), and
+ * (b) emails the founders alias. Neither failure blocks the 200 —
+ * availability over completeness (mirrors lib/email.ts / cloud-waitlist).
+ * The audience id comes ONLY from env; a missing key or id degrades to a
+ * warn + skip, never a 5xx.
  *
  * Returns 200 on success or silent honeypot trip. Returns 400 on bad
  * input, 429 on rate-limit, 500 on unexpected server failure.
@@ -67,19 +75,33 @@ export async function POST(req: Request) {
     `Sent: ${new Date().toISOString()}`,
   ].join("\n");
 
-  // Fire-and-forget — log on failure but still return 200 so the form UX
-  // stays clean. The submission is also logged here for forensics.
+  // Forensics log (no PII beyond what founders already get in the notice).
   console.info("[design-partner]", {
     email: data.email,
     size: data.companySize,
     stack: data.currentStack,
   });
-  await sendEmail({
-    to: foundersEmail(),
-    subject,
-    text,
-    replyTo: data.email,
-  });
+
+  // Fire-and-forget, in parallel: real list insert + founders notification.
+  // The list insert carries ONLY email + first/last name (PII minimal — the
+  // structured fields stay in the founders notice, never the audience). Both
+  // settle regardless of outcome; we always return 200 so the form UX stays
+  // clean even if the list/email is down.
+  const { firstName, lastName } = splitName(data.name);
+  await Promise.allSettled([
+    addContact({
+      audienceId: process.env.RESEND_PARTNER_AUDIENCE_ID,
+      email: data.email,
+      firstName,
+      lastName,
+    }),
+    sendEmail({
+      to: foundersEmail(),
+      subject,
+      text,
+      replyTo: data.email,
+    }),
+  ]);
 
   return NextResponse.json({ ok: true }, { status: 200 });
 }

@@ -217,6 +217,14 @@ molesignal 凭什么、用户为什么用/留下：
 - **密钥政策**：本期不提供 `RESEND_API_KEY`/`RESEND_CLOUD_AUDIENCE_ID`，按"代码就绪 + 缺 env 降级（200+warn+不报错+前端成功态）+ provider 单测覆盖"判 `[x]`；真实入库联调（AC8：audience 可见/幂等/可导出 CSV，呼应 T18）延后补密钥复验。
 - 完整用户故事与 AC1–AC8 见 `backlog/ISSUE-8.md`。
 
+### ISSUE-9 · Design Partner 申请真入库（Resend Audience）— T02 / P0-2（2026-06-02）
+- **承接 PRD**：§4.1 P0-2「Design Partner 申请真入库可触达」（D2）+ §6 北极星指标（NSM 只计"真入库可触达"的转化）。前置 T11（限流，ISSUE-1 closed）与 provider T01（`lib/resend-audiences.ts`，ISSUE-8 closed，`addContact` 已内建 first/last）均就绪。命中红线①（第三方数据写入）+②（表单契约）→ full 道，增派 security-auditor。
+- **现状缺口（已核实）**：`/api/design-partner` 当前 限流→zod(5字段)→蜜罐→`sendEmail(founders，正文已含全5字段+replyTo)`→200，**核心缺口=完全没调 `addContact` 入库、没把 `name` 拆 first/last**；前端 `track("design_partner_submit")` 已在 2xx 后接线（ISSUE-2）、成功态已是原位持久卡 → 故埋点/成功态/通知正文属"不回归"而非新做。
+- **细化结论**：① route 成功路径并行 fire-and-forget 触发"入 `RESEND_PARTNER_AUDIENCE_ID`（带 first/last）"+"founders 通知"，皆 `Promise.allSettled` 等待但失败不阻塞 200；② `name.trim()` 按**首个空白**拆——首段 firstName、其余 lastName，单词姓名仅 firstName（映射只在 route 做，不改 provider）；③ 缺 audience id/缺 key 各自 warn+skip 仍 200；④ 通知正文维持全 5 字段 + replyTo + IP/时间戳归档（供 T18）。
+- **明确不做**：不引自建 DB/CRM、不改 schema/表单字段/前端 JSX、不改 `addContact`/`sendEmail` 签名、不改限流阈值与 429、不做退订/double opt-in、不把 size/stack/pain 塞进 audience 自定义字段（经通知邮件归档）、不动 cloud-waitlist 路由。
+- **密钥政策**：本期不提供 `RESEND_API_KEY`/`RESEND_PARTNER_AUDIENCE_ID`，按"代码就绪 + 缺 env 降级（200+warn+不报错+前端成功态）+ 姓名拆分/入库接线单测覆盖"判 `[x]`；真实入库联调（AC8：audience 可见/first·last 正确/幂等/可导出，呼应 T18）延后补密钥复验。
+- 完整用户故事与 AC1–AC8 见 `backlog/ISSUE-9.md`。
+
 ---
 
 **产出路径**：`/Users/ukulele/claude-project/self-code/workspace/molesignal-website/03-产品PRD.md`
