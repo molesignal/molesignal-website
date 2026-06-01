@@ -85,13 +85,22 @@ export default async function DesignPartnerPage({
           <h2 className="text-display-md font-display-strong tracking-tighter">
             {t("afterTitle")}
           </h2>
-          <ol className="space-y-3">
-            {[t("after1"), t("after2"), t("after3")].map((step, i) => (
-              <li key={i} className="flex gap-3">
-                <span className="bg-primary-bg text-primary inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-strong">
+          <ol className="space-y-0">
+            {[t("after1"), t("after2"), t("after3")].map((step, i, arr) => (
+              <li key={i} className="relative flex gap-4 pb-6 last:pb-0">
+                {/* Dashed connector between steps (vertical, desktop only) */}
+                {i < arr.length - 1 && (
+                  <span
+                    aria-hidden
+                    className="border-bd-1 absolute top-9 bottom-0 left-4 hidden w-px border-l border-dashed md:block"
+                  />
+                )}
+                <span className="bg-primary-bg text-primary z-10 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-mono text-lg font-strong tabular-nums">
                   {i + 1}
                 </span>
-                <span className="text-fg text-sm leading-relaxed">{step}</span>
+                <span className="text-fg pt-1 text-sm leading-relaxed">
+                  {step}
+                </span>
               </li>
             ))}
           </ol>

@@ -338,6 +338,7 @@
       "successTitle": "Thank you. We'll reply within 48 hours.",
       "successBody": "Reply lands in your inbox from founders@molesignal.io with a 30-min discovery call scheduling link and our onboarding doc.",
       "errorToast": "Submission failed — please retry, or email founders@molesignal.io directly.",
+      "rateLimit": "Too many submissions from your network right now. Give it a minute and try again — your details weren't lost.",
       "validationName": "Please tell us your name",
       "validationEmail": "Looks like a typo — please use a real email"
     }
@@ -367,8 +368,10 @@
       "submit": "Notify me when ready →",
       "submitInline": "Notify me",
       "successPrefix": "You're on the list.",
+      "successBody": "We'll email you the moment Cloud opens. No spam in between.",
       "successAction": "Star us on GitHub",
-      "successSuffix": "to support."
+      "successSuffix": "to support.",
+      "rateLimit": "You're sending these a bit fast. Give it a minute and try again."
     }
   },
 
