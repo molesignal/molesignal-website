@@ -2,15 +2,19 @@ import { NextResponse } from "next/server";
 
 import { foundersEmail, sendEmail } from "@/lib/email";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
+import { addContact } from "@/lib/resend-audiences";
 import { cloudWaitlistSchema } from "@/lib/schemas/cloud-waitlist";
 
 /**
  * POST /api/cloud-waitlist
  *
  * Single-field email capture. Rate-limited per IP (10/hour — lighter than
- * design-partner since the cost of a spam signup is lower). On success,
- * notifies founders and (eventually) adds to a Resend audience or
- * Buttondown list. For now it's just the founders notification.
+ * design-partner since the cost of a spam signup is lower). On success we do
+ * two things in parallel, both fire-and-forget: (a) add the email to the
+ * Resend cloud audience so the contact is actually reachable, and (b) notify
+ * founders. Neither failure blocks the 200 — availability over completeness
+ * (mirrors lib/email.ts). The audience id comes only from env; a missing key
+ * or id degrades to a warn + skip, never a 5xx.
  */
 export async function POST(req: Request) {
   const ip = getClientIp(req);
@@ -48,12 +52,22 @@ export async function POST(req: Request) {
   }
 
   console.info("[cloud-waitlist]", { email: parsed.data.email });
-  await sendEmail({
-    to: foundersEmail(),
-    subject: `[cloud-waitlist] ${parsed.data.email}`,
-    text: `${parsed.data.email}\n\n---\nIP: ${ip}\nSent: ${new Date().toISOString()}`,
-    replyTo: parsed.data.email,
-  });
+
+  // Fire-and-forget, in parallel: real list insert + founders notification.
+  // Cloud side passes email only (no name) — just a reachable list. Both
+  // settle regardless of outcome; we always return 200.
+  await Promise.allSettled([
+    addContact({
+      audienceId: process.env.RESEND_CLOUD_AUDIENCE_ID,
+      email: parsed.data.email,
+    }),
+    sendEmail({
+      to: foundersEmail(),
+      subject: `[cloud-waitlist] ${parsed.data.email}`,
+      text: `${parsed.data.email}\n\n---\nIP: ${ip}\nSent: ${new Date().toISOString()}`,
+      replyTo: parsed.data.email,
+    }),
+  ]);
 
   return NextResponse.json({ ok: true }, { status: 200 });
 }

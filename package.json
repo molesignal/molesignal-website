@@ -18,6 +18,7 @@
     "test:rate-limit": "tsx scripts/check-rate-limit.ts",
     "test:cost": "tsx scripts/check-cost-formula.ts",
     "test:github": "tsx scripts/check-github-fallback.ts",
+    "test:audiences": "tsx scripts/check-resend-audiences.ts",
     "check": "pnpm typecheck && pnpm lint && pnpm a11y:contrast && pnpm lint:i18n"
   },
   "dependencies": {

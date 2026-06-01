@@ -209,6 +209,14 @@ molesignal 凭什么、用户为什么用/留下：
 - **密钥政策**：纯前端 token + 字体，**不依赖任何外部 env**，QA 可全程本地验证（明暗双主题目测 + `a11y:contrast` + DevTools 核 mono 字体/旧工具类计算色）。开放项：新色若 `a11y:contrast` AA 不达标 → 回报 ui-designer 调 token 值（设计决策），不擅改组件。
 - 完整用户故事与 AC1–AC8 见 `backlog/ISSUE-5.md`。
 
+### ISSUE-8 · Cloud 候补真入库（Resend Audience）— T01 / P0-1（2026-06-02）
+- **承接 PRD**：§4.1 P0-1「Cloud 候补名单真入库可触达」（D2）+ §6 北极星指标（NSM 只计"真入库可触达"的转化，只发通知邮件不算）。`07` 全局前置 T11（限流，ISSUE-1 已 closed）就绪，route 已 async。命中红线①（第三方数据写入）+②（表单契约）→ full 道，增派 security-auditor。
+- **现状缺口（已核实）**：`/api/cloud-waitlist` 当前只 限流→zod→蜜罐→`sendEmail(founders)`→200，**完全没写入任何可营销名单**；`lib/email.ts` 无 audience 函数；前端 `track("waitlist_submit")` 已在 2xx 后接线（ISSUE-2），成功态已是持久绿卡 → 故埋点/成功态属"不回归"而非新做。
+- **细化结论**：① 新增 `lib/resend-audiences.ts` 的 `addContact()`（复用 `RESEND_API_KEY`，幂等：Resend 409/已存在视成功，缺 key/缺 id/运行时故障一律 fail-soft 不抛错）；② route 成功路径并行触发"入 `RESEND_CLOUD_AUDIENCE_ID`"+"founders 通知"，二者皆 fire-and-forget，无论成败都 200；③ 缺 audience id 时跳过入库仍 200+warn。provider 设计为 T02（design-partner）可复用（内建 name 拆 first/last，cloud 侧不传）。
+- **明确不做**：不引自建 DB/CRM、不改 schema/表单字段/前端 JSX、不改限流阈值与 429 结构、不做退订/double opt-in、不引第二个 SDK、不改 `sendEmail` 签名、不动 design-partner 路由。
+- **密钥政策**：本期不提供 `RESEND_API_KEY`/`RESEND_CLOUD_AUDIENCE_ID`，按"代码就绪 + 缺 env 降级（200+warn+不报错+前端成功态）+ provider 单测覆盖"判 `[x]`；真实入库联调（AC8：audience 可见/幂等/可导出 CSV，呼应 T18）延后补密钥复验。
+- 完整用户故事与 AC1–AC8 见 `backlog/ISSUE-8.md`。
+
 ---
 
 **产出路径**：`/Users/ukulele/claude-project/self-code/workspace/molesignal-website/03-产品PRD.md`
