@@ -111,7 +111,7 @@ export function Footer() {
                         href={item.href}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-fg hover:text-primary duration-fast inline-flex items-center gap-1 text-sm transition-colors"
+                        className="text-fg-muted hover:text-fg duration-fast inline-flex items-center gap-1 text-sm transition-colors"
                       >
                         {tLinks(item.key)}
                         <ArrowUpRight size={9} aria-hidden />
@@ -119,7 +119,7 @@ export function Footer() {
                     ) : (
                       <Link
                         href={item.href!}
-                        className="text-fg hover:text-primary duration-fast text-sm transition-colors"
+                        className="text-fg-muted hover:text-fg duration-fast text-sm transition-colors"
                       >
                         {tLinks(item.key)}
                       </Link>

@@ -1,4 +1,4 @@
-READINESS_SCORE: 10/31
+READINESS_SCORE: 11/31
 
 # READINESS · molesignal-website 上线就绪清单
 
@@ -36,7 +36,7 @@ READINESS_SCORE: 10/31
 ### UI 按 05 改版（D1/D8 · T08/T09/T10/T08b）
 - [x] **UI token 迁移**：装 `@fontsource/geist-mono` 并在 layout import 400/600；`globals.css` 按 05-UI §5 完成迁移（Teal 主色/Amber 强调/暖中性/圆角降档/阴影简化/去 indigo+pink glow）、`--font-mono` 指向 Geist Mono；`pnpm a11y:contrast` 全过 AA；`pnpm build`/`check` 过；明暗双主题无视觉崩坏（T08） ✅ ISSUE-5 closed · QA PASS 2026-06-02（代码核实：geist-mono@5.2.8 入 deps、layout import 400/600、`--font-mono` 首位 Geist Mono、新增 `--brand/--amber/--warn` hex token+保留旧桥接为别名零删除。真实 Chromium E2E 29 断言全过明暗双主题：`document.fonts.check('16px "Geist Mono"')=true`、旧工具类元素 computed 已 Teal/Amber；`a11y:contrast` 26/26、`pnpm check`/`build` exit 0。组件级视觉改造 T09/T10/T08b 仍属下游工单保持 [ ]）
 - [x] **核心页面视觉改造**：Hero 左对齐+mono `$` 命令预览、CrossSignalDemo terminal card+amber trace_id、Why/Stats 两栏+mono 数字、QuickStart 简介左对齐、DP CTA 左 border accent 卡（去 glow）；明暗双主题 OK，`check` 过（T09） ✅ ISSUE-10 closed · QA PASS 2026-06-02（Playwright 全量 38 PASS/0 FAIL，新增 issue10-t09-visual 12 断言；UI token 脚本 29 PASS 含 `--marketing-hero-bg===none` glow 已移除；明暗双主题无回归；代码审查必改 0）
-- [ ] **表单页 + 成本/对比视觉改造**：CostCalculator amber mono 大数+三结果卡语义色+滑块 44px 触摸区、CompareTable molesignal 列 brand 顶边+✓✗ mono、两表单成功态持久绿卡 + 限流温和 amber 提示、DP 三步 "What happens after"；`check` 过（T10）
+- [x] **表单页 + 成本/对比视觉改造**：CostCalculator amber mono 大数+三结果卡语义色+滑块 44px 触摸区、CompareTable molesignal 列 brand 顶边+✓✗ mono、两表单成功态持久绿卡 + 限流温和 amber 提示、DP 三步 "What happens after"；`check` 过（T10） ✅ ISSUE-11 closed · QA PASS 2026-06-02（light 道：开发→代码审查→独立 QA。cost-calculator 三结果卡语义色重映射 Datadog=red/molesignal=brand/Savings=amber+Geist Mono tabular-nums 大数、滑块 h-11=44px 触摸区(WCAG 2.5.5)；compare-table ✓✗~ 改字面 mono 字符+molesignal 列 brand 3px 顶边；两表单 429→温和 amber RateLimitNotice 保留已填内容、成功态持久绿卡；DP "What happens after" 三步 brand 圆形 h-8 w-8+dashed 连接线；messages parity 511=511。真 Chromium E2E issue11-t10-visual 12/12+全量回归 50/50；`pnpm check`(tsc 0/eslint 0/a11y 26/26/i18n 511=511)+`build` rc=0；DEF-1 cn()/tailwind-merge 误丢自定义字重/字号根因已修，computed style 实证 Geist Mono+font-weight 双生效）
 - [ ] **导航/页脚/Pill/Button 视觉改造**：TopNav 56px+brand mono+active 下划线+滚动 blur、Footer 四列+禁用态链接样式、Button/Pill/Badge variants 按规格，与 T04 死链改动不冲突；`check` 过（T08b）
 
 ### 数字 / 兜底可信（D1/D5 · T03/T07）
