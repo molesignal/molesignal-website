@@ -17,15 +17,16 @@ import { designPartnerSchema } from "@/lib/schemas/design-partner";
 export async function POST(req: Request) {
   const ip = getClientIp(req);
 
-  const rl = rateLimit({
+  const rl = await rateLimit({
     key: `design-partner:${ip}`,
     max: 5,
     windowMs: 60 * 60 * 1000,
   });
   if (!rl.ok) {
+    const retryAfter = Math.max(0, Math.ceil((rl.resetAt - Date.now()) / 1000));
     return NextResponse.json(
       { error: "Too many requests. Try again later." },
-      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } },
+      { status: 429, headers: { "Retry-After": String(retryAfter) } },
     );
   }
 
