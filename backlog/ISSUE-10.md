@@ -2,7 +2,7 @@
 id: ISSUE-10
 type: feature
 title: [T09] 核心页面视觉改造(Hero/Demo/Why-Stats/Start/DP CTA)
-status: in_progress
+status: in_review
 priority: P0
 assignee: frontend-engineer
 created: 2026-06-01
@@ -56,3 +56,12 @@ updated: 2026-06-02
 - terminal card 采用主题自适应面板(`bg-bg-2`)而非 05-UI 描述的"强制深色底"——因内部文字用主题 token，强制深底会令亮色主题文字不可见并破坏 a11y:contrast，故按可访问性优先做此权衡，明暗两态均正常。
 - demo 区原 `crossSignalDemo.pill`("five-second demo") 按 05-UI "去掉 label" 不再渲染(消除噪声)；message key 保留以维持 i18n parity，无副作用。
 - 浏览器端 E2E/截图回归留待 qa-automation 独立验证。
+- 2026-06-02 05:27:19 set status=in_review
+
+### 代码审查记录 (code-reviewer, 2026-06-02)
+- 必改 0；建议放行 QA。详见 `08-测试报告.md` §「代码审查 — ISSUE-10」。
+- 审查中直接修复 2 处「Tailwind 类名不编译」缺陷（在本工单内提交）：
+  - F1 两处主 CTA `hover:bg-primary-muted`（不编译，hover 无反馈）→ `hover:bg-primary/90`（`app/[locale]/page.tsx`）。
+  - F2 `brand` pill `bg-primary-bg`（不编译，无底色）→ `bg-primary/10`（`components/ui/pill.tsx`，修好含 5min pill 在内 4 处）。
+- F3 根因（`@theme inline` 缺 `--color-primary-bg`/`--color-primary-muted` 桥接，致 8+ 组件 `bg-primary-bg`/`bg-primary-muted` 全站静默失效）属存量、跨多模块，建议另开 full 工单由架构师/前端配合全量视觉+a11y 重核，**未在本 light 工单改**。
+- 复测全绿：tsc rc=0 / build rc=0 / eslint 0 error / a11y 26/26 / i18n 508↔508。

@@ -58,7 +58,7 @@ export default async function Home({
               data-analytics-event="cta_click"
               data-analytics-source-page
               data-analytics-props='{"label":"Try it","destination":"/start"}'
-              className="bg-primary text-primary-foreground hover:bg-primary-muted duration-fast inline-flex h-11 items-center gap-2 rounded-md px-5 text-base font-strong transition-colors"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 duration-fast inline-flex h-11 items-center gap-2 rounded-md px-5 text-base font-strong transition-colors"
             >
               {tCommon("tryIt")} <ArrowRight size={16} aria-hidden />
             </Link>
@@ -182,7 +182,7 @@ export default async function Home({
                 data-analytics-event="cta_click"
                 data-analytics-source-page
                 data-analytics-props='{"label":"Become a design partner","destination":"/design-partner"}'
-                className="bg-primary text-primary-foreground hover:bg-primary-muted duration-fast inline-flex h-11 items-center gap-2 rounded-md px-5 text-base font-strong transition-colors"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 duration-fast inline-flex h-11 items-center gap-2 rounded-md px-5 text-base font-strong transition-colors"
               >
                 {tCommon("becomeDesignPartner")}{" "}
                 <ArrowRight size={16} aria-hidden />
