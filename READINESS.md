@@ -1,4 +1,4 @@
-READINESS_SCORE: 3/31
+READINESS_SCORE: 4/31
 
 # READINESS · molesignal-website 上线就绪清单
 
@@ -31,7 +31,7 @@ READINESS_SCORE: 3/31
 ### 信任 / 合规（D1/D5/D8 红线 · T04/T06）
 - [x] **死链 / 画饼治理**：Footer 移除 docs 链接、Discord 改禁用态（cursor-default+title，非 `href="#"`）、Download 改 coming-soon/锚到 /start binary；TopNav 移除 Docs 入口；community-callout Discord 同改禁用态；QuickStart helm/binary tab 加 "v1.0 target" notice；`messages/{en,zh}.json` 文案同步（T04） ✅ ISSUE-3 closed · QA PASS 2026-06-02（13/13 浏览器 E2E 全绿：无 docs 锚点/无 `href="#"`/Discord+Twitter 双处禁用态/Download→`/start#install` 真实跳转+滚入视口/helm+binary v1 notice 双语；messages 双语 parity 466/466；T04 范围内链全 2xx。唯一 lint:links 失败项 `/opengraph-image` 404 经核为预存且与 T04 无关——故下条「无死链门禁」仍保持 `[ ]`）
 - [ ] **无死链门禁**：`pnpm lint:links` 全 2xx，全站无 `href="#"` 占位（T04 验收聚合）
-- [ ] **隐私 / 条款真实法务文本**：`/privacy` `/terms` 已用真实文本替换 LegalStub（覆盖邮箱收集、Plausible 无 cookie 分析、第三方 Resend），EN/ZH 双语在 `messages/*` 齐全，更新日期准确，页内链 2xx（T06）〔需外部:法务文本来源由用户/模板审核确认〕
+- [x] **隐私 / 条款真实法务文本**：`/privacy` `/terms` 已用真实文本替换 LegalStub（覆盖邮箱收集、Plausible 无 cookie 分析、第三方 Resend），EN/ZH 双语在 `messages/*` 齐全，更新日期准确，页内链 2xx（T06）〔需外部:法务文本来源由用户/模板审核确认〕 ✅ ISSUE-4 closed · QA PASS 2026-06-02（AC1–AC8 全实测通过：LegalStub 已彻底移除→改用 `LegalDocument` 组件、LAST_UPDATED=2026-06-02、founders@ 为真实 mailto 锚点；隐私六覆盖点 EN 渲染 HTML 16/16 grep PASS；EN/ZH `legal` keyset 完全一致；本工单四法务页+站内链 lint:links 全 2xx；security-auditor AC5 事实核验纠偏后通过。模板自拟法务文本依本期诚实文案政策判 [x]，日后法务定稿可复审）
 
 ### UI 按 05 改版（D1/D8 · T08/T09/T10/T08b）
 - [ ] **UI token 迁移**：装 `@fontsource/geist-mono` 并在 layout import 400/600；`globals.css` 按 05-UI §5 完成迁移（Teal 主色/Amber 强调/暖中性/圆角降档/阴影简化/去 indigo+pink glow）、`--font-mono` 指向 Geist Mono；`pnpm a11y:contrast` 全过 AA；`pnpm build`/`check` 过；明暗双主题无视觉崩坏（T08）

@@ -24,35 +24,48 @@
 /* Layer 1 + Layer 2 + Layer 4 — LIGHT default                             */
 /* ────────────────────────────────────────────────────────────────────── */
 :root {
-  /* Layer 1: background ramp (cool indigo-tinted near-white) */
-  --bg-0:      #fbfbfd;
-  --bg-1:      #f5f7fb;
-  --bg-2:      #eef0f5;
-  --bg-3:      #e3e6ee;
-  --bg-4:      #d3d8e4;
-  --bg-hover:  #ebeef4;
+  /* Layer 1: background ramp (warm neutral near-white — 05-UI §5) */
+  --bg-0:      #f9f9f8;
+  --bg-1:      #f4f3f1;
+  --bg-2:      #edecea;
+  --bg-3:      #e3e1de;
+  --bg-4:      #d5d2ce;
+  --bg-hover:  #eae8e5;
 
-  /* Layer 1: borders */
-  --bd-0: #e0e4ed;
-  --bd-1: #cdd2df;
-  --bd-2: #b5bcce;
+  /* Layer 1: borders (warm) */
+  --bd-0: #dddbd7;
+  --bd-1: #ccc9c4;
+  --bd-2: #b8b4ae;
 
   /* Layer 1: text */
-  --tx-0: #131825;
-  --tx-1: #404763;
-  --tx-2: #686f8d;
-  --tx-3: #8c92ad;
-  --tx-4: #b5b9c9;
+  --tx-0: #151b28;
+  --tx-1: #3e4456;
+  --tx-2: #666e88;
+  --tx-3: #8f94a8;
+  --tx-4: #bcbfcc;
 
-  /* Layer 1: Indigo brand (light values) */
-  --indigo:      #3742c7;
-  --indigo-soft: #5a66d8;
-  --indigo-dim:  rgba(55, 66, 199, 0.12);
+  /* Layer 1: Brand — Teal (05-UI §5; AA-tuned teal-700 for body text). */
+  --brand:      #0f766e;   /* teal-700, 5.20:1 on bg-0 ✓ */
+  --brand-soft: #14b8a6;   /* teal-500 — soft/hover */
+  --brand-dim:  rgba(15, 118, 110, 0.12);
+  /* Legacy --indigo* names retained as aliases → Teal brand. The 32-file fleet
+   * of `*-indigo*` utility classes keeps working; class renames are T09/T10/T08b. */
+  --indigo:      var(--brand);
+  --indigo-soft: var(--brand-soft);
+  --indigo-dim:  var(--brand-dim);
 
-  /* Layer 1: Marketing accent (pink-magenta) */
-  --marketing-accent:      #ba3071;
-  --marketing-accent-soft: #d65195;
-  --marketing-accent-dim:  rgba(186, 48, 113, 0.12);
+  /* Layer 1: Accent — Amber (05-UI §5; AA-tuned amber-700) + Warn (NEW). */
+  --amber:      #b45309;   /* amber-700, 4.77:1 on bg-0 ✓ */
+  --amber-soft: #f59e0b;   /* amber-400 — soft/hover */
+  --amber-dim:  rgba(180, 83, 9, 0.12);
+  --amber-fg:   #ffffff;   /* #fff on amber-700 = 5.03:1 ✓ */
+  --warn:       #ca8a04;
+  --warn-soft:  #eab308;
+  --warn-dim:   rgba(202, 138, 4, 0.12);
+  /* Legacy --marketing-accent* names retained as aliases → Amber. */
+  --marketing-accent:      var(--amber);
+  --marketing-accent-soft: var(--amber-soft);
+  --marketing-accent-dim:  var(--amber-dim);
   --marketing-accent-fg:   #ffffff;
 
   /* Layer 1: Status (form / link / success) */
@@ -97,28 +110,29 @@
   --overlay:      rgba(19, 24, 37, 0.50);
   --overlay-soft: rgba(19, 24, 37, 0.20);
 
-  /* Shadows (light values) */
-  --shadow-sm-token: 0 1px 2px rgba(19, 24, 37, 0.08);
-  --shadow-md-token: 0 4px 12px rgba(19, 24, 37, 0.10), 0 0 0 1px rgba(19, 24, 37, 0.04);
-  --shadow-lg-token: 0 12px 32px rgba(19, 24, 37, 0.14), 0 0 0 1px rgba(19, 24, 37, 0.06);
-  --shadow-focus-token: 0 0 0 2px var(--bg-0), 0 0 0 4px var(--indigo);
+  /* Shadows (light values — minimal, border-led; 05-UI §5) */
+  --shadow-sm-token: 0 1px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md-token: 0 4px 16px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --shadow-lg-token: 0 12px 40px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  --shadow-focus-token: 0 0 0 2px var(--bg-0), 0 0 0 4px var(--brand);
 
-  /* Layer 4: Marketing aliases */
+  /* Layer 4: Marketing aliases (Hero glow removed; CTA → teal; 05-UI §5) */
   --marketing-code-bg:     var(--bg-1);
   --marketing-code-border: var(--bd-0);
-  --marketing-hero-bg:
-    radial-gradient(120% 80% at 50% 0%, var(--indigo-dim), transparent 70%),
-    radial-gradient(80% 60% at 10% 100%, var(--marketing-accent-dim), transparent 65%);
-  --marketing-gradient-cta:
-    linear-gradient(90deg, var(--indigo) 0%, var(--marketing-accent) 100%);
-  --shadow-glow-indigo-token: 0 0 24px rgba(55, 66, 199, 0.25);
-  --shadow-glow-pink-token:   0 0 24px rgba(186, 48, 113, 0.25);
-  --shadow-hero-card-token:   0 24px 64px rgba(19, 24, 37, 0.10), 0 0 0 1px rgba(19, 24, 37, 0.04);
+  --marketing-hero-bg:     none;
+  --marketing-grid-line:   rgba(221, 219, 215, 0.6);
+  --marketing-gradient-cta: linear-gradient(90deg, #0f766e 0%, #14b8a6 100%);
+  /* Legacy glow token names retained → repointed to simplified teal/amber glow. */
+  --shadow-glow-indigo-token: 0 0 20px rgba(15, 118, 110, 0.30);
+  --shadow-glow-pink-token:   0 0 20px rgba(180, 83, 9, 0.30);
+  --shadow-hero-card-token:   0 0 0 1px var(--bd-0), 0 24px 48px rgba(0, 0, 0, 0.08);
 
-  /* Static tokens (not theme-dependent) */
-  --radius-sm-token:   4px;
-  --radius-token:      6px;
-  --radius-lg-token:   10px;
+  /* Static tokens (not theme-dependent) — radius tightened one step (05-UI §5) */
+  --radius-xs-token:   2px;
+  --radius-sm-token:   3px;
+  --radius-token:      5px;
+  --radius-lg-token:   8px;
+  --radius-xl-token:   12px;
   --radius-full-token: 9999px;
 
   --duration-instant: 80ms;
@@ -146,28 +160,45 @@
 /* Dark theme — explicit override via [data-theme="dark"]                  */
 /* ────────────────────────────────────────────────────────────────────── */
 [data-theme="dark"] {
-  --bg-0:      #0d101a;
-  --bg-1:      #131725;
-  --bg-2:      #1a1f30;
-  --bg-3:      #232839;
-  --bg-4:      #2c3247;
-  --bg-hover:  #1d2335;
-  --bd-0: #20253a;
-  --bd-1: #2c324b;
-  --bd-2: #3a4263;
-  --tx-0: #ecedf3;
-  --tx-1: #b9bdcb;
-  --tx-2: #888da0;
-  --tx-3: #5b6077;
-  --tx-4: #383d52;
+  --bg-0:      #0e1117;
+  --bg-1:      #131923;
+  --bg-2:      #1a2030;
+  --bg-3:      #22293a;
+  --bg-4:      #2c3347;
+  --bg-hover:  #1a2030;
+  --bd-0: #21283a;
+  --bd-1: #2c364d;
+  --bd-2: #3a4566;
+  --tx-0: #eeede9;
+  --tx-1: #c8c5be;
+  --tx-2: #878d9f;
+  --tx-3: #596070;
+  --tx-4: #373d4f;
 
-  --indigo:      #4f60e0;
-  --indigo-soft: #7682eb;
-  --indigo-dim:  rgba(79, 96, 224, 0.16);
+  /* Brand — bright Teal on deep bg (05-UI §5) */
+  --brand:      #2dd4bf;
+  --brand-soft: #5eead4;
+  --brand-dim:  rgba(45, 212, 191, 0.16);
+  --indigo:      var(--brand);
+  --indigo-soft: var(--brand-soft);
+  --indigo-dim:  var(--brand-dim);
 
-  --marketing-accent:      #db4d8c;
-  --marketing-accent-soft: #e472a8;
-  --marketing-accent-dim:  rgba(219, 77, 140, 0.16);
+  /* Accent — bright Amber + Warn (05-UI §5) */
+  --amber:      #fbbf24;
+  --amber-soft: #fde68a;
+  --amber-dim:  rgba(251, 191, 36, 0.18);
+  --warn:       #fde047;
+  --warn-soft:  #fef08a;
+  --warn-dim:   rgba(253, 224, 71, 0.18);
+  --marketing-accent:      var(--amber);
+  --marketing-accent-soft: var(--amber-soft);
+  --marketing-accent-dim:  var(--amber-dim);
+
+  /* 🔑 Bright teal/amber need DARK foreground (white = ~1.7:1 FAIL). 05-UI §5. */
+  --primary-fg:          #0e1117;   /* 11.6:1 on teal ✓ */
+  --accent-fg:           #0e1117;   /* accent == brand in dark → dark fg */
+  --amber-fg:            #0e1117;   /* canonical twin of --marketing-accent-fg; dark fg on bright amber */
+  --marketing-accent-fg: #0e1117;   /* 12.3:1 on amber ✓ */
 
   --red:        #f25b56;
   --red-soft:   #f78784;
@@ -182,40 +213,57 @@
   --overlay:      rgba(8, 10, 16, 0.72);
   --overlay-soft: rgba(8, 10, 16, 0.40);
 
-  --shadow-sm-token: 0 1px 2px rgba(0, 0, 0, 0.45);
-  --shadow-md-token: 0 4px 12px rgba(0, 0, 0, 0.50), 0 0 0 1px rgba(0, 0, 0, 0.25);
-  --shadow-lg-token: 0 12px 32px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(0, 0, 0, 0.40);
+  --shadow-sm-token: 0 1px 4px rgba(0, 0, 0, 0.45);
+  --shadow-md-token: 0 4px 16px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(0, 0, 0, 0.30);
+  --shadow-lg-token: 0 12px 40px rgba(0, 0, 0, 0.60), 0 0 0 1px rgba(0, 0, 0, 0.45);
+  --shadow-focus-token: 0 0 0 2px var(--bg-0), 0 0 0 4px var(--brand);
 
   --marketing-code-bg:     var(--bg-2);
   --marketing-code-border: var(--bd-1);
-  --shadow-glow-indigo-token: 0 0 28px rgba(79, 96, 224, 0.40);
-  --shadow-glow-pink-token:   0 0 28px rgba(219, 77, 140, 0.40);
-  --shadow-hero-card-token:   0 24px 64px rgba(0, 0, 0, 0.60), 0 0 0 1px rgba(0, 0, 0, 0.40);
+  --marketing-hero-bg:     none;
+  --marketing-grid-line:   rgba(33, 40, 58, 0.8);
+  --shadow-glow-indigo-token: 0 0 24px rgba(45, 212, 191, 0.40);
+  --shadow-glow-pink-token:   0 0 24px rgba(251, 191, 36, 0.40);
+  --shadow-hero-card-token:   0 0 0 1px var(--bd-1), 0 24px 64px rgba(0, 0, 0, 0.60);
 }
 
 /* System dark (unless user explicitly picked) */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]):not([data-theme="dark"]) {
-    --bg-0:      #0d101a;
-    --bg-1:      #131725;
-    --bg-2:      #1a1f30;
-    --bg-3:      #232839;
-    --bg-4:      #2c3247;
-    --bg-hover:  #1d2335;
-    --bd-0: #20253a;
-    --bd-1: #2c324b;
-    --bd-2: #3a4263;
-    --tx-0: #ecedf3;
-    --tx-1: #b9bdcb;
-    --tx-2: #888da0;
-    --tx-3: #5b6077;
-    --tx-4: #383d52;
-    --indigo:      #4f60e0;
-    --indigo-soft: #7682eb;
-    --indigo-dim:  rgba(79, 96, 224, 0.16);
-    --marketing-accent:      #db4d8c;
-    --marketing-accent-soft: #e472a8;
-    --marketing-accent-dim:  rgba(219, 77, 140, 0.16);
+    /* Mirror of [data-theme="dark"] — kept in sync manually (05-UI §5). */
+    --bg-0:      #0e1117;
+    --bg-1:      #131923;
+    --bg-2:      #1a2030;
+    --bg-3:      #22293a;
+    --bg-4:      #2c3347;
+    --bg-hover:  #1a2030;
+    --bd-0: #21283a;
+    --bd-1: #2c364d;
+    --bd-2: #3a4566;
+    --tx-0: #eeede9;
+    --tx-1: #c8c5be;
+    --tx-2: #878d9f;
+    --tx-3: #596070;
+    --tx-4: #373d4f;
+    --brand:      #2dd4bf;
+    --brand-soft: #5eead4;
+    --brand-dim:  rgba(45, 212, 191, 0.16);
+    --indigo:      var(--brand);
+    --indigo-soft: var(--brand-soft);
+    --indigo-dim:  var(--brand-dim);
+    --amber:      #fbbf24;
+    --amber-soft: #fde68a;
+    --amber-dim:  rgba(251, 191, 36, 0.18);
+    --warn:       #fde047;
+    --warn-soft:  #fef08a;
+    --warn-dim:   rgba(253, 224, 71, 0.18);
+    --marketing-accent:      var(--amber);
+    --marketing-accent-soft: var(--amber-soft);
+    --marketing-accent-dim:  var(--amber-dim);
+    --primary-fg:          #0e1117;
+    --accent-fg:           #0e1117;
+    --amber-fg:            #0e1117;
+    --marketing-accent-fg: #0e1117;
     --red:        #f25b56;
     --red-soft:   #f78784;
     --red-dim:    rgba(242, 91, 86, 0.16);
@@ -227,14 +275,17 @@
     --blue-dim:   rgba(77, 151, 224, 0.14);
     --overlay:      rgba(8, 10, 16, 0.72);
     --overlay-soft: rgba(8, 10, 16, 0.40);
-    --shadow-sm-token: 0 1px 2px rgba(0, 0, 0, 0.45);
-    --shadow-md-token: 0 4px 12px rgba(0, 0, 0, 0.50), 0 0 0 1px rgba(0, 0, 0, 0.25);
-    --shadow-lg-token: 0 12px 32px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(0, 0, 0, 0.40);
+    --shadow-sm-token: 0 1px 4px rgba(0, 0, 0, 0.45);
+    --shadow-md-token: 0 4px 16px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(0, 0, 0, 0.30);
+    --shadow-lg-token: 0 12px 40px rgba(0, 0, 0, 0.60), 0 0 0 1px rgba(0, 0, 0, 0.45);
+    --shadow-focus-token: 0 0 0 2px var(--bg-0), 0 0 0 4px var(--brand);
     --marketing-code-bg:     var(--bg-2);
     --marketing-code-border: var(--bd-1);
-    --shadow-glow-indigo-token: 0 0 28px rgba(79, 96, 224, 0.40);
-    --shadow-glow-pink-token:   0 0 28px rgba(219, 77, 140, 0.40);
-    --shadow-hero-card-token:   0 24px 64px rgba(0, 0, 0, 0.60), 0 0 0 1px rgba(0, 0, 0, 0.40);
+    --marketing-hero-bg:     none;
+    --marketing-grid-line:   rgba(33, 40, 58, 0.8);
+    --shadow-glow-indigo-token: 0 0 24px rgba(45, 212, 191, 0.40);
+    --shadow-glow-pink-token:   0 0 24px rgba(251, 191, 36, 0.40);
+    --shadow-hero-card-token:   0 0 0 1px var(--bd-1), 0 24px 64px rgba(0, 0, 0, 0.60);
   }
 }
 
@@ -261,12 +312,28 @@
   --color-tx-3: var(--tx-3);
   --color-tx-4: var(--tx-4);
 
-  /* Brand indigo */
+  /* Brand — Teal (NEW canonical name for T09/T10/T08b) */
+  --color-brand: var(--brand);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-dim: var(--brand-dim);
+
+  /* Amber accent (NEW canonical name) */
+  --color-amber: var(--amber);
+  --color-amber-soft: var(--amber-soft);
+  --color-amber-dim: var(--amber-dim);
+  --color-amber-fg: var(--amber-fg);
+
+  /* Warn (NEW) */
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-warn-dim: var(--warn-dim);
+
+  /* Legacy --color-indigo* bridge retained as alias → Teal brand (do not delete) */
   --color-indigo: var(--indigo);
   --color-indigo-soft: var(--indigo-soft);
   --color-indigo-dim: var(--indigo-dim);
 
-  /* Marketing accent (NEW for website) */
+  /* Legacy --color-marketing-accent* bridge retained as alias → Amber */
   --color-marketing-accent: var(--marketing-accent);
   --color-marketing-accent-soft: var(--marketing-accent-soft);
   --color-marketing-accent-dim: var(--marketing-accent-dim);
@@ -314,7 +381,7 @@
 
   /* ── Fonts ────────────────────────────────────────────────── */
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Inter Variable", ui-monospace, monospace;
+  --font-mono: "Geist Mono", ui-monospace, "Cascadia Code", monospace;
 
   /* ── Font sizes (body + display scale) ────────────────────── */
   --text-xs: 11px;
@@ -349,8 +416,24 @@
   --text-display-3xl--line-height: 1.05;
   --text-display-3xl--letter-spacing: -0.02em;
 
+  /* Display sm (NEW — 05-UI §5; literal px, never self-referencing var) */
+  --text-display-sm: 18px;
+  --text-display-sm--line-height: 1.3;
+  --text-display-sm--letter-spacing: -0.01em;
+
+  /* Mono text scale (NEW — 05-UI §5; literal px) */
+  --text-mono-sm:  12px;
+  --text-mono-md:  13px;
+  --text-mono-lg:  15px;
+  --text-mono-xl:  20px;
+  --text-mono-2xl: 32px;
+  --text-mono-3xl: 56px;
+
   /* ── Font weights ─────────────────────────────────────────── */
-  --font-weight-body: 500;
+  --font-weight-body: 400;            /* was 500 (05-UI §5) */
+  --font-weight-ui: 500;              /* NEW */
+  --font-weight-mono: 400;            /* NEW */
+  --font-weight-mono-strong: 600;     /* NEW */
   --font-weight-strong: 600;
   --font-weight-display: 600;
   --font-weight-display-strong: 700;
@@ -362,10 +445,12 @@
   --tracking-wide: 0.02em;
 
   /* ── Radius ───────────────────────────────────────────────── */
+  --radius-xs: var(--radius-xs-token);
   --radius-sm: var(--radius-sm-token);
   --radius: var(--radius-token);
   --radius-md: var(--radius-token);
   --radius-lg: var(--radius-lg-token);
+  --radius-xl: var(--radius-xl-token);
   --radius-full: var(--radius-full-token);
 
   /* ── Shadows ──────────────────────────────────────────────── */
@@ -375,6 +460,9 @@
   --shadow-focus: var(--shadow-focus-token);
   --shadow-glow-indigo: var(--shadow-glow-indigo-token);
   --shadow-glow-pink: var(--shadow-glow-pink-token);
+  /* NEW canonical glow names → repointed legacy tokens (teal / amber) */
+  --shadow-glow-brand: var(--shadow-glow-indigo-token);
+  --shadow-glow-amber: var(--shadow-glow-pink-token);
   --shadow-hero-card: var(--shadow-hero-card-token);
 
   /* ── Spacing (marketing layout) ───────────────────────────── */

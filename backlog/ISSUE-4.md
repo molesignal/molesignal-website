@@ -2,7 +2,7 @@
 id: ISSUE-4
 type: feature
 title: [T06] 隐私/条款真实法务文本
-status: verifying
+status: closed
 priority: P0
 assignee: fullstack-engineer
 created: 2026-06-01
@@ -234,3 +234,5 @@ updated: 2026-06-02
   详见 08-测试报告.md「ISSUE-4 [T06] … 运行时验证」节。
 
   VERDICT: PASS
+- 2026-06-02 02:34:48 set status=closed
+- 2026-06-02 02:34:48 引擎周期#4: QA PASS, 关闭
