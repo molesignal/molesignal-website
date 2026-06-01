@@ -64,6 +64,9 @@ export function CostCalculator({ className }: { className?: string }) {
     {
       year: "numeric",
       month: "long",
+      // PRICING_SNAPSHOT is a UTC date; format in UTC so server and client
+      // render the same month regardless of runtime timezone (no hydration drift).
+      timeZone: "UTC",
     },
   ).format(new Date(`${PRICING_SNAPSHOT}T00:00:00Z`));
 
