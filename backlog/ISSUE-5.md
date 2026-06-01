@@ -2,7 +2,7 @@
 id: ISSUE-5
 type: feature
 title: [T08] UI token迁移(globals.css+Geist Mono)
-status: in_progress
+status: in_review
 priority: P0
 assignee: frontend-engineer
 created: 2026-06-01
@@ -165,3 +165,13 @@ updated: 2026-06-02
   **AC6 构建/类型/lint**：`pnpm check` exit 0（typecheck+lint+a11y+i18n parity 504/504）；`pnpm build` exit 0。
   **额外修正（超 §5，遵同源逻辑）**：dark 与镜像块另加 `--accent-fg:#0e1117`（`--accent`=brand=亮 teal，否则 bg-accent/text-accent-foreground 组合在暗色为白字浮于亮 teal 不可读）—— 不在 check-contrast 检查对内，但保 AC7 视觉正确。
   **遗留/移交**：AC7（真浏览器明暗双主题目测关键区块）+ AC1 DevTools 核 font-mono 计算字体 → 交 QA 验证（本地已构建通过，纯前端无外部密钥）。组件工具类逐一改名（text-marketing-accent→text-amber 等）仍属 T09/T10/T08b，本工单未动。无阻塞项。
+- 2026-06-02 03:25:37 set status=in_review
+- 2026-06-02 code-reviewer 代码审查（diff `main...feature/ISSUE-5`）：
+  **结论：通过（建议放行 QA）。** 必改 0 · 已直接修复 1 · 建议/可选 2。提交规范 ✓（Conventional Commits，标题含工单号）。隔离性 AC8 ✓（diff 仅 `app/globals.css`/`app/layout.tsx`/`package.json`/`pnpm-lock.yaml`，components/ 与 messages/ 零改动，git 可核）。
+  **逐项核对**：AC1 layout import + `--font-mono` 首位 Geist Mono ✓；AC2 新 `--brand*/--amber*/--warn*` + 桥接 + radius/mono-scale/display-sm（字面 px 无自引用）✓；AC3 旧 canonical 重指向 `var(--brand)/var(--amber)`、hero-bg=none、cta=teal、glow 简化，明/暗/镜像三块同步 ✓；AC4 旧 `--color-indigo*/--color-marketing-accent*/--shadow-glow-*` 桥接全保留、零删除 ✓；AC5 `a11y:contrast` 26/26 复跑通过 ✓；语义别名 `--primary/--accent` 及其 `-fg` 明暗两套齐全且达标 ✓。
+  **已直接修复（commit 487bbba，fix/ISSUE-5）— bug/契约一致性，建议改级**：新 canonical token `--amber-fg` 仅在 light `:root` 定为 `#ffffff`，**dark 两块（`[data-theme="dark"]` + `prefers-color-scheme` 镜像）漏覆盖** → 与其 legacy twin `--marketing-accent-fg`（dark 已覆盖 `#0e1117`）不一致。下游 T09 一旦用 `bg-amber text-amber-fg`，暗色为白字浮于亮 amber `#fbbf24`（~1.6:1，违反 AA）；`check-contrast.ts` 只审计 `--marketing-accent-fg` 故构建不拦截（静默坑）。已补 dark 两块 `--amber-fg:#0e1117`，contrast 仍 26/26。
+  **建议改（不阻塞，留 T09 注意）**：
+  ① `app/globals.css:322` 桥接了 `--color-amber-fg` 但无 `--color-brand-fg`/`--color-warn-fg`，canonical fg 命名不对称——brand 走 `--color-primary-foreground`（明暗已处理）可用，warn 暂无 fg；T09 若需 warn 作填充底色，记得补 `--warn-fg` 明暗两套。
+  ② `--marketing-grid-line`（L123/223/283，明暗镜像三处已同步 ✓）未桥接到 `--color-*`，仅供 `var()` 直引；当前 components/ 零消费，属 T09 前瞻 token，非问题，提示下游按 `var(--marketing-grid-line)` 直引而非工具类。
+  **风格/可维护性**：值重指向用 `var(--brand)` 链 + 注释标注 legacy 别名意图，可读性好；`--font-weight-body` 500→400 属 §5 范围内全站正文字重变化，交 QA 目测正文可读性。**无其他坏味道。**
+  **移交 QA**：AC7（真浏览器明暗双主题关键区块目测：Hero/CrossSignalDemo/Why-Stats/QuickStart/DP CTA/导航/页脚，无掉色/丢边框/主题切换闪烁）+ AC1 DevTools 核 font-mono 计算字体 = Geist Mono + 抽查旧工具类元素 computed 色已 Teal/Amber。建议放行 QA。
