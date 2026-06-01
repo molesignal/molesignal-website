@@ -2,7 +2,7 @@
 id: ISSUE-10
 type: feature
 title: [T09] 核心页面视觉改造(Hero/Demo/Why-Stats/Start/DP CTA)
-status: verifying
+status: closed
 priority: P0
 assignee: frontend-engineer
 created: 2026-06-01
@@ -90,3 +90,5 @@ updated: 2026-06-02
 回归重跑：`pnpm build && pnpm exec playwright test`
 
 **VERDICT: PASS**
+- 2026-06-02 05:43:17 set status=closed
+- 2026-06-02 05:43:17 引擎周期#10: QA PASS, 关闭

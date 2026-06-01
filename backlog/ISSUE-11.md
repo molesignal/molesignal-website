@@ -2,7 +2,7 @@
 id: ISSUE-11
 type: feature
 title: [T10] 表单页+成本/对比视觉改造
-status: in_progress
+status: verifying
 priority: P0
 assignee: frontend-engineer
 created: 2026-06-01
@@ -40,3 +40,27 @@ updated: 2026-06-02
 **自测**：`pnpm check`（typecheck + eslint + a11y:contrast + i18n:parity）全过 —— 类型 0 错、lint 0 错、对比度 26/26 达 WCAG AA、i18n parity OK。
 
 **遗留/备注**：限流 amber 提示依赖后端在限流时返回 HTTP 429（契约一致）；当前 `/api/*` 路由的 429 由 T11/Upstash 提供，本工单仅做前端展示态，未触达后端逻辑。warn 色小字形为 aria-hidden 装饰，语义由相邻 value 文案承载。
+- 2026-06-02 05:54:22 set status=in_review
+
+## 代码审查（code-reviewer / 2026-06-02）
+- **必改 1（已直接修复并构建验证）｜建议放行 QA。**
+- **F1 必改（已修）** `cost-calculator.tsx:222`：molesignal 卡 `tone="brand"` 用了不编译的 `border-primary-muted bg-primary-bg`（`--color-primary-bg/-muted` 未注册进 `@theme`，同 ISSUE-10 F1/F2 根因）→ 中心「更便宜」卡无底色无边框，AC 未达成。改为 `border-primary/30 bg-primary/10`。
+- **F2 必改（已修）** `design-partner/page.tsx:98`：三步圆形 `bg-primary-bg` 不编译无填充 → 改 `bg-primary/10`。
+- **F3 建议改（已修）** `compare-table.tsx:73`：molesignal 列头 `bg-primary-bg`/`ring-primary-muted/30` 不编译 → 改 `bg-primary/10`/`ring-primary/30`（新增的 `border-t-brand` 顶边正常）。
+- 其余 OK：两表单 429 逻辑/契约正确、i18n parity 511=511、注释同步。可选项：DP 表单 429 提示可与 cloud 的 `RateLimitNotice` 去重；footer tone 分支为存量未用 API。
+- 验证（修复后）：`tsc` rc=0、`eslint` 0 error、`a11y:contrast` 26/26、`i18n:parity` OK、`next build` rc=0；编译 CSS 产物确认 `bg-primary/10`+`/30` color-mix 规则已生成、`bg-primary-bg` 字面类 0 次（佐证原写法不渲染）。
+- **强烈建议另开 full 工单**：在 globals.css `@theme` 注册 `--color-primary-bg`/`--color-primary-muted`，根治全仓 8+ 站点（why/pricing/banner/github-chip/architecture 等）的 `bg-primary-bg` 失效存量。
+- 2026-06-02 06:02:14 set status=verifying
+
+## QA 验证结果（qa-automation / 2026-06-02）
+
+**VERDICT: FAIL**（回流修复 1 处 Minor 缺陷 DEF-1）
+
+- 执行：真 Chromium E2E（生产 `next start` 渲染）+ 全量回归 + 质量门 + 生产构建。新增套件 `tests/e2e/issue11-t10-visual.spec.ts`（12 例）。
+- **质量门**：`pnpm check` 全绿（typecheck 0 / eslint 0 / a11y 26/26 / i18n 511=511）；`pnpm build` rc=0。
+- **本工单 E2E**：10 通过 / 2 失败（2 失败均=DEF-1）。**全量回归**：48 通过 / 2 失败（仅 DEF-1，其余既有回归 0 回退）。
+- **核心回归点已验证修复**：CostCalc brand teal 卡底色/边框、Savings amber mono 大数、滑块 44px、CompareTable brand 3px 顶边+真实 tint、两表单成功绿卡、429 amber 温和提示、DP 三步 brand 圆形——经浏览器内 canvas 解析 computed 颜色逐项确认**真实上色**（ISSUE-10/11 同源「类名不上色」风险不再复现）。
+- **DEF-1（Minor / 外观，无功能影响）** `components/compare-table.tsx:195-207` `VerdictIcon`：对比表 ✓/✗/~ 标记 computed `font-family` = `"Inter Variable"…`（**非等宽**），与 AC「✓✗mono」/05-UI §3.7 不符。全站 64 ✓+28 ✗ 均受影响（桌面+移动、/why 与 / 两页）。根因：`cls` 中 `font-mono font-strong` 经 `cn()`=`twMerge`，`font-strong`（自定义 weight）被并入 `font-*` 冲突组、twMerge 保留末位 `font-strong` → **静默剔除 `font-mono`**（渲染 HTML 实测仅剩 `font-strong`）。
+- **修复建议（一行级）**：`font-mono` 调到 `font-strong` 之后，或用 `[font-family:var(--font-mono)]`，或为 `cn` 配 `extendTailwindMerge` 声明 `font-strong` 为 weight 组根治。修复后 AC2 glyphs 两例应转绿。
+- 证据：`08-测试报告.md` ＞「自动化测试 — ISSUE-11 / T10」小节；截图 `/tmp/compare-table.png`。
+- 备注：缺陷视觉差异细微，若产品侧愿以「记 Minor 跟进、本轮放行」处理可由主管覆盖 PASS；纯 QA 闸门视角依 AC 字面判 FAIL。
