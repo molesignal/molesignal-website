@@ -6,16 +6,28 @@
  * tangible. Real bills depend on retention, redundancy, region, and
  * negotiated discounts.
  *
- * Numbers reference public Datadog pricing pages (Logs $0.10/GB ingest +
- * $1.27/M for 7d indexed; APM Spans $1.00/M; Infra $15/host/mo). We pick
- * representative bundles and round to nearest $50/mo to avoid false precision.
+ * Datadog per-unit figures are public list prices (annual billing), verified
+ * against https://www.datadoghq.com/pricing/ on the snapshot date below:
+ *   - Log Management ingest: $0.10 / ingested GB
+ *   - Log Management indexing (Standard, 15-day retention): $1.70 / M events
+ *   - APM indexed spans (Standard, 15-day retention): $1.70 / M spans
+ *   - Infrastructure Pro: $15 / host / month (referenced for compute framing)
+ * We pick representative bundles, assume ingested logs are indexed (an upper
+ * bound — most orgs index a subset), and round to the nearest $50/mo to avoid
+ * false precision. Update PRICING_SNAPSHOT whenever these rates are re-checked.
  */
 
+/** Date the Datadog list prices above were last verified (ISO, UTC). */
+export const PRICING_SNAPSHOT = "2026-06-02";
+/** Public source the snapshot was verified against. */
+export const PRICING_SOURCE_URL = "https://www.datadoghq.com/pricing/";
+
 const DD_LOGS_INGEST_PER_GB = 0.1; // USD per GB ingested
-const DD_LOGS_INDEXED_PER_M = 1.27; // USD per million events for 7d indexing
+const DD_LOGS_INDEXED_PER_M = 1.7; // USD per million events, Standard 15-day indexing
 const DD_AVG_EVENTS_PER_GB = 1_000_000; // rough heuristic — 1KB events
-const DD_TRACES_PER_M = 1.0; // USD per million spans
-const DD_RETENTION_MULTIPLIER_PER_30D = 1.5; // each +30d retention adds 50%
+const DD_TRACES_PER_M = 1.7; // USD per million indexed spans, Standard 15-day
+const DD_INDEXED_RETENTION_DAYS = 15; // retention already priced into the rates above
+const DD_RETENTION_MULTIPLIER_PER_30D = 1.5; // each +30d beyond baseline adds 50%
 
 const MOLE_S3_PER_GB_MONTH = 0.023; // S3 Standard ~$0.023/GB-month
 const MOLE_COMPUTE_BASELINE = 80; // small Postgres + 2 modest compute boxes
@@ -36,6 +48,9 @@ export type CostResult = {
 };
 
 function clamp(n: number, lo: number, hi: number) {
+  // Mobile <input type="number"> can yield NaN on partial/cleared entry;
+  // coerce non-finite input to the lower bound so results never go NaN.
+  if (!Number.isFinite(n)) return lo;
   return Math.max(lo, Math.min(hi, n));
 }
 
@@ -54,9 +69,16 @@ export function calculateCost({
   const ddIngest = gbPerMonth * DD_LOGS_INGEST_PER_GB;
   const ddIndexed =
     (gbPerMonth * DD_AVG_EVENTS_PER_GB * DD_LOGS_INDEXED_PER_M) / 1_000_000;
-  const ddTraces = (gbPerMonth * DD_AVG_EVENTS_PER_GB * 0.1 * DD_TRACES_PER_M) / 1_000_000;
-  const ddRetentionMult = 1 + ((ret - 7) / 30) * (DD_RETENTION_MULTIPLIER_PER_30D - 1);
-  const datadog = (ddIngest + ddIndexed + ddTraces) * Math.max(1, ddRetentionMult);
+  const ddTraces =
+    (gbPerMonth * DD_AVG_EVENTS_PER_GB * 0.1 * DD_TRACES_PER_M) / 1_000_000;
+  // The indexed rates already cover DD_INDEXED_RETENTION_DAYS; only retention
+  // beyond that baseline scales the bill (clamped to ≥1 below).
+  const ddRetentionMult =
+    1 +
+    ((ret - DD_INDEXED_RETENTION_DAYS) / 30) *
+      (DD_RETENTION_MULTIPLIER_PER_30D - 1);
+  const datadog =
+    (ddIngest + ddIndexed + ddTraces) * Math.max(1, ddRetentionMult);
 
   const moleStorage = gbPerMonth * (ret / 30) * MOLE_S3_PER_GB_MONTH;
   const moleCompute =
@@ -76,6 +98,7 @@ export function calculateCost({
 }
 
 export function formatUsd(n: number): string {
+  if (!Number.isFinite(n)) return "$0";
   if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
   if (n >= 1_000) return `$${(n / 1_000).toFixed(1)}k`;
   return `$${n.toLocaleString("en-US")}`;

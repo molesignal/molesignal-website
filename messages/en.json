@@ -552,7 +552,9 @@
       "sections": [
         {
           "heading": "Information you give us",
-          "body": ["We only store what you choose to submit through our forms:"],
+          "body": [
+            "We only store what you choose to submit through our forms:"
+          ],
           "bullets": [
             "Cloud waitlist (/cloud): your email address.",
             "Design Partner application (/design-partner): your name, email, company size, current observability stack, and (optionally) your biggest pain point.",
@@ -586,7 +588,9 @@
         },
         {
           "heading": "Third parties we use",
-          "body": ["We share data only with the providers needed to deliver the above, and we never sell your personal data."],
+          "body": [
+            "We share data only with the providers needed to deliver the above, and we never sell your personal data."
+          ],
           "bullets": [
             "Resend — our email provider. It transmits the notification email described above. We do not add you to any marketing list or audience.",
             "Hosting and infrastructure — the site runs on serverless hosting; request IP addresses pass through our rate-limiting layer."
@@ -694,8 +698,10 @@
       "savingsCard": "Savings",
       "savingsLess": "{percent}% less",
       "savingsDepends": "depends on workload",
-      "disclaimerPrefix": "Order-of-magnitude estimates based on Datadog's public pricing as of",
-      "disclaimerBody": ". Datadog: logs ingest + 7-day indexed events + APM spans, with retention multiplier. molesignal: S3 Standard storage + baseline Postgres + compute scaling per 100 GB/day. Your mileage will vary with redundancy, region, commit discounts, and workload shape."
+      "disclaimerPrefix": "Order-of-magnitude estimates based on Datadog's public list pricing as of",
+      "disclaimerBody": ". Datadog: logs ingest + 15-day indexed events (assuming all ingested logs are indexed — an upper bound) + APM spans, with a retention multiplier. molesignal: S3 Standard storage + baseline Postgres + compute scaling per 100 GB/day. Your mileage will vary with redundancy, region, commit discounts, and workload shape.",
+      "disclaimerSourcePrefix": "Source:",
+      "disclaimerSource": "Datadog public pricing"
     },
     "community": {
       "github": {
