@@ -2,7 +2,7 @@
 id: ISSUE-11
 type: feature
 title: [T10] 表单页+成本/对比视觉改造
-status: in_review
+status: verifying
 priority: P0
 assignee: frontend-engineer
 created: 2026-06-01
@@ -120,3 +120,15 @@ updated: 2026-06-02
 - 实证脚本断言 cn() 行为如上（DEF-1 与 Savings 两核心场景均 PASS）。
 - 提交规范：历史提交均 Conventional Commits + 工单号，符合规范。
 - 2026-06-02 代码审查完成：建议 status→verifying 放行 QA 复跑 issue11 套件。
+- 2026-06-02 06:31:34 set status=verifying
+
+## QA 验证结果（qa-automation / 2026-06-02 第2轮 — DEF-1 根因修复复测）
+
+**VERDICT: PASS**
+
+- 环境：Node v23.6.1，`pnpm build` rc=0 → `next start -p 3210`，真 Chromium（Playwright 1.60）。HEAD `8e259ef`。
+- **质量门全绿**：`pnpm check`（typecheck 0 / eslint 0 / a11y 26/26 / i18n 511=511）；`pnpm build` rc=0。
+- **本工单 E2E**：`issue11-t10-visual.spec.ts` **12 通过 / 0 失败**（上轮 10/2 → DEF-1 两例 glyphs 转绿）。
+- **全量回归**：Playwright 6 套 **50 通过 / 0 失败**（上轮 48/2 → 0 回退）；`issue5-ui-tokens.mjs` 字体/令牌 29/29（font-mono→Geist Mono 链未受 cn() 改动影响）。
+- **DEF-1 已根治（计算样式实证）**：对比表 ✓ 标记 computed `font-family="Geist Mono"…`（等宽）且 `font-weight=600`（font-strong 同时保留）；CostCalc Savings 大数 `Geist Mono / 32px(display-lg) / 700(display-strong) / amber` 四类全生效（潜伏缺陷一并修复）。证据：`08-测试报告.md`＞「自动化测试 — ISSUE-11/T10 复测」；截图 `/tmp/issue11-compare-table.png`、`/tmp/issue11-why.png`。
+- 测完已关 :3210（无僵尸进程）。建议放行合并。
