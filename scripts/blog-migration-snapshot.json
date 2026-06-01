@@ -1,0 +1,28 @@
+[
+  {
+    "slug": "why-parquet-for-three-signals",
+    "title": "Why we put logs, metrics, and traces in the same Parquet store",
+    "excerpt": "The cost of having three signals live in three stores isn't query latency. It's the engineering you don't ship because the integration tax ate the quarter.",
+    "date": "2026-05-20",
+    "author": "molesignal team",
+    "readTimeMinutes": 9,
+    "tags": [
+      "Architecture",
+      "Storage"
+    ],
+    "body": "When we sketched the data plane, the easy answer was three stores: one for logs (column-oriented), one for metrics (TSDB), one for traces (graph-aware). Industry default. That's what the OSS stack does (Loki + Mimir + Tempo), and it's what most SaaS does under the hood.\n\nBut every cross-signal jump in that world is a join across three engines. trace_id → log line → host metric becomes three queries with three semantics. Schema evolves separately on each side. The thing your SRE actually needs at 3am — \"show me everything for trace_id abc123 in this minute\" — turns into copy-paste.\n\nWe tried the alternative: all three signals serialize to Parquet on object storage. Logs are wide, sparse rows. Metrics are narrow, dense rows. Traces are nested but flatten under Arrow lists. The columnar layout means prune-and-scan stays cheap even when 90% of the columns are empty.\n\nThe cost-of-correlation question becomes a planner question, not a serialization question. We get to write one query language (SQL) once, push down to DataFusion, and let the planner figure out which columns and which time windows to touch.\n\nIt's not free. The Parquet rotation under spiky ingest is harder than partition-tuning Loki. Cardinality limits on metrics are harder when they share a writer with logs. We're solving these in the open (see /roadmap).\n\nBut we'd rather solve fewer problems harder than five problems shallower."
+  },
+  {
+    "slug": "what-we-learned-from-100-incident-reviews",
+    "title": "What we learned reading 100 incident reviews",
+    "excerpt": "We read every public Datadog/Grafana/Splunk incident review we could find. The top finding wasn't query latency — it was context switching.",
+    "date": "2026-04-08",
+    "author": "molesignal team",
+    "readTimeMinutes": 7,
+    "tags": [
+      "Research",
+      "Community"
+    ],
+    "body": "Over the holidays we read 100 publicly written incident reviews — Cloudflare, GitHub, Shopify, Discord, smaller startups. The pattern that surprised us wasn't query latency. It was tab fatigue.\n\nIn 73 of 100 reviews, the responder mentioned switching between three or more dashboards or query interfaces during the active incident. In 41, they specifically called out \"we lost time pasting trace IDs / timestamps\" or equivalent.\n\nThis is the gap molesignal exists to close.\n\nA few other findings, sorted by surprise:\n\n- 18 reviews praised their tooling's UI explicitly. The rest either complained or didn't mention it.\n- 9 reviews said the observability cost was a factor in choosing not to retain enough data to debug fully.\n- 6 mentioned that bringing context to on-call was the most expensive part of being on-call.\n- 0 reviews praised the alert evaluation latency. (Conspicuous silence.)\n\nWe're publishing the open list of links in /docs after v1.0. Until then, if you've read more than we have, come tell us at /design-partner."
+  }
+]

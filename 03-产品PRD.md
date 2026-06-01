@@ -225,6 +225,15 @@ molesignal 凭什么、用户为什么用/留下：
 - **密钥政策**：本期不提供 `RESEND_API_KEY`/`RESEND_PARTNER_AUDIENCE_ID`，按"代码就绪 + 缺 env 降级（200+warn+不报错+前端成功态）+ 姓名拆分/入库接线单测覆盖"判 `[x]`；真实入库联调（AC8：audience 可见/first·last 正确/幂等/可导出，呼应 T18）延后补密钥复验。
 - 完整用户故事与 AC1–AC8 见 `backlog/ISSUE-9.md`。
 
+### ISSUE-15 · 内容迁 MDX（blog 接线）— T14 / P1-1（2026-06-02）
+- **承接 PRD**：§4.2 P1-1「内容可不改代码更新——MDX 接线」（D3 内容系统）+ §7-9 选型（已定 MDX，依赖均已装）。命中红线②（动内容契约）→ full 道，EXTRA_ROLES: none。是 M2 运营可持续的第一块；T15（富文本渲染）/T21（中文）/T22（CompareTable 动态化）/T24（运营文档）均依赖它。
+- **现状缺口（已核实）**：`content/blog.ts` 硬编码 `BLOG_POSTS`（2 篇，`body` 纯文本），运营更新内容须改 TS 代码再发版；MDX 依赖装了未接线（`next.config.ts` 注释承认）。
+- **细化结论**：① `next.config.ts` 接 `@next/mdx`+`remark-gfm`；② 2 篇迁到 `content/blog/*.mdx`（frontmatter=meta，正文=body）；③ provider 内部改读 MDX（gray-matter 解 frontmatter），**导出契约与导入路径不变**；④ `body` 在 T14 仍为 string（gray-matter `content`），现有段落渲染零改动 → "改内容不改组件"成立；富文本渲染留 T15。
+- **关键纠偏（重要）**：07-T14 与 06 §3.2 写的 `lib/content/blog.ts` provider + `getAllPosts()/getPost(slug)` 是架构师当初提案，**M1 实际落地未采用**。真实契约 = `@/content/blog` 的 `BLOG_POSTS`/`getPostBySlug`/`getRelatedPosts`/`type BlogPost`，被 4 处消费（`blog/page.tsx`、`blog/[slug]/page.tsx`、`sitemap.ts`、`opengraph-image.tsx`）。「签名不变」= 保此真实契约不变、4 消费方零改 import；**禁止**为对齐旧文档引入 `getAllPosts/getPost` 或迁新路径（反而逼改消费方）。
+- **明确不做**：不迁 changelog/roadmap（仅 blog）、不做富文本/Shiki 渲染（T15）、不把 body 改成 MDX 组件、不做 ZH blog 内容（保持 `zhUnavailable` 提示，归 T21）、不新增/删文章、不改 meta 字段语义/表单/API/schema。
+- **密钥政策**：纯前端内容接线，**不依赖任何外部 env**，QA 可全程本地验证（build/check/E2E + 浏览器逐字核对迁移无丢 + 临时加 .mdx 自证运营可改性）。
+- 完整用户故事与 AC1–AC9 见 `backlog/ISSUE-15.md`。
+
 ---
 
 **产出路径**：`/Users/ukulele/claude-project/self-code/workspace/molesignal-website/03-产品PRD.md`

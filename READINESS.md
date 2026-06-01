@@ -1,4 +1,4 @@
-READINESS_SCORE: 13/31
+READINESS_SCORE: 15/31
 
 # READINESS · molesignal-website 上线就绪清单
 
@@ -30,7 +30,7 @@ READINESS_SCORE: 13/31
 
 ### 信任 / 合规（D1/D5/D8 红线 · T04/T06）
 - [x] **死链 / 画饼治理**：Footer 移除 docs 链接、Discord 改禁用态（cursor-default+title，非 `href="#"`）、Download 改 coming-soon/锚到 /start binary；TopNav 移除 Docs 入口；community-callout Discord 同改禁用态；QuickStart helm/binary tab 加 "v1.0 target" notice；`messages/{en,zh}.json` 文案同步（T04） ✅ ISSUE-3 closed · QA PASS 2026-06-02（13/13 浏览器 E2E 全绿：无 docs 锚点/无 `href="#"`/Discord+Twitter 双处禁用态/Download→`/start#install` 真实跳转+滚入视口/helm+binary v1 notice 双语；messages 双语 parity 466/466；T04 范围内链全 2xx。唯一 lint:links 失败项 `/opengraph-image` 404 经核为预存且与 T04 无关——故下条「无死链门禁」仍保持 `[ ]`）
-- [ ] **无死链门禁**：`pnpm lint:links` 全 2xx，全站无 `href="#"` 占位（T04 验收聚合）
+- [x] **无死链门禁**：`pnpm lint:links` 全 2xx，全站无 `href="#"` 占位（T04 验收聚合）✅ ISSUE-14 closed · QA PASS 2026-06-02（连带根因修复：`proxy.ts` matcher 漏排根级 `/opengraph-image` 致 404，补排除项后 `lint:links` **0/33 失败**、`/opengraph-image → HTTP 200 image/png`；全站 `href="#"` 仅存于注释说明，无真实占位链接）
 - [x] **隐私 / 条款真实法务文本**：`/privacy` `/terms` 已用真实文本替换 LegalStub（覆盖邮箱收集、Plausible 无 cookie 分析、第三方 Resend），EN/ZH 双语在 `messages/*` 齐全，更新日期准确，页内链 2xx（T06）〔需外部:法务文本来源由用户/模板审核确认〕 ✅ ISSUE-4 closed · QA PASS 2026-06-02（AC1–AC8 全实测通过：LegalStub 已彻底移除→改用 `LegalDocument` 组件、LAST_UPDATED=2026-06-02、founders@ 为真实 mailto 锚点；隐私六覆盖点 EN 渲染 HTML 16/16 grep PASS；EN/ZH `legal` keyset 完全一致；本工单四法务页+站内链 lint:links 全 2xx；security-auditor AC5 事实核验纠偏后通过。模板自拟法务文本依本期诚实文案政策判 [x]，日后法务定稿可复审）
 
 ### UI 按 05 改版（D1/D8 · T08/T09/T10/T08b）
@@ -45,7 +45,7 @@ READINESS_SCORE: 13/31
 
 ### 自动化守护（D8/D9 · T12/T13）
 - [x] **关键路径 E2E**：Playwright 已装，`pnpm test:e2e` 本地全绿，覆盖两表单端到端（mock API 2xx→成功卡片）、locale 切换保滚动、CodeBlock 复制、内链 2xx、限流 429 态（T12） ✅ ISSUE-13 closed · QA PASS 2026-06-02（light 道：开发→代码审查→独立 QA。新增 `tests/e2e/issue13-t12-critical-paths.spec.ts`（7 用例）+ `test:e2e` 脚本；真实 chromium 跑生产 `next start`，全量 `pnpm test:e2e` **66/66 PASS** 零退化（本工单 7 + 既有 59 回归）；两表单 2xx 持久成功卡 + 429 amber 保留态、locale EN→ZH 保滚动（1200px→切后 >600px）、CodeBlock 翻转 Copied、12 条内链 EN+ZH 全 2xx。systematic-debugging 根因修复：`locale-switcher.tsx` 缺 `scroll:false` 致切换滚顶，E2E 首跑捕获→修复→#52 用例守卫。`pnpm check`(tsc0/eslint0/a11y26/26/i18n511=511)+`build` exit 0）
-- [ ] **CI 门禁**：`.github/workflows/ci.yml` 跑 `pnpm check`+`build`+`lint:links`+`lint:quickstart`+E2E，PR 失败阻断合并，缓存 pnpm store（T13）
+- [x] **CI 门禁**：`.github/workflows/ci.yml` 跑 `pnpm check`+`build`+`lint:links`+`lint:quickstart`+E2E，PR 失败阻断合并，缓存 pnpm store（T13）✅ ISSUE-14 closed · QA PASS 2026-06-02（light 道：开发→代码审查→独立 QA。单 job `quality-gate` 五道闸按序独立成 step（check→lint:quickstart→build→lint:links→test:e2e），任一失败即红；`cache: pnpm` 按 lockfile keyed、`concurrency` 取消旧跑、`permissions: contents:read` 最小权限、无不可信 `github.event.*` 入参。QA 本地按 ci.yml 同序复跑五道闸**全绿**（check 0/tsc·eslint·a11y26·i18n511、lint:quickstart 仓内5/5+跨仓诚实SKIP、build 含 `ƒ /opengraph-image`、lint:links 0/33、test:e2e 66 passed），证明门禁非空转可通过。AC② PR 红阻断由 `.github/branch-protection.md` 文档化 required check=`quality-gate`，需仓库 admin 在 GitHub 一次性勾选——属预期人工运维项，非代码缺陷不阻断。）
 - [ ] **M1 已实现项回归不退化**：#1 Hero、#2 CrossSignalDemo、#7 架构图、#8 sticky TOC、#10 CodeBlock 复制、#16 RSS、#18 OG 图、#19 sitemap/robots/hreflang、#20 主题切换防闪烁、#21 语言切换保滚动、#23 PreReleaseBanner、#25 a11y、#27 Pricing 在 UI 改版后经 QA 验证均端到端可用无回归（PRD §4.1 回归范围）
 
 ---
