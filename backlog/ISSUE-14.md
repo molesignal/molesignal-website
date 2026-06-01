@@ -2,7 +2,7 @@
 id: ISSUE-14
 type: feature
 title: [T13] CI门禁(GitHub Actions)
-status: in_review
+status: verifying
 priority: P0
 assignee: fullstack-engineer
 created: 2026-06-01
@@ -64,6 +64,40 @@ updated: 2026-06-02
 
 未自动修复任何项：1 触及已验证的 E2E 配置（交 QA 复跑把关），2/3 为文档/可观测性优化，均非必改，不阻断放行。
 
+## QA 验证结果（qa-automation, 2026-06-02）
+
+**VERDICT: PASS** —— 3/3 验收标准满足；CI 五道闸在本地按 ci.yml 同序真实跑通，全绿，0 阻断缺陷。
+
+环境：Node v23.6.1 / pnpm 11.5.0（CI 用 Node20/pnpm9，lockfile `9.0` 与 pnpm9 `--frozen-lockfile` 兼容）。逐闸结果均按 `.github/workflows/ci.yml` 的实际命令复跑：
+
+| # | 闸（CI step） | 命令 | 结果 | 退出码 |
+|---|---|---|---|---|
+| 1 | Lint & static | `pnpm check` | tsc/eslint 0 错；a11y contrast **0/26 fail**；i18n **511=511** | 0 |
+| 2 | QuickStart sync | `pnpm lint:quickstart` | 仓内 **5/5 过**，跨仓 4 项诚实 SKIP（父 README 缺失，与 CI 同态） | 0 |
+| 3 | Build | `pnpm build` | 编译成功；产出含 `ƒ /opengraph-image` | 0 |
+| 4 | Link check | `next start -p3000` + `SITE=… pnpm lint:links` | **0/33 失败**；直探 `/opengraph-image → HTTP 200 image/png`（404 已修复） | 0 |
+| 5 | E2E | `pnpm test:e2e` | **66 passed**（37.0s，自带 :3210 server，中间件改动零回归） | 0 |
+
+逐条核对：
+- **AC① ci.yml 在 PR/push 跑 check+lint:quickstart+build+lint:links+test:e2e**：✅ YAML 解析确认 `on: {push:[main], pull_request:[main]}`；job `quality-gate` 11 个 step 顺序含全部 5 道闸，任一失败即红。**且 5 道闸本地实跑全绿**，证明门禁本身可通过、非空转。
+- **AC② PR 红阻断（required check `quality-gate`）**：✅ `.github/branch-protection.md` 文档化仓库分支保护配置 + `gh api` CLI 等价命令；workflow 无法自施加该仓库设置，属预期的一次性人工运维项（非代码缺陷，不阻断）。
+- **AC③ 缓存 pnpm store**：✅ `actions/setup-node@v4` 设 `cache: pnpm`，按 `pnpm-lock.yaml` keyed（YAML 解析确认）。
+
+连带根因修复均复验通过：`proxy.ts` matcher 修复使根级 `/opengraph-image` 返 200（此前 404，连带让 READINESS「无死链门禁」可转绿）；`check-quickstart-sync.ts` 父 README 缺失时诚实 SKIP 跨仓项、仓内项照跑，逻辑无放水。
+
+缺陷：**0 个**（含 0 阻断）。代码审查的 3 项建议（E2E artifact 恒空、branch-protection.md 的 `gh api -f` 布尔传参、link-check 超时提示）均为文档/可观测性优化，不影响门禁正确性与本工单验收，可后续小工单跟进，不阻断放行。
+
+清理：测试用 `next start`（:3000/:3210）已全部 kill，无僵尸占端口。
+
+放行建议：**通过，可合并回 main**。合并后请仓库 admin 按 `branch-protection.md` 在 GitHub 勾选 required check = `quality-gate` 以落地 AC②的强制阻断。
+
+回归重跑命令（项目根目录，已配置 Node/pnpm）：
+```bash
+pnpm check && pnpm lint:quickstart && pnpm build \
+  && (pnpm exec next start -p 3000 & SP=$!; sleep 4; SITE=http://localhost:3000 pnpm lint:links; kill $SP) \
+  && pnpm test:e2e
+```
+
 ## 处理记录
 - 2026-06-01 23:30:28 工单创建（feature / P0）
 - 2026-06-02 07:14:31 set assignee=fullstack-engineer
@@ -73,3 +107,4 @@ updated: 2026-06-02
 - 2026-06-02 07:14:31 EXTRA_ROLES: none
 - 2026-06-02 07:14:46 set status=in_progress
 - 2026-06-02 07:23:17 set status=in_review
+- 2026-06-02 07:26:33 set status=verifying

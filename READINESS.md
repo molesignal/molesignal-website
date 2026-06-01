@@ -1,4 +1,4 @@
-READINESS_SCORE: 12/31
+READINESS_SCORE: 13/31
 
 # READINESS · molesignal-website 上线就绪清单
 
@@ -44,7 +44,7 @@ READINESS_SCORE: 12/31
 - [x] **GitHub stats/changelog 兜底标注**：`getRepoStats().fallback`/空 contributors/空 releases 三兜底态被 UI 正确消费不伪造数字；changelog 加 "live from GitHub"/"previewing" pill、stats chip 兜底显示 "★ on GitHub" 无数字、贡献者墙空态 "Be the first contributor"；仓库公开+token 时无需改代码即切真实（T07）〔需外部:GITHUB_TOKEN + 仓库公开状态 才能验真实数据切换；缺失时验兜底态〕 ✅ ISSUE-7 closed · QA PASS 2026-06-02（真实 next dev SSR + curl HTML 断言 + Playwright 截图 + 离线回归 `test:github` 22/22：三兜底态零伪造数字（`<span>数字</span>` 命中恒 0）；changelog previewing 灰 pill 双语；贡献者空态双语无假头像；AC⑤ 现场命中真实数据路径——该仓实测已公开 0★/0 release，同份代码无改动自动切真实。非阻断：工单"仓库未公开"前提已过时、建生产配 GITHUB_TOKEN 消限流抖动。AC⑤真实 token 联调延后复验）
 
 ### 自动化守护（D8/D9 · T12/T13）
-- [ ] **关键路径 E2E**：Playwright 已装，`pnpm test:e2e` 本地全绿，覆盖两表单端到端（mock API 2xx→成功卡片）、locale 切换保滚动、CodeBlock 复制、内链 2xx、限流 429 态（T12）
+- [x] **关键路径 E2E**：Playwright 已装，`pnpm test:e2e` 本地全绿，覆盖两表单端到端（mock API 2xx→成功卡片）、locale 切换保滚动、CodeBlock 复制、内链 2xx、限流 429 态（T12） ✅ ISSUE-13 closed · QA PASS 2026-06-02（light 道：开发→代码审查→独立 QA。新增 `tests/e2e/issue13-t12-critical-paths.spec.ts`（7 用例）+ `test:e2e` 脚本；真实 chromium 跑生产 `next start`，全量 `pnpm test:e2e` **66/66 PASS** 零退化（本工单 7 + 既有 59 回归）；两表单 2xx 持久成功卡 + 429 amber 保留态、locale EN→ZH 保滚动（1200px→切后 >600px）、CodeBlock 翻转 Copied、12 条内链 EN+ZH 全 2xx。systematic-debugging 根因修复：`locale-switcher.tsx` 缺 `scroll:false` 致切换滚顶，E2E 首跑捕获→修复→#52 用例守卫。`pnpm check`(tsc0/eslint0/a11y26/26/i18n511=511)+`build` exit 0）
 - [ ] **CI 门禁**：`.github/workflows/ci.yml` 跑 `pnpm check`+`build`+`lint:links`+`lint:quickstart`+E2E，PR 失败阻断合并，缓存 pnpm store（T13）
 - [ ] **M1 已实现项回归不退化**：#1 Hero、#2 CrossSignalDemo、#7 架构图、#8 sticky TOC、#10 CodeBlock 复制、#16 RSS、#18 OG 图、#19 sitemap/robots/hreflang、#20 主题切换防闪烁、#21 语言切换保滚动、#23 PreReleaseBanner、#25 a11y、#27 Pricing 在 UI 改版后经 QA 验证均端到端可用无回归（PRD §4.1 回归范围）
 
