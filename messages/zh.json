@@ -99,6 +99,7 @@
     "title": "你本可以自己写。",
     "titleHighlight": "但不必付 Datadog 的账单。",
     "subtitle": "日志、指标、链路 —— 同一存储、同一引擎、自托管。OpenTelemetry 原生。",
+    "command": "自托管 · OpenTelemetry 原生 · 日志 + 指标 + 链路",
     "preReleasePill": "pre-1.0 · 公开构建中"
   },
 
@@ -110,6 +111,7 @@
     "whyBody": "商业 SaaS 信号串得通，但贵；OSS 拼装免费，但碎。molesignal 串得通，又自托管。",
     "archTitle": "一个存储。一个引擎。一份账单。",
     "archBody": "对象存储上的 Parquet + DataFusion + Arrow。三种信号共享数据层。",
+    "startPill": "5 分钟",
     "startTitle": "五分钟跑出第一条查询",
     "startBody": "一行命令起步。Postgres、MinIO 和 molesignal standalone。",
     "startTerminalLabel": "终端",

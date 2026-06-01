@@ -1,4 +1,4 @@
-READINESS_SCORE: 8/31
+READINESS_SCORE: 9/31
 
 # READINESS · molesignal-website 上线就绪清单
 
@@ -23,7 +23,7 @@ READINESS_SCORE: 8/31
 ### 候补与转化真入库（D2/D9 红线 · T11/T01/T02）
 - [x] **限流可靠化**：`lib/rate-limit.ts` 改 async 用 `@upstash/ratelimit`+Upstash REST；脚本/单测可复现"连续请求超 cloud 10/h 或 dp 5/h 阈值后返回 429 且带 `Retry-After` 头"；缺 `UPSTASH_*` env 时回退内存 Map 不崩溃并打 warn 日志（T11）〔需外部:UPSTASH_REDIS_REST_URL/TOKEN 才能验真实跨实例限流〕 ✅ ISSUE-1 closed · QA PASS 2026-06-02（HTTP 层真实复现 429+Retry-After:3600；内存兜底 warn-once；bogus env 验 fail-open 全 200；H1 取信源修复经探针验证。AC8 真实跨实例延后补密钥复验）
 - [x] **Cloud 候补真入库**：`POST /api/cloud-waitlist` 提交合法 email 后，该 email 出现在 `RESEND_CLOUD_AUDIENCE_ID` 对应 Resend audience（幂等：重复邮箱不报错仍 200），且 founders 收到通知邮件；缺 audience env 时跳过入库仍发通知仍返 200 + warn；前端成功/失败态正确（T01）〔需外部:RESEND_API_KEY + RESEND_CLOUD_AUDIENCE_ID〕 ✅ ISSUE-8 closed · QA PASS 2026-06-02（full 道：开发→代码审查→独立 QA。新增 `lib/resend-audiences.ts` addContact provider（409/already-exists 幂等视成功、缺 key/缺 id 优雅降级 skipped、运行时故障 fail-soft 不抛不阻塞）；route.ts 成功路径 `await Promise.allSettled` 并行触发入库+founders 通知，任一失败仍 200；`test:audiences` 26/26 全过；伪 env 真实起服务取证——日志证明确实向 CLOUD_AUDIENCE 端点发出 POST 且响应仍 HTTP 200（fail-soft）。AC8 真实 Resend 入库联调延后补密钥复验）
-- [ ] **Design Partner 申请持久化**：5 字段 zod 校验通过后 email 入 `RESEND_PARTNER_AUDIENCE_ID`（name 拆 first/last，幂等）；通知邮件正文含全 5 字段且 `replyTo`=申请人；蜜罐字段被填时 silent 200 不入库；缺 env 优雅降级 + 日志；成功态原位切换持久卡片（T02）〔需外部:RESEND_API_KEY + RESEND_PARTNER_AUDIENCE_ID〕
+- [x] **Design Partner 申请持久化**：5 字段 zod 校验通过后 email 入 `RESEND_PARTNER_AUDIENCE_ID`（name 拆 first/last，幂等）；通知邮件正文含全 5 字段且 `replyTo`=申请人；蜜罐字段被填时 silent 200 不入库；缺 env 优雅降级 + 日志；成功态原位切换持久卡片（T02）〔需外部:RESEND_API_KEY + RESEND_PARTNER_AUDIENCE_ID〕 ✅ ISSUE-9 closed · QA PASS 2026-06-02（full 道：开发→代码审查→独立 QA。新增 `lib/split-name.ts`（确定性首空白切分纯函数，双词/单词/三词带中点/前后空格塌缩/纯空格五例单测覆盖）；route.ts 蜜罐 return 后 `Promise.allSettled([addContact(仅 email+first/last), sendEmail(既有通知)])` 并行 fire-and-forget，缺 env 双降级仍 200+warn；`test:design-partner` 全过（AC1 zod 400×6/200×2 + AC2 入库 POST 精确 body + AC5① body keys 最小化不外泄 companySize/stack/pain/IP + AC3/AC4 降级 + 蜜罐零副作用 + 密钥不入日志）；真实 next start curl + 伪 env 探针证实确发出 contacts POST；E2E 14/14（AC6 2xx 后 track、AC7 成功态 role=status 原位持久卡）。AC8 真实 Resend 写入联调延后补密钥复验。非阻塞观察：蜜罐 silent-200 分支因 zod max(0) 成死代码（与 cloud-waitlist 同构，安全保证仍成立）、lib/email.ts 错误日志未截断 body 待另开工单）
 
 ### 转化可观测（D7 · T05）
 - [x] **埋点 11 点位接线**：§4.4 所列 11 个事件在对应组件真实调用 `track()`（含规范 props），两表单 submit 事件在 API 2xx 后才触发；QA 用 network 面板验证 prod+配域名时 Plausible 收到对应请求，无遗漏点位（T05）〔需外部:NEXT_PUBLIC_PLAUSIBLE 域名配置 才能验真实上报；本地可验 track() 被调用〕 ✅ ISSUE-2 closed · QA PASS 2026-06-02（真实浏览器 E2E 14/14：spy window.plausible 验 11 事件 snake_case 名+props 规范；AC3 两表单仅 API 2xx 后触发、429/500/蜜罐均不触发；AC4 去重；AC5 无 PII；pnpm check+build 过。AC8 真实 Plausible 上报延后补域名复验。非阻断观察：委托器 source_page 未去 locale，data-analyst 补域名前统一）

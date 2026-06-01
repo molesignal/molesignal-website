@@ -2,7 +2,7 @@
 id: ISSUE-9
 type: feature
 title: [T02] Design Partner申请持久化
-status: verifying
+status: closed
 priority: P0
 assignee: backend-engineer
 created: 2026-06-01
@@ -133,3 +133,5 @@ updated: 2026-06-02
   **AC 结论**：AC1–AC7 全部经真实执行客观验证通过；AC8 真实 Resend 写入联调按本期缺密钥政策延后补密钥复验，不阻塞 DONE。
   **非阻塞观察项**（复核确认不影响放行）：① 蜜罐 silent-200 分支为死代码（zod max(0) 使填充值在校验层即 400，与 cloud-waitlist 同构，安全保证仍成立）；② lib/email.ts 错误日志未截断 body（pre-existing，本单不动 sendEmail，风险低，建议另开工单）。详见 08-测试报告.md「ISSUE-9」节。
 - VERDICT: PASS
+- 2026-06-02 05:16:56 set status=closed
+- 2026-06-02 05:16:56 引擎周期#9: QA PASS, 关闭

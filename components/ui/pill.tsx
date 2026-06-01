@@ -9,7 +9,7 @@ const pillVariants = cva(
     variants: {
       variant: {
         default: "bg-surface-muted text-fg-muted",
-        brand: "bg-primary-bg text-primary",
+        brand: "bg-primary/10 text-primary",
         marketing:
           "bg-marketing-accent-dim text-marketing-accent",
         success: "bg-green-dim text-green",

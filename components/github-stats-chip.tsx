@@ -49,7 +49,7 @@ export async function GitHubStatsChip({
         data-analytics-event="github_star_click"
         data-analytics-source-page
         className={cn(
-          "border-border bg-surface hover:border-primary hover:shadow-glow-indigo duration-fast group flex items-center gap-4 rounded-lg border p-4 transition-all",
+          "border-border bg-surface hover:border-primary duration-fast group flex items-center gap-4 rounded-lg border p-4 transition-colors",
           className,
         )}
       >
@@ -57,10 +57,10 @@ export async function GitHubStatsChip({
           <Star className="text-primary" size={22} aria-hidden />
         </div>
         <div className="flex flex-col">
-          <span className="text-fg font-display-strong text-display-md">
+          <span className="text-primary font-mono text-mono-2xl leading-none">
             {stars ?? "★"}
           </span>
-          <span className="text-fg-muted text-xs">
+          <span className="text-fg-muted mt-1 font-mono text-xs">
             {ago ? `${t("updatedPrefix")} ${ago}` : t("starOnGithub")}
           </span>
         </div>

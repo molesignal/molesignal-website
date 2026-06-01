@@ -99,6 +99,7 @@
     "title": "What you'd build if you had time.",
     "titleHighlight": "Without the Datadog bill.",
     "subtitle": "Logs, metrics, traces — one storage, one engine, self-hosted. OpenTelemetry-native.",
+    "command": "self-hosted · OpenTelemetry-native · logs + metrics + traces",
     "preReleasePill": "pre-1.0 · building in the open"
   },
 
@@ -110,6 +111,7 @@
     "whyBody": "Commercial SaaS is correlated but expensive. OSS stacks are free but fragmented. molesignal is correlated and self-hosted.",
     "archTitle": "One storage. One engine. One bill.",
     "archBody": "Parquet on object storage + DataFusion + Arrow. Three signals share the data plane.",
+    "startPill": "5 minutes",
     "startTitle": "Five minutes to your first query",
     "startBody": "One command. Postgres, MinIO, and molesignal standalone.",
     "startTerminalLabel": "terminal",

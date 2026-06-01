@@ -4,7 +4,6 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-import { Pill } from "@/components/ui/pill";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
@@ -60,51 +59,55 @@ export function CrossSignalDemo({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "border-border bg-surface shadow-hero-card relative overflow-hidden rounded-2xl border p-6 md:p-8",
+        "border-border bg-surface shadow-hero-card relative overflow-hidden rounded-2xl border",
         className,
       )}
     >
-      {/* Header chrome */}
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div className="space-y-1">
-          <Pill variant="marketing">{t("pill")}</Pill>
-          <h3 className="text-fg text-display-md font-display tracking-tight">
-            {t("heading")}
-          </h3>
-        </div>
-        <div
-          role="tablist"
-          aria-label={t("tabAria")}
-          className="border-border bg-bg-2 inline-flex rounded-md border p-1"
-        >
-          {TAB_KEYS.map((key) => {
-            const isActive = active === key;
-            return (
-              <button
-                key={key}
-                role="tab"
-                aria-selected={isActive}
-                type="button"
-                onClick={() => pick(key)}
-                className={cn(
-                  "duration-fast inline-flex h-7 items-center rounded-[4px] px-3 text-xs font-strong transition-colors",
-                  isActive
-                    ? "bg-primary text-primary-foreground"
-                    : "text-fg-muted hover:bg-bg-hover hover:text-fg",
-                )}
-              >
-                {t(`tabs.${key}`)}
-              </button>
-            );
-          })}
-        </div>
+      {/* Terminal chrome — three-dot header + attached tab bar */}
+      <div className="border-border bg-bg-2 flex items-center gap-2 border-b px-4 py-2.5">
+        <span className="flex gap-1.5" aria-hidden>
+          <span className="bg-red/70 h-3 w-3 rounded-full" />
+          <span className="bg-marketing-accent/70 h-3 w-3 rounded-full" />
+          <span className="bg-green/70 h-3 w-3 rounded-full" />
+        </span>
+        <span className="text-fg-muted ml-2 truncate font-mono text-xs">
+          {t("heading")}
+        </span>
+      </div>
+      <div
+        role="tablist"
+        aria-label={t("tabAria")}
+        className="border-border bg-bg-2 flex border-b"
+      >
+        {TAB_KEYS.map((key) => {
+          const isActive = active === key;
+          return (
+            <button
+              key={key}
+              role="tab"
+              aria-selected={isActive}
+              type="button"
+              onClick={() => pick(key)}
+              className={cn(
+                "duration-fast relative inline-flex h-9 items-center px-4 text-xs font-strong transition-colors",
+                isActive ? "text-fg" : "text-fg-muted hover:text-fg",
+              )}
+            >
+              {t(`tabs.${key}`)}
+              {/* Active underline — unified 3px brand active rule */}
+              {isActive && (
+                <span
+                  aria-hidden
+                  className="bg-primary absolute inset-x-0 bottom-0 h-[3px]"
+                />
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {/* Stage */}
-      <div
-        className="bg-bg-2 border-border mt-6 overflow-hidden rounded-lg border"
-        aria-live="polite"
-      >
+      <div className="bg-bg-2 min-h-[180px]" aria-live="polite">
         <AnimatePresence mode="wait">
           <motion.div
             key={active}
@@ -114,7 +117,7 @@ export function CrossSignalDemo({ className }: { className?: string }) {
             animate={{ opacity: 1, y: 0 }}
             exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
             transition={{ duration: 0.18 }}
-            className="p-4"
+            className="p-4 md:p-6"
           >
             {active === "trace" && <TraceView />}
             {active === "logs" && <LogsView />}
@@ -126,9 +129,11 @@ export function CrossSignalDemo({ className }: { className?: string }) {
       </div>
 
       {/* Footer caption */}
-      <p className="text-fg-muted mt-4 text-xs">
+      <p className="text-fg-muted border-border bg-surface border-t px-4 py-3 text-xs">
         {t("footerPrefix")}{" "}
-        <code className="font-mono">trace_id={TRACE_ID}</code>{" "}
+        <code className="bg-marketing-accent-dim text-marketing-accent rounded px-1 font-mono">
+          trace_id={TRACE_ID}
+        </code>{" "}
         {t("footerSuffix")}
       </p>
     </div>
