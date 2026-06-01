@@ -1,0 +1,626 @@
+{
+  "common": {
+    "tryIt": "Try it",
+    "star": "Star",
+    "starOnGithub": "Star on GitHub",
+    "becomeDesignPartner": "Become a Design Partner",
+    "joinWaitlist": "Join waitlist",
+    "readDocs": "Read the docs",
+    "readArchitecture": "Read the architecture",
+    "seeFullComparison": "See full comparison",
+    "fullGuide": "Full guide",
+    "copy": "Copy",
+    "copied": "Copied",
+    "loading": "Loading…",
+    "submit": "Submit",
+    "submitting": "Submitting…",
+    "next": "Next",
+    "previous": "Previous",
+    "comingSoon": "Coming soon",
+    "openIssue": "Open an issue",
+    "applyDesignPartner": "Apply as Design Partner",
+    "readCode": "Read the code",
+    "backToTop": "Back to top",
+    "viewOnGithub": "View on GitHub"
+  },
+
+  "nav": {
+    "why": "Why molesignal",
+    "architecture": "Architecture",
+    "quickStart": "Quick Start",
+    "pricing": "Pricing",
+    "cloud": "Cloud",
+    "resources": "Resources",
+    "docs": "Docs",
+    "docsSub": "Reference & guides",
+    "blog": "Blog",
+    "blogSub": "Engineering notes",
+    "download": "Download",
+    "downloadSub": "Releases & binaries",
+    "menu": "Menu",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "skipToContent": "Skip to content",
+    "themeLabel": "Theme",
+    "languageLabel": "Language"
+  },
+
+  "banner": {
+    "preRelease": "We're pre-1.0 — building in the open. Help shape v1 →",
+    "dismiss": "Dismiss banner"
+  },
+
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+
+  "locale": {
+    "label": "Language",
+    "en": "English",
+    "zh": "中文"
+  },
+
+  "footer": {
+    "product": "Product",
+    "resources": "Resources",
+    "community": "Community",
+    "legal": "Legal",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "cloudComing": "Cloud coming · Join waitlist",
+    "copyright": "© {year} molesignal · Apache 2.0 licensed",
+    "links": {
+      "why": "Why molesignal",
+      "architecture": "Architecture",
+      "roadmap": "Roadmap",
+      "changelog": "Changelog",
+      "pricing": "Pricing",
+      "cloud": "Cloud",
+      "docs": "Docs",
+      "quickStart": "Quick Start",
+      "blog": "Blog",
+      "download": "Download",
+      "designPartner": "Design Partner",
+      "github": "GitHub",
+      "discord": "Discord",
+      "twitter": "Twitter / X",
+      "privacy": "Privacy",
+      "terms": "Terms"
+    }
+  },
+
+  "hero": {
+    "title": "What you'd build if you had time.",
+    "titleHighlight": "Without the Datadog bill.",
+    "subtitle": "Logs, metrics, traces — one storage, one engine, self-hosted. OpenTelemetry-native.",
+    "preReleasePill": "pre-1.0 · building in the open"
+  },
+
+  "home": {
+    "demoTitle": "Three signals. One trace_id. Five seconds.",
+    "demoBody": "A trace, its logs, and the host metric for the same minute — natively correlated at the data plane, not stitched in a dashboard.",
+    "demoCta": "How does this work? →",
+    "whyTitle": "vs the two paths everyone else takes",
+    "whyBody": "Commercial SaaS is correlated but expensive. OSS stacks are free but fragmented. molesignal is correlated and self-hosted.",
+    "archTitle": "One storage. One engine. One bill.",
+    "archBody": "Parquet on object storage + DataFusion + Arrow. Three signals share the data plane.",
+    "startTitle": "Five minutes to your first query",
+    "startBody": "One command. Postgres, MinIO, and molesignal standalone.",
+    "startTerminalLabel": "terminal",
+    "statsTitle": "Building in the open",
+    "statsBody": "Every commit lands publicly. Every issue is searchable. Pre-1.0, every voice still moves the roadmap.",
+    "designPartnerHook": "Be early. Be heard.",
+    "designPartnerBody": "We're recruiting 5–15 mid-size teams to help shape v1. Weekly founders chat. Real influence on the product. Free.",
+    "designPartnerPill": "design partner"
+  },
+
+  "why": {
+    "metaTitle": "Why molesignal",
+    "metaDescription": "How molesignal compares to Datadog, New Relic, Splunk, and OSS stacks like Loki + Mimir + Tempo. With a cost calculator.",
+    "title": "Why molesignal",
+    "lede": "The three observability paths, and why we built a fourth.",
+    "pill": "comparison",
+    "pathsTitle": "Three paths, each with a tax",
+    "saasTitle": "Commercial SaaS",
+    "saasBody": "Datadog, New Relic, Splunk. Three signals are correlated, but the bill grows linearly. Mid-size teams pay $2k–10k/mo for 100 GB/day. Cut ingest and you lose visibility.",
+    "ossTitle": "OSS stack",
+    "ossBody": "Loki + Mimir + Tempo + Grafana. Free, but logs / metrics / traces live in three stores with three query languages. The trace ↔ log ↔ host metric jump is manual.",
+    "moleTitle": "molesignal",
+    "moleBody": "One storage layer (Parquet on object store), one query engine (DataFusion + Arrow), one metadata layer (Postgres). Three signals correlated at the data plane. Self-hosted.",
+    "compareTitle": "Side by side",
+    "compareCaption": "Every claim is testable. Spin up the sandbox, ingest your own data, and reproduce.",
+    "costTitle": "Run the numbers",
+    "costBody": "Pick your real-world ingest volume and retention. We compute Datadog at public pricing and molesignal as S3 + a small compute baseline.",
+    "scenariosTitle": "Five scenarios where this matters",
+    "notTitle": "What molesignal is not",
+    "notBody": "We're a telemetry platform — not APM auto-instrumentation, not browser RUM, not a SaaS in v1, and not magical.",
+    "scenarios": {
+      "3am": {
+        "title": "3am, page just fired",
+        "body": "SRE jumps three tabs to stitch a trace_id across logs, metrics, and traces. molesignal makes that one query."
+      },
+      "budget": {
+        "title": "Budget cut by 30%",
+        "body": "CFO wants observability spend down. SaaS forces you to drop ingest; molesignal lets you keep visibility, change the cloud bill."
+      },
+      "es-ck": {
+        "title": "Stuck maintaining ES/CK clusters",
+        "body": "Self-built scales operationally as fast as it scales data. molesignal is one set of components on Parquet + object storage."
+      },
+      "multi-team": {
+        "title": "Multiple teams, one platform",
+        "body": "Planner-level org-rewrite means you don't deploy per-team. One process, many tenants, AI-grade isolation."
+      },
+      "realtime": {
+        "title": "Alert latency matters",
+        "body": "Prometheus eval-interval ≥ scrape-interval. With kind: realtime alerts, molesignal pages under a second."
+      }
+    }
+  },
+
+  "architecture": {
+    "metaTitle": "Architecture",
+    "metaDescription": "How molesignal stores three signals in one Parquet layer, queries them with DataFusion + Arrow, and stays multi-tenant from the planner down.",
+    "title": "Architecture",
+    "lede": "One storage layer. One query engine. One metadata layer.",
+    "pill": "architecture",
+    "dataPathTitle": "The data path",
+    "dataPathBody": "Tap a node to see what it does.",
+    "tapOrHover": "Tap or hover a node to see what it does.",
+    "storageTitle": "Three signals, one storage",
+    "storageBody": "Logs, metrics, and traces all serialize to Parquet on object storage. The columnar layout makes cross-signal filters and time-range prunes cheap.",
+    "queryTitle": "Query engine",
+    "queryBody": "DataFusion plans SQL, PromQL, and VRL against Parquet. The planner does multi-tenant org-rewrite, so tenant isolation lives at the query layer rather than at the deployment layer.",
+    "ingestTitle": "Ingest protocols",
+    "ingestBody": "Ten supported on day one: OTLP HTTP, OTLP gRPC, Vector, Fluent Bit, Prometheus remote_write, Loki push, Splunk HEC, Jaeger, Zipkin, Syslog.",
+    "realtimeTitle": "Real-time alerts",
+    "realtimeBody": "Alerts with kind: realtime evaluate inline against the write path. Under 1 second from event to page.",
+    "multiTenantTitle": "Multi-tenancy",
+    "multiTenantBody": "Tenants are rewritten at planner time. One process serves many orgs without prefix isolation hacks.",
+    "perfTitle": "Performance",
+    "perfBody": "Benchmarks land with v1.0. Methodology: TSBS for metrics, custom log/trace harness against 1 TB/day. Track the work in the Roadmap.",
+    "perfBannerLabel": "pre-1.0",
+    "perfBannerText": "Benchmark methodology is published, numbers land with v1.0.",
+    "openTitle": "Open questions",
+    "openBody": "We're still figuring out cardinality limit policies for high-dimensional labels, and Parquet rotation under spiky ingest. If you're stuck on either, become a Design Partner.",
+    "tocLabel": "On this page",
+    "nodes": {
+      "ingest": {
+        "label": "Ingest",
+        "sublabel": "OTLP · Vector · Fluent Bit",
+        "tooltip": "Ten ingest protocols. OTLP HTTP/gRPC are first-class; Vector, Fluent Bit, Prometheus remote_write, Loki push, Splunk HEC, Jaeger, Zipkin, and Syslog all land on the same write path."
+      },
+      "wal": {
+        "label": "WAL",
+        "sublabel": "Postgres metadata",
+        "tooltip": "Postgres holds the metadata layer (org, streams, partitions, schema). The WAL durably accepts writes before they roll up to Parquet on object storage."
+      },
+      "storage": {
+        "label": "Parquet",
+        "sublabel": "S3 / MinIO",
+        "tooltip": "All three signals (logs, metrics, traces) share one columnar storage format on object storage. Time-partitioned for prune-and-scan queries."
+      },
+      "engine": {
+        "label": "Engine",
+        "sublabel": "DataFusion + Arrow",
+        "tooltip": "DataFusion plans SQL / PromQL / VRL against the Parquet store. The planner does multi-tenant org-rewrite, so tenant isolation lives at the query layer."
+      },
+      "api": {
+        "label": "Query API",
+        "sublabel": "REST / gRPC",
+        "tooltip": "Single HTTP/gRPC surface for product UI, dashboards, alerts, and third-party tools. Same engine, three signal queries side by side."
+      }
+    },
+    "ingestRows": {
+      "otlpHttp": "OpenTelemetry Protocol over HTTP/JSON",
+      "otlpGrpc": "OpenTelemetry Protocol over gRPC",
+      "vector": "Vector source",
+      "fluentBit": "Fluent Bit OTel/HTTP",
+      "prometheus": "remote_write (PromQL native query)",
+      "loki": "Loki-compatible push API",
+      "splunk": "Splunk HEC tokens",
+      "jaeger": "Jaeger thrift/proto",
+      "zipkin": "Zipkin v2 JSON",
+      "syslog": "RFC5424 over UDP/TCP/TLS"
+    }
+  },
+
+  "start": {
+    "metaTitle": "Quick Start",
+    "metaDescription": "Five minutes from zero to your first query. docker compose, Helm chart, or binary install — pick your path.",
+    "title": "Quick Start",
+    "lede": "Five minutes to your first query.",
+    "pill": "5 minutes",
+    "prereqTitle": "Prerequisites",
+    "prereqDocker": "Docker + Docker Compose 2.x",
+    "prereqHelm": "Kubernetes 1.27+ and Helm 3.x with read/write S3 credentials",
+    "prereqBinary": "Linux x86_64 + writable workdir + 4 GB RAM",
+    "installTitle": "Install",
+    "ingestTitle": "Send your first data",
+    "ingestBody": "An OTLP HTTP POST. Any OpenTelemetry SDK, Vector, or Fluent Bit will produce the same shape.",
+    "ingestFilename": "terminal · OTLP ingest",
+    "queryTitle": "Run your first query",
+    "queryBody": "SQL against the stream. PromQL and VRL also work — same engine, same Parquet.",
+    "queryFilename": "terminal · SQL query",
+    "troubleshootTitle": "Troubleshooting",
+    "nextTitle": "Where to next",
+    "nextArch": "Read the architecture",
+    "nextDp": "Become a Design Partner",
+    "nextDocs": "Browse the docs ↗",
+    "tabs": {
+      "docker": "docker compose",
+      "helm": "Helm chart",
+      "binary": "Binary"
+    },
+    "tabFilenames": {
+      "docker": "terminal · standalone sandbox",
+      "helm": "terminal · Helm install (v1.0 target)",
+      "binary": "terminal · binary install (v1.0 target)"
+    },
+    "troubleshoot": {
+      "port": {
+        "q": "Port 5080 is already in use",
+        "a": "Set MOLE_HTTP_PORT in your env or change the host port mapping in docker-compose.yaml."
+      },
+      "org": {
+        "q": "I get 'no such org' on the first query",
+        "a": "The standalone profile creates a default org on first login. Visit http://localhost:5080 first and complete the bootstrap."
+      },
+      "minio": {
+        "q": "MinIO admin says I can't write to the bucket",
+        "a": "Default creds are minioadmin/minioadmin. Check the bucket was created — molesignal creates it on first ingest, so send a single OTLP request first."
+      },
+      "cargo": {
+        "q": "Cargo build fails when running from source",
+        "a": "Rust 1.74+ required. Use rustup update stable. If you're on Apple Silicon, install Xcode CLT first."
+      },
+      "alerts": {
+        "q": "Real-time alerts don't fire",
+        "a": "kind: realtime requires an alert source on a write path stream. Check the alert is bound to the same stream you're writing to."
+      }
+    }
+  },
+
+  "designPartner": {
+    "metaTitle": "Design Partner",
+    "metaDescription": "Pre-1.0 recruitment — 5 to 15 mid-size teams help shape v1, with weekly founders chat and direct product influence.",
+    "title": "Become a Design Partner",
+    "lede": "We're rebuilding observability. Be early. Be heard.",
+    "pill": "pre-1.0 program",
+    "youGetTitle": "What you get",
+    "youGet1": "Early access to release candidates and design docs",
+    "youGet1Body": "See the work before it ships. Comment, request changes, push back.",
+    "youGet2": "Weekly founders chat",
+    "youGet2Body": "30 min a week. Show us what hurts. We rework the roadmap when you push.",
+    "youGet3": "Product roadmap influence",
+    "youGet3Body": "Pre-1.0, design partner asks tend to land. The Roadmap reflects this.",
+    "youGet4": "Logo on the website (opt-in)",
+    "youGet4Body": "Only if you want it. Anonymity preserved by default.",
+    "whoTitle": "Who we're looking for",
+    "whoBody": "Teams running 50 GB+/day on Datadog or self-built today; willing to spend 30 min a week with us. We're not chasing logos — fit beats prestige.",
+    "afterTitle": "What happens after you submit",
+    "after1": "Reply within 48 hours from founders@molesignal.io with a scheduling link.",
+    "after2": "30-min discovery call: what hurts, what you're using now, what would change your decision.",
+    "after3": "Onboarding doc + early-access access tokens + Discord invite.",
+    "faqTitle": "FAQ",
+    "faq1Q": "Is this free?",
+    "faq1A": "Yes. We pay for compute and your time costs you nothing.",
+    "faq2Q": "How long am I expected to commit?",
+    "faq2A": "Targets are 30 min/week for 3 months, then re-evaluate. Cancel anytime.",
+    "faq3Q": "Can we fork or contribute upstream?",
+    "faq3A": "Yes. The project is Apache 2.0–licensed. Bring your engineers; we'll help merge.",
+    "faq4Q": "Do we need to sign an NDA?",
+    "faq4A": "No. We share work-in-progress publicly. If you need it for internal review, we can sign a mutual NDA.",
+    "faq5Q": "What if we change our mind?",
+    "faq5A": "Email us; you're out. No process, no friction.",
+    "notReadyTitle": "Not ready?",
+    "notReadyStar": "Star on GitHub →",
+    "notReadyCloud": "Or join the Cloud waitlist →",
+    "form": {
+      "nameLabel": "Name",
+      "emailLabel": "Email",
+      "companySizeLabel": "Company size",
+      "currentStackLabel": "Current stack",
+      "biggestPainLabel": "Biggest pain (optional)",
+      "biggestPainHint": "Up to 400 characters. What hurts most today? We read every one.",
+      "pickOne": "Pick one",
+      "submit": "Apply to be a Design Partner →",
+      "footerNote": "No spam. We reply to every application within 48 hours.",
+      "successTitle": "Thank you. We'll reply within 48 hours.",
+      "successBody": "Reply lands in your inbox from founders@molesignal.io with a 30-min discovery call scheduling link and our onboarding doc.",
+      "errorToast": "Submission failed — please retry, or email founders@molesignal.io directly.",
+      "validationName": "Please tell us your name",
+      "validationEmail": "Looks like a typo — please use a real email"
+    }
+  },
+
+  "cloud": {
+    "metaTitle": "Cloud — Waitlist",
+    "metaDescription": "molesignal Cloud is on the way. Self-hosted now, hosted later. Drop your email to get notified.",
+    "title": "molesignal Cloud — waitlist",
+    "lede": "Self-hosted now. Hosted later. Get notified.",
+    "consideringTitle": "What we're considering",
+    "consider1": "Bring-your-own-cloud",
+    "consider1Body": "molesignal control plane in our environment; storage and compute in yours. Best balance of ops simplicity and data sovereignty.",
+    "consider2": "Managed multi-tenant",
+    "consider2Body": "Fully hosted. We run everything. You point your collectors and pay per GB.",
+    "consider3": "Compliance-ready",
+    "consider3Body": "SOC2 Type II on the roadmap; HIPAA evaluation post-1.0.",
+    "whenTitle": "When",
+    "whenBody": "No date yet. We're focused on shipping v1.0 self-hosted first.",
+    "joinTitle": "Get notified",
+    "todoTitle": "What you can do now",
+    "selfHost": "Self-host now → /start",
+    "shape": "Influence the product → /design-partner",
+    "form": {
+      "emailLabel": "Email address",
+      "placeholder": "you@company.com",
+      "submit": "Notify me when ready →",
+      "submitInline": "Notify me",
+      "successPrefix": "You're on the list.",
+      "successAction": "Star us on GitHub",
+      "successSuffix": "to support."
+    }
+  },
+
+  "roadmap": {
+    "metaTitle": "Roadmap",
+    "metaDescription": "What we're working on, what's next, and what's done. Every item links to its GitHub issue.",
+    "title": "Roadmap",
+    "lede": "Building in the open. Every item links to GitHub.",
+    "pill": "in the open",
+    "influenceTitle": "Want to influence what ships?",
+    "influenceBody": "Open a GitHub issue, or apply to be a Design Partner. Pre-1.0, the loudest evidence wins.",
+    "phases": {
+      "now": "Now",
+      "next": "Next",
+      "later": "Later",
+      "done": "Done"
+    },
+    "tabAria": "Roadmap phase",
+    "issue": "Issue",
+    "emptyPhase": "Nothing in this phase yet. Check the others."
+  },
+
+  "changelog": {
+    "metaTitle": "Changelog",
+    "metaDescription": "What shipped, when, and why. The project is alive — every commit lands publicly.",
+    "title": "Changelog",
+    "lede": "Every release, the changes that mattered.",
+    "subscribeTitle": "Stay in the loop",
+    "subscribeBody": "We'll email a monthly digest with releases plus an architecture note. Or grab the RSS feed.",
+    "rss": "RSS",
+    "sourceLive": "live from GitHub",
+    "sourceFallback": "previewing",
+    "noReleasesTitle": "No releases yet",
+    "noReleasesBody": "We'll publish the first GitHub Release soon. Watch the repo for notifications, or grab the RSS feed above.",
+    "versionsLabel": "Versions",
+    "githubLink": "GitHub",
+    "preReleasePill": "pre-release",
+    "getDigest": "Get digest emails"
+  },
+
+  "pricing": {
+    "metaTitle": "Pricing",
+    "metaDescription": "Three ways to run molesignal — Open Source (self-hosted, free), Enterprise (self-hosted with vendor support), and Cloud (fully managed, waitlist).",
+    "title": "Pricing",
+    "lede": "Three ways to run molesignal. Same engine. Different operating models.",
+    "pill": "three tiers",
+    "tiers": {
+      "oss": {
+        "badge": "Open Source",
+        "price": "Free",
+        "priceSub": "Forever, Apache 2.0",
+        "headline": "Self-host on your own infra",
+        "bestFor": "SRE teams comfortable running their own observability platform.",
+        "features": {
+          "code": "Full source under Apache 2.0",
+          "ingest": "All 10 ingest protocols",
+          "correlation": "Cross-signal correlation built-in",
+          "realtime": "Real-time alerts (<1s)",
+          "multiTenant": "Multi-tenant out of the box",
+          "community": "Community support via GitHub & Discord"
+        },
+        "cta": "Try docker compose →"
+      },
+      "enterprise": {
+        "badge": "Enterprise",
+        "price": "Contact us",
+        "priceSub": "Self-hosted with vendor support",
+        "headline": "Self-host with us on the line",
+        "bestFor": "Mid-to-large organisations that need SLAs, security patches, and a person to call.",
+        "features": {
+          "everything": "Everything in Open Source",
+          "sla": "99.5% support response SLA",
+          "patches": "Backported security patches",
+          "audit": "SOC2 audit assistance + architecture review",
+          "onboarding": "Onboarding + admin training",
+          "priority": "Priority feature input"
+        },
+        "cta": "Talk to founders →"
+      },
+      "cloud": {
+        "badge": "Cloud (SaaS)",
+        "price": "Per-GB · TBD",
+        "priceSub": "Fully managed by us",
+        "headline": "Point your collectors, pay per GB",
+        "bestFor": "Teams that don't want to run infra. Bring-your-own-cloud and managed multi-tenant in evaluation.",
+        "features": {
+          "managed": "We operate the platform",
+          "byoc": "Bring-your-own-cloud (storage + compute in your account)",
+          "multitenant": "Or fully hosted multi-tenant",
+          "compliance": "SOC2 Type II on the roadmap; HIPAA post-1.0",
+          "waitlist": "Priority access from waitlist order",
+          "migration": "Migration help from self-hosted"
+        },
+        "cta": "Join the waitlist →"
+      }
+    },
+    "compareTitle": "Quick comparison",
+    "compareDimensions": {
+      "billing": "Billing",
+      "ops": "Who runs it",
+      "support": "Support",
+      "deployment": "Deployment",
+      "audit": "Compliance assistance"
+    },
+    "compareCells": {
+      "ossBilling": "Free",
+      "enterpriseBilling": "Annual contract",
+      "cloudBilling": "Per-GB, monthly",
+      "ossOps": "You",
+      "enterpriseOps": "You, with our backup",
+      "cloudOps": "Us",
+      "ossSupport": "Community",
+      "enterpriseSupport": "Priority + SLA",
+      "cloudSupport": "Included",
+      "ossDeployment": "Anywhere you run Docker / K8s",
+      "enterpriseDeployment": "Anywhere",
+      "cloudDeployment": "BYOC or managed",
+      "ossAudit": "DIY",
+      "enterpriseAudit": "We support your audit",
+      "cloudAudit": "Inherited from our certs"
+    },
+    "faqTitle": "Pricing FAQ",
+    "faqs": {
+      "free": {
+        "q": "Is the Open Source tier really free forever?",
+        "a": "Yes. Apache 2.0 means you can run it, modify it, and ship it commercially without paying us. We make money on Enterprise and Cloud."
+      },
+      "oss-vs-cloud": {
+        "q": "What's the difference between Open Source and Cloud feature-wise?",
+        "a": "Same engine, same ingest, same query languages. The Cloud tier adds the operational layer — we run the database, ship updates, watch the alerts. You only own your collector config."
+      },
+      "enterprise-when": {
+        "q": "When do I need Enterprise vs Open Source?",
+        "a": "When losing observability for an afternoon is more expensive than a year of Enterprise — typically when you cross ~100 GB/day or have audit obligations. Talk to us; we'll be honest if Open Source is enough."
+      },
+      "cloud-launch": {
+        "q": "When does Cloud launch?",
+        "a": "No public date yet. We're focused on shipping v1.0 self-hosted first. Waitlist signups get the first invites."
+      },
+      "migrate": {
+        "q": "Can I migrate from Open Source to Cloud later?",
+        "a": "Yes. Same Parquet schema and same query engine — your dashboards and queries port over without rewrites."
+      }
+    },
+    "ctaTitle": "Not sure which tier?",
+    "ctaBody": "If you're running observability for fun, learning, or under ~100 GB/day, Open Source is enough. If you need SLAs or compliance support, talk to us. If you want zero ops, get on the Cloud waitlist.",
+    "ctaTalk": "Talk to founders",
+    "ctaWaitlist": "Cloud waitlist"
+  },
+
+  "blog": {
+    "metaTitle": "Blog",
+    "metaDescription": "Engineering posts from the molesignal team — architecture deep-dives, post-mortems, and notes from building in the open.",
+    "title": "Blog",
+    "lede": "Engineering posts from the team building molesignal.",
+    "noPostsTitle": "No posts yet",
+    "noPostsBody": "We're writing the first launch article. Come back, or subscribe via the Cloud waitlist.",
+    "relatedTitle": "Related posts",
+    "zhUnavailable": "Blog is English-only in v1. Read the English version →"
+  },
+
+  "errors": {
+    "notFoundTitle": "Page not found.",
+    "notFoundBody": "The URL doesn't match anything we ship. The site is small — these links cover most paths:",
+    "notFoundHome": "Home",
+    "notFoundStart": "Quick Start",
+    "notFoundGitHub": "GitHub repo",
+    "errorTitle": "Something broke.",
+    "errorBody": "We've been notified. If this keeps happening, please file an issue with the URL.",
+    "errorRetry": "Try again",
+    "errorHome": "Back to home",
+    "errorIssue": "File a GitHub issue"
+  },
+
+  "legal": {
+    "privacyTitle": "Privacy",
+    "termsTitle": "Terms",
+    "lastUpdated": "Last updated {date}",
+    "stub": "Full legal text under review. This is a placeholder for v1 launch. Email founders@molesignal.io with questions."
+  },
+
+  "components": {
+    "crossSignalDemo": {
+      "pill": "five-second demo",
+      "heading": "One trace_id, three views.",
+      "footerPrefix": "Same",
+      "footerSuffix": "across all three. No copy-paste between tools.",
+      "tabs": {
+        "trace": "Trace",
+        "logs": "Logs",
+        "metric": "Metric"
+      },
+      "tabAria": "Signal view",
+      "traceMeta": "spans · 280ms",
+      "incident": "incident @ 12:04"
+    },
+    "compareTable": {
+      "dimension": "Dimension",
+      "saasName": "Commercial SaaS",
+      "saasSub": "Datadog / New Relic / Splunk",
+      "ossName": "OSS stack",
+      "ossSub": "Loki + Mimir + Tempo",
+      "moleName": "molesignal",
+      "moleSub": "self-hosted",
+      "rows": {
+        "cost": "100 GB/day cost",
+        "sameStorage": "Three signals — same storage",
+        "sameStorageDetail": "Whether logs, metrics, traces share one storage layer.",
+        "correlation": "Cross-signal correlation",
+        "correlationDetail": "Jump from a trace to its logs to the host metric — without copy/paste.",
+        "ownership": "Data ownership",
+        "setup": "Setup time",
+        "otelNative": "OpenTelemetry-native",
+        "realtime": "Real-time alerts (<1s)",
+        "multiTenant": "Multi-tenant out-of-box"
+      }
+    },
+    "costCalculator": {
+      "ingest": "Ingest",
+      "ingestUnit": "GB/day",
+      "retention": "Retention",
+      "retentionUnit": "days",
+      "datadogCard": "Datadog (est.)",
+      "datadogSub": "per month",
+      "moleCard": "molesignal",
+      "moleSub": "per month (S3 + compute)",
+      "savingsCard": "Savings",
+      "savingsLess": "{percent}% less",
+      "savingsDepends": "depends on workload",
+      "disclaimerPrefix": "Order-of-magnitude estimates based on Datadog's public pricing as of",
+      "disclaimerBody": ". Datadog: logs ingest + 7-day indexed events + APM spans, with retention multiplier. molesignal: S3 Standard storage + baseline Postgres + compute scaling per 100 GB/day. Your mileage will vary with redundancy, region, commit discounts, and workload shape."
+    },
+    "community": {
+      "github": {
+        "title": "Star on GitHub",
+        "body": "Show support and stay in the loop. The repo is the project's source of truth and the fastest way to file an issue."
+      },
+      "discord": {
+        "title": "Discord — launching soon",
+        "body": "A small space for design partners and contributors to chat. Drop your email at /design-partner and we'll send an invite."
+      }
+    },
+    "contributorWall": {
+      "ariaLabel": "Contributors",
+      "empty": "Be the first contributor —",
+      "emptyAction": "open an issue or PR"
+    },
+    "githubChip": {
+      "starOnGithub": "Star on GitHub",
+      "lastCommitTooltip": "Last commit {ago}",
+      "updatedPrefix": "updated"
+    },
+    "toc": {
+      "label": "On this page",
+      "labelMobile": "On this page (mobile)"
+    },
+    "scrollToTop": {
+      "label": "Back to top"
+    }
+  }
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "id": "alerts-engine",
+    "phase": "now",
+    "title": "Real-time alerts engine (kind: realtime)",
+    "summary": "Streaming alert evaluation under 1s. Currently in design, prototype lives on a branch.",
+    "estimate": "Q2 2026",
+    "issueUrl": "https://github.com/molesignal/molesignal/issues"
+  },
+  {
+    "id": "correlation-ui",
+    "phase": "now",
+    "title": "Cross-signal jump UI (/web/correlation/*)",
+    "summary": "Native trace→logs→host metric navigation with workspace + time-range preserved.",
+    "estimate": "Q2 2026",
+    "issueUrl": "https://github.com/molesignal/molesignal/issues"
+  },
+  {
+    "id": "multi-tenant",
+    "phase": "next",
+    "title": "Multi-tenant org isolation hardening",
+    "summary": "Planner-level org-rewrite stays, plus storage-level prefix isolation.",
+    "estimate": "Q3 2026",
+    "issueUrl": "https://github.com/molesignal/molesignal/issues"
+  },
+  {
+    "id": "cardinality-limits",
+    "phase": "next",
+    "title": "Cardinality limit policies",
+    "summary": "Per-stream limits on high-dim labels with cost reporting.",
+    "estimate": "Q3 2026",
+    "issueUrl": "https://github.com/molesignal/molesignal/issues"
+  },
+  {
+    "id": "helm-chart",
+    "phase": "later",
+    "title": "Official Helm chart",
+    "summary": "Production Kubernetes story. Today only docker compose ships; Helm targets v1.0.",
+    "estimate": "v1.0",
+    "issueUrl": "https://github.com/molesignal/molesignal/issues"
+  },
+  {
+    "id": "cloud-beta",
+    "phase": "later",
+    "title": "molesignal Cloud — invite beta",
+    "summary": "Hosted multi-tenant. /cloud waitlist signups get the first invites.",
+    "estimate": "Post-1.0",
+    "issueUrl": null
+  },
+  {
+    "id": "phase-4-tokens",
+    "phase": "done",
+    "title": "Phase 4 design system",
+    "summary": "OKLCH-calibrated indigo palette, 3-layer token system across the product UI.",
+    "estimate": "Shipped",
+    "issueUrl": "https://github.com/molesignal/molesignal/pull/0"
+  }
+]

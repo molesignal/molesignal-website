@@ -1,0 +1,626 @@
+{
+  "common": {
+    "tryIt": "试试看",
+    "star": "Star",
+    "starOnGithub": "在 GitHub 上 Star",
+    "becomeDesignPartner": "成为 Design Partner",
+    "joinWaitlist": "加入候补",
+    "readDocs": "阅读文档",
+    "readArchitecture": "了解架构",
+    "seeFullComparison": "查看完整对比",
+    "fullGuide": "完整指南",
+    "copy": "复制",
+    "copied": "已复制",
+    "loading": "加载中…",
+    "submit": "提交",
+    "submitting": "提交中…",
+    "next": "下一页",
+    "previous": "上一页",
+    "comingSoon": "即将上线",
+    "openIssue": "开一个 issue",
+    "applyDesignPartner": "申请成为 Design Partner",
+    "readCode": "看代码",
+    "backToTop": "回到顶部",
+    "viewOnGithub": "在 GitHub 上查看"
+  },
+
+  "nav": {
+    "why": "为什么是 molesignal",
+    "architecture": "架构",
+    "quickStart": "快速开始",
+    "pricing": "定价",
+    "cloud": "Cloud",
+    "resources": "资源",
+    "docs": "文档",
+    "docsSub": "参考与指南",
+    "blog": "Blog",
+    "blogSub": "工程笔记",
+    "download": "下载",
+    "downloadSub": "Release 与二进制",
+    "menu": "菜单",
+    "openMenu": "打开菜单",
+    "closeMenu": "关闭菜单",
+    "skipToContent": "跳到正文",
+    "themeLabel": "主题",
+    "languageLabel": "语言"
+  },
+
+  "banner": {
+    "preRelease": "我们处于 pre-1.0 阶段，正在公开构建。一起塑造 v1 →",
+    "dismiss": "关闭横幅"
+  },
+
+  "theme": {
+    "label": "主题",
+    "light": "浅色",
+    "dark": "深色",
+    "system": "跟随系统"
+  },
+
+  "locale": {
+    "label": "语言",
+    "en": "English",
+    "zh": "中文"
+  },
+
+  "footer": {
+    "product": "产品",
+    "resources": "资源",
+    "community": "社区",
+    "legal": "法律",
+    "privacy": "隐私政策",
+    "terms": "服务条款",
+    "cloudComing": "Cloud 即将上线 · 加入候补",
+    "copyright": "© {year} molesignal · Apache 2.0 协议",
+    "links": {
+      "why": "为什么是 molesignal",
+      "architecture": "架构",
+      "roadmap": "Roadmap",
+      "changelog": "Changelog",
+      "pricing": "定价",
+      "cloud": "Cloud",
+      "docs": "文档",
+      "quickStart": "快速开始",
+      "blog": "Blog",
+      "download": "下载",
+      "designPartner": "Design Partner",
+      "github": "GitHub",
+      "discord": "Discord",
+      "twitter": "Twitter / X",
+      "privacy": "隐私政策",
+      "terms": "服务条款"
+    }
+  },
+
+  "hero": {
+    "title": "你本可以自己写。",
+    "titleHighlight": "但不必付 Datadog 的账单。",
+    "subtitle": "日志、指标、链路 —— 同一存储、同一引擎、自托管。OpenTelemetry 原生。",
+    "preReleasePill": "pre-1.0 · 公开构建中"
+  },
+
+  "home": {
+    "demoTitle": "三种信号，一个 trace_id，五秒讲清。",
+    "demoBody": "一条 trace、它的日志、同一分钟的主机指标——在数据层就串好了，不是靠 dashboard 拼。",
+    "demoCta": "它是怎么做到的？→",
+    "whyTitle": "对照其他两条路",
+    "whyBody": "商业 SaaS 信号串得通，但贵；OSS 拼装免费，但碎。molesignal 串得通，又自托管。",
+    "archTitle": "一个存储。一个引擎。一份账单。",
+    "archBody": "对象存储上的 Parquet + DataFusion + Arrow。三种信号共享数据层。",
+    "startTitle": "五分钟跑出第一条查询",
+    "startBody": "一行命令起步。Postgres、MinIO 和 molesignal standalone。",
+    "startTerminalLabel": "终端",
+    "statsTitle": "公开构建",
+    "statsBody": "每一次提交都在公开仓库里。每个 issue 都可搜。Pre-1.0 阶段，每个声音都能改动 roadmap。",
+    "designPartnerHook": "成为早期参与者，让我们听见你的声音。",
+    "designPartnerBody": "我们正在招募 5–15 支中等规模团队帮我们打磨 v1。每周一次的 founders 闲聊。真实影响产品方向。免费。",
+    "designPartnerPill": "design partner"
+  },
+
+  "why": {
+    "metaTitle": "为什么是 molesignal",
+    "metaDescription": "molesignal 与 Datadog、New Relic、Splunk，以及 Loki + Mimir + Tempo 等 OSS 拼装对比。含成本计算器。",
+    "title": "为什么是 molesignal",
+    "lede": "可观测的三条主流路径，以及我们为什么造了第四条。",
+    "pill": "对比",
+    "pathsTitle": "三条路，三种代价",
+    "saasTitle": "商业 SaaS",
+    "saasBody": "Datadog、New Relic、Splunk。三种信号能串，但账单跟着流量线性涨。中等团队 100 GB/天每月 $2k–$10k。砍 ingest 又看不到东西。",
+    "ossTitle": "OSS 拼装",
+    "ossBody": "Loki + Mimir + Tempo + Grafana。免费，但日志 / 指标 / trace 各自独立存储，查询语言三种。trace ↔ log ↔ host metric 那一跳人肉拼。",
+    "moleTitle": "molesignal",
+    "moleBody": "一个存储层（对象存储上的 Parquet）+ 一个查询引擎（DataFusion + Arrow）+ 一个元数据层（Postgres）。三种信号在数据层就串通。自托管。",
+    "compareTitle": "并排看",
+    "compareCaption": "每条结论你都能复现。docker compose up，把自己的数据灌进去。",
+    "costTitle": "算一笔账",
+    "costBody": "选你真实的 ingest 量和留存天数。我们按 Datadog 公开费率估它，按 S3 + 小规模计算估 molesignal。",
+    "scenariosTitle": "五个会让你在意的场景",
+    "notTitle": "molesignal 不是什么",
+    "notBody": "我们是 telemetry 平台 —— 不是 APM 自动埋点、不是 RUM、v1 不是 SaaS、不是魔法。",
+    "scenarios": {
+      "3am": {
+        "title": "凌晨 3 点，告警刚响",
+        "body": "SRE 切三个 tab 才能把一个 trace_id 串到日志、指标和链路。molesignal 一次查询就完了。"
+      },
+      "budget": {
+        "title": "预算被砍 30%",
+        "body": "CFO 要砍可观测开支。SaaS 逼你减 ingest；molesignal 让你保住可见性，账单从 SaaS 转到云。"
+      },
+      "es-ck": {
+        "title": "被 ES/CK 集群运维拖住",
+        "body": "自建系统的运维成本跟数据规模一起涨。molesignal 是一套组件，跑在 Parquet + 对象存储上。"
+      },
+      "multi-team": {
+        "title": "多团队共用一个平台",
+        "body": "Planner 层 org-rewrite，不需要按团队部署。一进程多租户，AI 级别隔离。"
+      },
+      "realtime": {
+        "title": "告警延迟敏感",
+        "body": "Prometheus 评估周期 ≥ 抓取周期。molesignal 的 kind: realtime 告警在 1 秒以内触达。"
+      }
+    }
+  },
+
+  "architecture": {
+    "metaTitle": "架构",
+    "metaDescription": "molesignal 如何把三种信号放进同一 Parquet 存储，用 DataFusion + Arrow 查询，并在 planner 层做多租户隔离。",
+    "title": "架构",
+    "lede": "一个存储层。一个查询引擎。一个元数据层。",
+    "pill": "架构",
+    "dataPathTitle": "数据路径",
+    "dataPathBody": "点节点看它在干什么。",
+    "tapOrHover": "轻点或悬停节点查看说明。",
+    "storageTitle": "三信号同存储",
+    "storageBody": "日志、指标、链路都写入对象存储上的 Parquet。列式布局让跨信号过滤和时间窗 prune 都很便宜。",
+    "queryTitle": "查询引擎",
+    "queryBody": "DataFusion 在 Parquet 上规划 SQL、PromQL、VRL。planner 做多租户 org-rewrite，租户隔离在查询层而非部署层。",
+    "ingestTitle": "采集协议",
+    "ingestBody": "首日支持十种：OTLP HTTP、OTLP gRPC、Vector、Fluent Bit、Prometheus remote_write、Loki push、Splunk HEC、Jaeger、Zipkin、Syslog。",
+    "realtimeTitle": "实时告警",
+    "realtimeBody": "kind: realtime 的告警在写路径上直接评估。从事件到呼叫不到 1 秒。",
+    "multiTenantTitle": "多租户",
+    "multiTenantBody": "租户在 planner 阶段被改写。一个进程服务多个 org，不靠 prefix 隔离脏招。",
+    "perfTitle": "性能",
+    "perfBody": "Benchmarks 跟着 v1.0 发布。方法学：TSBS 跑指标，自研日志/链路压测对准 1 TB/天。在 Roadmap 跟进。",
+    "perfBannerLabel": "pre-1.0",
+    "perfBannerText": "Benchmark 方法学已公开，数字与 v1.0 一同发布。",
+    "openTitle": "开放问题",
+    "openBody": "我们还在解决：高维标签的 cardinality 限制策略、突发 ingest 下的 Parquet rotation。卡在这两个上的朋友，欢迎来当 Design Partner。",
+    "tocLabel": "本页目录",
+    "nodes": {
+      "ingest": {
+        "label": "采集",
+        "sublabel": "OTLP · Vector · Fluent Bit",
+        "tooltip": "十种采集协议。OTLP HTTP/gRPC 是一等公民；Vector、Fluent Bit、Prometheus remote_write、Loki push、Splunk HEC、Jaeger、Zipkin、Syslog 走同一写路径。"
+      },
+      "wal": {
+        "label": "WAL",
+        "sublabel": "Postgres 元数据",
+        "tooltip": "Postgres 保存元数据层（org、stream、partition、schema）。WAL 在数据滚动到对象存储 Parquet 之前先持久化接受写入。"
+      },
+      "storage": {
+        "label": "Parquet",
+        "sublabel": "S3 / MinIO",
+        "tooltip": "三种信号（日志、指标、链路）共享对象存储上的同一列式格式。按时间分区，便于 prune-and-scan 查询。"
+      },
+      "engine": {
+        "label": "引擎",
+        "sublabel": "DataFusion + Arrow",
+        "tooltip": "DataFusion 在 Parquet 上规划 SQL / PromQL / VRL。planner 做多租户 org-rewrite，租户隔离在查询层。"
+      },
+      "api": {
+        "label": "查询 API",
+        "sublabel": "REST / gRPC",
+        "tooltip": "面向产品 UI、dashboard、告警和第三方工具的单一 HTTP/gRPC 接口。同一引擎，三种信号并排查询。"
+      }
+    },
+    "ingestRows": {
+      "otlpHttp": "基于 HTTP/JSON 的 OpenTelemetry 协议",
+      "otlpGrpc": "基于 gRPC 的 OpenTelemetry 协议",
+      "vector": "Vector source",
+      "fluentBit": "Fluent Bit OTel/HTTP",
+      "prometheus": "remote_write（PromQL 原生查询）",
+      "loki": "Loki 兼容 push API",
+      "splunk": "Splunk HEC token",
+      "jaeger": "Jaeger thrift/proto",
+      "zipkin": "Zipkin v2 JSON",
+      "syslog": "RFC5424 over UDP/TCP/TLS"
+    }
+  },
+
+  "start": {
+    "metaTitle": "快速开始",
+    "metaDescription": "五分钟跑出第一条查询。docker compose、Helm chart、二进制三选一。",
+    "title": "快速开始",
+    "lede": "五分钟跑出第一条查询。",
+    "pill": "5 分钟",
+    "prereqTitle": "前置条件",
+    "prereqDocker": "Docker + Docker Compose 2.x",
+    "prereqHelm": "Kubernetes 1.27+，Helm 3.x，带读写权限的 S3 凭证",
+    "prereqBinary": "Linux x86_64，可写 workdir，4 GB 内存",
+    "installTitle": "安装",
+    "ingestTitle": "发送第一条数据",
+    "ingestBody": "一个 OTLP HTTP POST。任何 OpenTelemetry SDK、Vector 或 Fluent Bit 都能产生同样的形状。",
+    "ingestFilename": "终端 · OTLP 采集",
+    "queryTitle": "跑出第一条查询",
+    "queryBody": "SQL 查询。PromQL 和 VRL 也行——同一个引擎，同一份 Parquet。",
+    "queryFilename": "终端 · SQL 查询",
+    "troubleshootTitle": "排错",
+    "nextTitle": "下一步",
+    "nextArch": "了解架构",
+    "nextDp": "成为 Design Partner",
+    "nextDocs": "浏览文档 ↗",
+    "tabs": {
+      "docker": "docker compose",
+      "helm": "Helm chart",
+      "binary": "二进制"
+    },
+    "tabFilenames": {
+      "docker": "终端 · 单机沙盒",
+      "helm": "终端 · Helm 安装（v1.0 目标）",
+      "binary": "终端 · 二进制安装（v1.0 目标）"
+    },
+    "troubleshoot": {
+      "port": {
+        "q": "5080 端口被占用",
+        "a": "设置 MOLE_HTTP_PORT 环境变量，或者修改 docker-compose.yaml 里的端口映射。"
+      },
+      "org": {
+        "q": "第一次查询报 'no such org'",
+        "a": "standalone profile 在首次登录时创建默认 org。先打开 http://localhost:5080 完成 bootstrap。"
+      },
+      "minio": {
+        "q": "MinIO admin 提示写不进 bucket",
+        "a": "默认凭证 minioadmin/minioadmin。检查 bucket 是否已建——molesignal 在首次 ingest 时才建 bucket，先发一个 OTLP 请求。"
+      },
+      "cargo": {
+        "q": "源码编译 cargo 失败",
+        "a": "需要 Rust 1.74+。运行 rustup update stable。Apple Silicon 需先装 Xcode CLT。"
+      },
+      "alerts": {
+        "q": "实时告警不触发",
+        "a": "kind: realtime 要求告警源是写路径上的 stream。检查告警绑定的 stream 是不是你正在写入的那个。"
+      }
+    }
+  },
+
+  "designPartner": {
+    "metaTitle": "Design Partner",
+    "metaDescription": "Pre-1.0 招募 —— 5–15 支中等规模团队一起塑造 v1，每周一次 founders 同步，直接影响产品方向。",
+    "title": "成为 Design Partner",
+    "lede": "我们在重做可观测性。早一点参与，被听见。",
+    "pill": "pre-1.0 招募",
+    "youGetTitle": "你能得到",
+    "youGet1": "提前访问 release 候选和设计文档",
+    "youGet1Body": "在发布前先看作品。评论、要求修改、push back。",
+    "youGet2": "每周 founders 闲聊",
+    "youGet2Body": "每周 30 分钟。说说哪里疼。你 push，roadmap 就跟着动。",
+    "youGet3": "影响产品 roadmap",
+    "youGet3Body": "Pre-1.0 阶段，Design Partner 的需求很容易被采纳。Roadmap 会反映这一点。",
+    "youGet4": "Logo 上墙（可选）",
+    "youGet4Body": "你愿意才挂。默认保持匿名。",
+    "whoTitle": "我们在找谁",
+    "whoBody": "目前每天 50 GB+ 跑在 Datadog 或自建上的团队；愿意每周 30 分钟给我们。我们不追 logo —— 契合比名气重要。",
+    "afterTitle": "你提交之后",
+    "after1": "48 小时内 founders@molesignal.io 回信，带预约链接。",
+    "after2": "30 分钟 discovery call：哪里疼、现在用什么、什么改变会让你切。",
+    "after3": "Onboarding 文档 + 早期访问 token + Discord 邀请。",
+    "faqTitle": "FAQ",
+    "faq1Q": "免费吗？",
+    "faq1A": "免费。计算我们出，时间你不花钱。",
+    "faq2Q": "要承诺多久？",
+    "faq2A": "目标是 3 个月每周 30 分钟，再评估。随时退出。",
+    "faq3Q": "我们能 fork 或往上游提交吗？",
+    "faq3A": "可以。Apache 2.0 协议。带上你的工程师，我们帮 merge。",
+    "faq4Q": "需要签 NDA 吗？",
+    "faq4A": "不需要。我们的进行中工作是公开的。如果你内部审查需要，可以签互相 NDA。",
+    "faq5Q": "如果改主意了怎么办？",
+    "faq5A": "发邮件给我们，退出。无流程，无摩擦。",
+    "notReadyTitle": "还没准备好？",
+    "notReadyStar": "在 GitHub 上 Star →",
+    "notReadyCloud": "或者加入 Cloud 候补 →",
+    "form": {
+      "nameLabel": "姓名",
+      "emailLabel": "邮箱",
+      "companySizeLabel": "公司规模",
+      "currentStackLabel": "当前可观测栈",
+      "biggestPainLabel": "最痛的一件事（可选）",
+      "biggestPainHint": "最多 400 字。现在最让人疼的是什么？我们每条都看。",
+      "pickOne": "选一项",
+      "submit": "申请成为 Design Partner →",
+      "footerNote": "无垃圾邮件。我们 48 小时内回复每一份申请。",
+      "successTitle": "感谢你。我们会在 48 小时内回复。",
+      "successBody": "回信会从 founders@molesignal.io 发到你的邮箱，附 30 分钟 discovery call 的预约链接和 onboarding 文档。",
+      "errorToast": "提交失败 —— 请重试，或直接发邮件到 founders@molesignal.io。",
+      "validationName": "请告诉我们你的名字",
+      "validationEmail": "看起来有打字错误 —— 请用真实邮箱"
+    }
+  },
+
+  "cloud": {
+    "metaTitle": "Cloud — 候补",
+    "metaDescription": "molesignal Cloud 即将上线。先自托管，后用 Cloud。留下邮箱获取通知。",
+    "title": "molesignal Cloud — 候补",
+    "lede": "先自托管。Cloud 在路上。留下邮箱等通知。",
+    "consideringTitle": "我们正在考虑",
+    "consider1": "Bring-your-own-cloud",
+    "consider1Body": "molesignal 控制面在我们的环境；存储和计算在你的。运维简单和数据主权的最佳平衡。",
+    "consider2": "全托管多租户",
+    "consider2Body": "我们全跑。你只需要指向 collector，按 GB 付费。",
+    "consider3": "合规就绪",
+    "consider3Body": "SOC2 Type II 在路上；HIPAA 评估在 1.0 之后。",
+    "whenTitle": "什么时候",
+    "whenBody": "暂无日期。我们先专注于 ship v1.0 self-hosted。",
+    "joinTitle": "获取通知",
+    "todoTitle": "你现在可以做什么",
+    "selfHost": "现在自托管 → /start",
+    "shape": "影响产品 → /design-partner",
+    "form": {
+      "emailLabel": "邮箱地址",
+      "placeholder": "you@company.com",
+      "submit": "可用时通知我 →",
+      "submitInline": "通知我",
+      "successPrefix": "你已在名单上。",
+      "successAction": "在 GitHub 上 Star",
+      "successSuffix": "以示支持。"
+    }
+  },
+
+  "roadmap": {
+    "metaTitle": "Roadmap",
+    "metaDescription": "我们正在做什么、接下来做什么、做完了什么。每个 item 都链向对应的 GitHub issue。",
+    "title": "Roadmap",
+    "lede": "公开构建。每个 item 都链向 GitHub。",
+    "pill": "公开构建",
+    "influenceTitle": "想影响接下来要 ship 什么？",
+    "influenceBody": "开一个 GitHub issue，或者申请成为 Design Partner。Pre-1.0，证据最响的人赢。",
+    "phases": {
+      "now": "进行中",
+      "next": "接下来",
+      "later": "更晚",
+      "done": "已完成"
+    },
+    "tabAria": "Roadmap 阶段",
+    "issue": "Issue",
+    "emptyPhase": "这个阶段还没有事项。看看别的吧。"
+  },
+
+  "changelog": {
+    "metaTitle": "Changelog",
+    "metaDescription": "我们 ship 了什么、什么时候、为什么。这个项目是活的——每一次提交都公开。",
+    "title": "Changelog",
+    "lede": "每次发布，那些重要的变化。",
+    "subscribeTitle": "保持同步",
+    "subscribeBody": "我们会每月一封邮件汇总 release + 一条架构笔记。或者订阅 RSS。",
+    "rss": "RSS",
+    "sourceLive": "GitHub 实时",
+    "sourceFallback": "预览",
+    "noReleasesTitle": "还没有发布",
+    "noReleasesBody": "我们很快会发第一个 GitHub Release。Watch 仓库获取通知，或订阅上方的 RSS。",
+    "versionsLabel": "版本",
+    "githubLink": "GitHub",
+    "preReleasePill": "预发布",
+    "getDigest": "订阅汇总邮件"
+  },
+
+  "pricing": {
+    "metaTitle": "定价",
+    "metaDescription": "molesignal 三种使用方式 —— 开源版（自托管、免费）、企业版（自托管 + 厂商支持）、Cloud（全托管，候补中）。",
+    "title": "定价",
+    "lede": "三种方式跑 molesignal。同一个引擎，不同的运营模型。",
+    "pill": "三档",
+    "tiers": {
+      "oss": {
+        "badge": "开源版",
+        "price": "免费",
+        "priceSub": "永久免费，Apache 2.0",
+        "headline": "在自己的基础设施上自托管",
+        "bestFor": "能自己跑可观测平台的 SRE 团队。",
+        "features": {
+          "code": "完整源码 Apache 2.0",
+          "ingest": "10 种采集协议全部支持",
+          "correlation": "跨信号关联内置",
+          "realtime": "实时告警（<1s）",
+          "multiTenant": "原生多租户",
+          "community": "GitHub 与 Discord 社区支持"
+        },
+        "cta": "试试 docker compose →"
+      },
+      "enterprise": {
+        "badge": "企业版",
+        "price": "联系我们",
+        "priceSub": "自托管 + 厂商支持",
+        "headline": "你自托管，我们在你背后",
+        "bestFor": "需要 SLA、安全补丁和真人响应的中大型组织。",
+        "features": {
+          "everything": "包含开源版全部能力",
+          "sla": "99.5% 支持响应 SLA",
+          "patches": "回移安全补丁",
+          "audit": "SOC2 审计辅助 + 架构 review",
+          "onboarding": "Onboarding + 管理员培训",
+          "priority": "功能输入优先级"
+        },
+        "cta": "找 founders 聊聊 →"
+      },
+      "cloud": {
+        "badge": "Cloud（SaaS）",
+        "price": "按 GB · 待定",
+        "priceSub": "由我们全程托管",
+        "headline": "指向 collector，按 GB 付费",
+        "bestFor": "不想运维基础设施的团队。Bring-your-own-cloud 与全托管多租户评估中。",
+        "features": {
+          "managed": "平台由我们运维",
+          "byoc": "Bring-your-own-cloud（存储+计算在你的账户里）",
+          "multitenant": "或者全托管多租户",
+          "compliance": "SOC2 Type II 在路上；HIPAA 1.0 之后评估",
+          "waitlist": "候补顺序决定邀请顺序",
+          "migration": "从自托管迁移协助"
+        },
+        "cta": "加入 Cloud 候补 →"
+      }
+    },
+    "compareTitle": "快速对比",
+    "compareDimensions": {
+      "billing": "计费",
+      "ops": "谁运维",
+      "support": "支持",
+      "deployment": "部署",
+      "audit": "合规辅助"
+    },
+    "compareCells": {
+      "ossBilling": "免费",
+      "enterpriseBilling": "年度合同",
+      "cloudBilling": "按 GB，按月",
+      "ossOps": "你",
+      "enterpriseOps": "你，我们兜底",
+      "cloudOps": "我们",
+      "ossSupport": "社区",
+      "enterpriseSupport": "优先 + SLA",
+      "cloudSupport": "已含",
+      "ossDeployment": "任何能跑 Docker / K8s 的地方",
+      "enterpriseDeployment": "任何地方",
+      "cloudDeployment": "BYOC 或全托管",
+      "ossAudit": "自己来",
+      "enterpriseAudit": "我们协助你的审计",
+      "cloudAudit": "继承我们的认证"
+    },
+    "faqTitle": "定价 FAQ",
+    "faqs": {
+      "free": {
+        "q": "开源版真的永久免费吗？",
+        "a": "是。Apache 2.0 协议你可以自由运行、修改、商用，不用付我们钱。我们靠企业版和 Cloud 赚钱。"
+      },
+      "oss-vs-cloud": {
+        "q": "开源版和 Cloud 的功能区别？",
+        "a": "同一个引擎、同一套采集、同一组查询语言。Cloud 增加的是运营层 —— 我们跑数据库、推更新、看告警。你只管 collector 配置。"
+      },
+      "enterprise-when": {
+        "q": "什么时候需要企业版而不是开源版？",
+        "a": "当一下午没有可观测的代价大于一年企业版的钱时 —— 通常是 100 GB/天以上或有审计义务。来聊聊；如果开源版够用我们会直说。"
+      },
+      "cloud-launch": {
+        "q": "Cloud 什么时候上线？",
+        "a": "暂无公开日期。我们在专注 ship v1.0 自托管。候补名单顺序决定邀请顺序。"
+      },
+      "migrate": {
+        "q": "以后能从开源版迁移到 Cloud 吗？",
+        "a": "可以。同一份 Parquet schema、同一个查询引擎 —— 你的 dashboard 和查询不用重写。"
+      }
+    },
+    "ctaTitle": "不知道选哪一档？",
+    "ctaBody": "如果你只是兴趣、学习，或每天用量在 100 GB/天以下，开源版够用。需要 SLA 或合规辅助就找我们。想完全不运维就加入 Cloud 候补。",
+    "ctaTalk": "找 founders 聊聊",
+    "ctaWaitlist": "Cloud 候补"
+  },
+
+  "blog": {
+    "metaTitle": "Blog",
+    "metaDescription": "molesignal 团队的工程笔记 —— 架构深挖、事故复盘、公开构建中的随想。",
+    "title": "Blog",
+    "lede": "molesignal 团队的工程笔记。",
+    "noPostsTitle": "暂无文章",
+    "noPostsBody": "我们在写第一篇 launch 文章。稍后回来，或者通过 Cloud 候补订阅。",
+    "relatedTitle": "相关文章",
+    "zhUnavailable": "Blog 在 v1 仅英文。阅读英文版 →"
+  },
+
+  "errors": {
+    "notFoundTitle": "页面找不到。",
+    "notFoundBody": "这个 URL 不在我们 ship 的范围内。站点本身不大 —— 下面这几个链接覆盖了主要路径：",
+    "notFoundHome": "首页",
+    "notFoundStart": "快速开始",
+    "notFoundGitHub": "GitHub 仓库",
+    "errorTitle": "出错了。",
+    "errorBody": "我们已经收到通知。如果一直发生，请带上 URL 开个 issue。",
+    "errorRetry": "再试一次",
+    "errorHome": "回到首页",
+    "errorIssue": "开 GitHub issue"
+  },
+
+  "legal": {
+    "privacyTitle": "隐私政策",
+    "termsTitle": "服务条款",
+    "lastUpdated": "最后更新 {date}",
+    "stub": "完整法律文本审核中。这是 v1 launch 的占位。问题请发邮件到 founders@molesignal.io。"
+  },
+
+  "components": {
+    "crossSignalDemo": {
+      "pill": "五秒演示",
+      "heading": "一个 trace_id，三个视图。",
+      "footerPrefix": "同一个",
+      "footerSuffix": "贯穿三处。不再 copy-paste。",
+      "tabs": {
+        "trace": "链路",
+        "logs": "日志",
+        "metric": "指标"
+      },
+      "tabAria": "信号视图",
+      "traceMeta": "spans · 280ms",
+      "incident": "事故 @ 12:04"
+    },
+    "compareTable": {
+      "dimension": "维度",
+      "saasName": "商业 SaaS",
+      "saasSub": "Datadog / New Relic / Splunk",
+      "ossName": "OSS 拼装",
+      "ossSub": "Loki + Mimir + Tempo",
+      "moleName": "molesignal",
+      "moleSub": "自托管",
+      "rows": {
+        "cost": "100 GB/天成本",
+        "sameStorage": "三种信号同存储",
+        "sameStorageDetail": "日志、指标、链路是否共享一个存储层。",
+        "correlation": "跨信号关联",
+        "correlationDetail": "从 trace 跳到日志、再到主机指标 —— 不用 copy-paste。",
+        "ownership": "数据所有权",
+        "setup": "起步时间",
+        "otelNative": "OpenTelemetry 原生",
+        "realtime": "实时告警（<1s）",
+        "multiTenant": "原生多租户"
+      }
+    },
+    "costCalculator": {
+      "ingest": "采集量",
+      "ingestUnit": "GB/天",
+      "retention": "保留",
+      "retentionUnit": "天",
+      "datadogCard": "Datadog（估算）",
+      "datadogSub": "每月",
+      "moleCard": "molesignal",
+      "moleSub": "每月（S3 + 计算）",
+      "savingsCard": "节省",
+      "savingsLess": "少 {percent}%",
+      "savingsDepends": "取决于工作负载",
+      "disclaimerPrefix": "基于 Datadog 公开费率的数量级估算，截至",
+      "disclaimerBody": "。Datadog：日志 ingest + 7 天索引事件 + APM span，带保留乘数。molesignal：S3 Standard 存储 + 基线 Postgres + 每 100 GB/天的计算扩展。实际账单受冗余、region、commit 折扣和负载形状影响。"
+    },
+    "community": {
+      "github": {
+        "title": "在 GitHub 上 Star",
+        "body": "支持项目，保持知情。仓库是项目的事实源头，也是最快开 issue 的地方。"
+      },
+      "discord": {
+        "title": "Discord — 即将上线",
+        "body": "给 design partner 和贡献者准备的小空间。在 /design-partner 留邮箱，我们会发邀请。"
+      }
+    },
+    "contributorWall": {
+      "ariaLabel": "贡献者",
+      "empty": "成为第一个贡献者 ——",
+      "emptyAction": "开 issue 或 PR"
+    },
+    "githubChip": {
+      "starOnGithub": "在 GitHub 上 Star",
+      "lastCommitTooltip": "最近提交 {ago}",
+      "updatedPrefix": "更新于"
+    },
+    "toc": {
+      "label": "本页目录",
+      "labelMobile": "本页目录（移动端）"
+    },
+    "scrollToTop": {
+      "label": "回到顶部"
+    }
+  }
+}
