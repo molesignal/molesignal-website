@@ -41,33 +41,36 @@ export default async function Home({
 
   return (
     <>
-      {/* Hero */}
+      {/* Hero — left-aligned, brand-color highlight (no gradient), mono $ subtitle */}
       <Section padding="lg" tint="hero">
-        <div className="mx-auto max-w-3xl space-y-7 text-center">
+        <div className="max-w-4xl space-y-6">
           <Pill variant="marketing">{tHero("preReleasePill")}</Pill>
-          <h1 className="text-display-xl md:text-display-2xl font-display-strong tracking-tighter">
+          <h1 className="text-display-xl md:text-display-2xl font-display-strong tracking-tighter leading-[1.05]">
             {tHero("title")}{" "}
-            <span
-              className="bg-clip-text text-transparent"
-              style={{ backgroundImage: "var(--marketing-gradient-cta)" }}
-            >
-              {tHero("titleHighlight")}
-            </span>
+            <span className="text-primary">{tHero("titleHighlight")}</span>
           </h1>
-          <p className="text-fg-muted mx-auto max-w-2xl text-lg">
-            {tHero("subtitle")}
+          <p className="text-fg-muted max-w-2xl font-mono text-base">
+            <span className="text-primary">$</span> {tHero("command")}
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <Link
               href="/start"
               data-analytics-event="cta_click"
               data-analytics-source-page
               data-analytics-props='{"label":"Try it","destination":"/start"}'
-              className="bg-primary text-primary-foreground hover:shadow-glow-indigo duration-fast inline-flex h-11 items-center gap-2 rounded-md px-5 text-base font-strong transition-shadow"
+              className="bg-primary text-primary-foreground hover:bg-primary-muted duration-fast inline-flex h-11 items-center gap-2 rounded-md px-5 text-base font-strong transition-colors"
             >
               {tCommon("tryIt")} <ArrowRight size={16} aria-hidden />
             </Link>
             <GitHubStatsChip size="chip" className="h-11 px-4 text-sm" />
+          </div>
+          {/* Real command preview — signals "this is a real tool, not a pitch" */}
+          <div className="max-w-2xl pt-1">
+            <CodeBlock
+              code={DOCKER_LINE}
+              language="bash"
+              filename={t("startTerminalLabel")}
+            />
           </div>
         </div>
       </Section>
@@ -121,9 +124,10 @@ export default async function Home({
         </div>
       </Section>
 
-      {/* Quick Start teaser */}
+      {/* Quick Start teaser — left-aligned with brand pill */}
       <Section padding="md" tint="surface">
         <div className="mb-8 max-w-3xl space-y-3">
+          <Pill variant="brand">{t("startPill")}</Pill>
           <h2 className="text-display-lg font-display-strong tracking-tighter">
             {t("startTitle")}
           </h2>
@@ -163,25 +167,22 @@ export default async function Home({
         </div>
       </Section>
 
-      {/* Design Partner CTA */}
+      {/* Design Partner CTA — left-border accent card (no glow / gradient) */}
       <Section padding="lg">
-        <div
-          className="border-marketing-accent/30 shadow-glow-pink relative overflow-hidden rounded-2xl border p-8 md:p-12"
-          style={{ backgroundImage: "var(--marketing-hero-bg)" }}
-        >
-          <div className="mx-auto max-w-2xl space-y-6 text-center">
+        <div className="bg-surface border-border rounded-xl border border-l-4 border-l-primary p-8 md:p-10">
+          <div className="max-w-2xl space-y-6">
             <Pill variant="marketing">{t("designPartnerPill")}</Pill>
             <h2 className="text-display-xl font-display-strong tracking-tighter">
               {t("designPartnerHook")}
             </h2>
             <p className="text-fg-muted text-lg">{t("designPartnerBody")}</p>
-            <div className="flex flex-wrap justify-center gap-3">
+            <div className="flex flex-wrap gap-3">
               <Link
                 href="/design-partner"
                 data-analytics-event="cta_click"
                 data-analytics-source-page
                 data-analytics-props='{"label":"Become a design partner","destination":"/design-partner"}'
-                className="bg-primary text-primary-foreground hover:shadow-glow-indigo duration-fast inline-flex h-11 items-center gap-2 rounded-md px-5 text-base font-strong transition-shadow"
+                className="bg-primary text-primary-foreground hover:bg-primary-muted duration-fast inline-flex h-11 items-center gap-2 rounded-md px-5 text-base font-strong transition-colors"
               >
                 {tCommon("becomeDesignPartner")}{" "}
                 <ArrowRight size={16} aria-hidden />

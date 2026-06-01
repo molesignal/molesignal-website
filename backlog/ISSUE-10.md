@@ -2,11 +2,11 @@
 id: ISSUE-10
 type: feature
 title: [T09] 核心页面视觉改造(Hero/Demo/Why-Stats/Start/DP CTA)
-status: open
+status: in_progress
 priority: P0
-assignee: 
+assignee: frontend-engineer
 created: 2026-06-01
-updated: 2026-06-01
+updated: 2026-06-02
 ---
 
 ## 描述
@@ -20,3 +20,9 @@ updated: 2026-06-01
 
 ## 处理记录
 - 2026-06-01 23:30:28 工单创建（feature / P0）
+- 2026-06-02 05:18:47 set assignee=frontend-engineer
+- 2026-06-02 05:18:47 set priority=P0
+- 2026-06-02 05:18:47 set status=triaged
+- 2026-06-02 05:18:47 LANE: light
+- 2026-06-02 05:18:47 EXTRA_ROLES: none
+- 2026-06-02 05:19:05 set status=in_progress
