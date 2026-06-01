@@ -2,6 +2,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
+import { AnalyticsClicks } from "@/components/analytics/analytics-clicks";
 import { GitHubStatsChip } from "@/components/github-stats-chip";
 import { Footer } from "@/components/layout/footer";
 import { PreReleaseBanner } from "@/components/layout/pre-release-banner";
@@ -40,6 +41,7 @@ export default async function LocaleLayout({
     <NextIntlClientProvider>
       <ThemeProvider>
         <SkipToContent />
+        <AnalyticsClicks />
         <PreReleaseBanner />
         <TopNav githubStarsSlot={<GitHubStatsChip />} />
         <main id="main" className="flex-1">

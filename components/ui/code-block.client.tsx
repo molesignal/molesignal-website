@@ -5,7 +5,16 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
+
+/** Funnel-tracking metadata, transparently threaded from the calling CodeBlock.
+ * Present only where a copy is a meaningful funnel signal (the quick-start
+ * install tabs); omitted elsewhere so generic code copies stay untracked. */
+export type CodeBlockAnalytics = {
+  tab: "docker" | "helm" | "binary";
+  snippet_type: string;
+};
 
 /**
  * Copy-to-clipboard button used inside the server-rendered CodeBlock chrome.
@@ -15,9 +24,11 @@ import { cn } from "@/lib/utils";
 export function CodeBlockCopy({
   code,
   className,
+  analytics,
 }: {
   code: string;
   className?: string;
+  analytics?: CodeBlockAnalytics;
 }) {
   const tc = useTranslations("common");
   const [copied, setCopied] = useState(false);
@@ -26,6 +37,14 @@ export function CodeBlockCopy({
     try {
       await navigator.clipboard.writeText(code);
       setCopied(true);
+      // Only emit after the clipboard write actually succeeds, and only when
+      // the caller opted in by passing analytics (the quick-start tabs).
+      if (analytics) {
+        track("quickstart_copy", {
+          tab: analytics.tab,
+          snippet_type: analytics.snippet_type,
+        });
+      }
       toast.success(tc("copied"));
       window.setTimeout(() => setCopied(false), 1400);
     } catch (err) {

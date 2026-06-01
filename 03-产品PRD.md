@@ -184,6 +184,14 @@ molesignal 凭什么、用户为什么用/留下：
 - **密钥政策**：本期不提供密钥，按"代码就绪 + 降级路径客观验证"判过；真实跨实例限流（AC8）延后复验。
 - 完整用户故事与 AC1–AC8 见 `backlog/ISSUE-1.md`。
 
+### ISSUE-2 · 转化漏斗埋点接线（11 点位）— T05 / P0-5（2026-06-02）
+- **承接 PRD**：§4.1 P0-5「转化漏斗埋点真实打点」+ §6 关键漏斗指标的数据来源。无埋点则 NSM（合格转化数）与全漏斗指标皆无数据，LAUNCH.md「48h 内可观测转化」不成立。命中红线④（跨多模块近全站 11 组件）→ full 道，增派 data-analyst 把关命名/props。
+- **细化结论**：把 06§4.4 的 11 个事件接线到对应组件调用既有 `track()`（`lib/analytics.ts`，已核实全仓库零调用）。11 点位 = `cta_click`/`demo_tab_switch`/`cost_calculator_interact`/`compare_table_expand`/`quickstart_copy`/`waitlist_submit`/`design_partner_submit`/`github_star_click`/`locale_switch`/`theme_switch`/`rss_subscribe`。事件名/props/触发组件逐条规格见 `backlog/ISSUE-2.md`。
+- **关键约束**：① 命名以 §4.4 `snake_case` 为准（勿照抄 analytics.ts docstring 的 kebab 示例）；② **两表单事件仅在 API 2xx 后触发**（非点击/校验失败/429/5xx）——与 T01/T02 衔接的最高风险点；③ `cost_calculator_interact` 每次挂载只发一次、`demo_tab_switch` 仅 tab 变化时发（去重）；④ props 禁含 PII（呼应 P0-6 隐私）。
+- **明确不做**：不引第二个分析 SDK / 不自建上报后端 / 不加同意管理 UI / 不改 `track()` 签名 / 不追加 §4.4 之外的事件（11 个为全集）。
+- **密钥政策**：本期不提供 `NEXT_PUBLIC_PLAUSIBLE` 域名，按"`track()` 在正确交互+时序下被调用（E2E/单测 spy/mock 客观验证）"即判 `[x]`；真实 Plausible network 上报（AC8）延后补域名复验。
+- 完整用户故事与 AC1–AC8 见 `backlog/ISSUE-2.md`。
+
 ---
 
 **产出路径**：`/Users/ukulele/claude-project/self-code/workspace/molesignal-website/03-产品PRD.md`

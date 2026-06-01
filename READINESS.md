@@ -1,4 +1,4 @@
-READINESS_SCORE: 0/34
+READINESS_SCORE: 1/34
 
 # READINESS · molesignal-website 上线就绪清单
 
@@ -21,7 +21,7 @@ READINESS_SCORE: 0/34
 ## M1 上线就绪（P0 · 必须全绿才可发布）
 
 ### 候补与转化真入库（D2/D9 红线 · T11/T01/T02）
-- [ ] **限流可靠化**：`lib/rate-limit.ts` 改 async 用 `@upstash/ratelimit`+Upstash REST；脚本/单测可复现"连续请求超 cloud 10/h 或 dp 5/h 阈值后返回 429 且带 `Retry-After` 头"；缺 `UPSTASH_*` env 时回退内存 Map 不崩溃并打 warn 日志（T11）〔需外部:UPSTASH_REDIS_REST_URL/TOKEN 才能验真实跨实例限流〕
+- [x] **限流可靠化**：`lib/rate-limit.ts` 改 async 用 `@upstash/ratelimit`+Upstash REST；脚本/单测可复现"连续请求超 cloud 10/h 或 dp 5/h 阈值后返回 429 且带 `Retry-After` 头"；缺 `UPSTASH_*` env 时回退内存 Map 不崩溃并打 warn 日志（T11）〔需外部:UPSTASH_REDIS_REST_URL/TOKEN 才能验真实跨实例限流〕 ✅ ISSUE-1 closed · QA PASS 2026-06-02（HTTP 层真实复现 429+Retry-After:3600；内存兜底 warn-once；bogus env 验 fail-open 全 200；H1 取信源修复经探针验证。AC8 真实跨实例延后补密钥复验）
 - [ ] **Cloud 候补真入库**：`POST /api/cloud-waitlist` 提交合法 email 后，该 email 出现在 `RESEND_CLOUD_AUDIENCE_ID` 对应 Resend audience（幂等：重复邮箱不报错仍 200），且 founders 收到通知邮件；缺 audience env 时跳过入库仍发通知仍返 200 + warn；前端成功/失败态正确（T01）〔需外部:RESEND_API_KEY + RESEND_CLOUD_AUDIENCE_ID〕
 - [ ] **Design Partner 申请持久化**：5 字段 zod 校验通过后 email 入 `RESEND_PARTNER_AUDIENCE_ID`（name 拆 first/last，幂等）；通知邮件正文含全 5 字段且 `replyTo`=申请人；蜜罐字段被填时 silent 200 不入库；缺 env 优雅降级 + 日志；成功态原位切换持久卡片（T02）〔需外部:RESEND_API_KEY + RESEND_PARTNER_AUDIENCE_ID〕
 

@@ -60,6 +60,9 @@ export default async function Home({
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/start"
+              data-analytics-event="cta_click"
+              data-analytics-source-page
+              data-analytics-props='{"label":"Try it","destination":"/start"}'
               className="bg-primary text-primary-foreground hover:shadow-glow-indigo duration-fast inline-flex h-11 items-center gap-2 rounded-md px-5 text-base font-strong transition-shadow"
             >
               {tCommon("tryIt")} <ArrowRight size={16} aria-hidden />
@@ -175,6 +178,9 @@ export default async function Home({
             <div className="flex flex-wrap justify-center gap-3">
               <Link
                 href="/design-partner"
+                data-analytics-event="cta_click"
+                data-analytics-source-page
+                data-analytics-props='{"label":"Become a design partner","destination":"/design-partner"}'
                 className="bg-primary text-primary-foreground hover:shadow-glow-indigo duration-fast inline-flex h-11 items-center gap-2 rounded-md px-5 text-base font-strong transition-shadow"
               >
                 {tCommon("becomeDesignPartner")}{" "}
@@ -182,6 +188,9 @@ export default async function Home({
               </Link>
               <Link
                 href="/cloud"
+                data-analytics-event="cta_click"
+                data-analytics-source-page
+                data-analytics-props='{"label":"Join the waitlist","destination":"/cloud"}'
                 className="border-border text-fg hover:bg-bg-hover duration-fast inline-flex h-11 items-center gap-2 rounded-md border px-5 text-base font-strong transition-colors"
               >
                 {tCommon("joinWaitlist")}

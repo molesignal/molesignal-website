@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { Pill } from "@/components/ui/pill";
+import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 type TabKey = "trace" | "logs" | "metric";
@@ -46,6 +47,12 @@ export function CrossSignalDemo({ className }: { className?: string }) {
   }, [interacted, reduceMotion]);
 
   const pick = (key: TabKey) => {
+    // Only fire on a real tab change — re-clicking the active tab is a no-op
+    // for analytics. The auto-tour mutates `active` via setActive directly
+    // (not through pick), so the tour never emits this event.
+    if (key !== active) {
+      track("demo_tab_switch", { tab: key });
+    }
     setActive(key);
     setInteracted(true);
   };

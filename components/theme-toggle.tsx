@@ -11,6 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 type ThemeKey = "light" | "dark";
@@ -73,7 +74,10 @@ export function ThemeToggle({ className }: { className?: string }) {
           return (
             <DropdownMenuItem
               key={value}
-              onClick={() => setTheme(value)}
+              onClick={() => {
+                track("theme_switch", { theme: value });
+                setTheme(value);
+              }}
               className={cn(
                 "flex cursor-pointer items-center gap-2 text-sm",
                 isActive && "text-primary font-strong",

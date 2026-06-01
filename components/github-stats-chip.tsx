@@ -46,6 +46,8 @@ export async function GitHubStatsChip({
         href={REPO_URL}
         target="_blank"
         rel="noreferrer"
+        data-analytics-event="github_star_click"
+        data-analytics-source-page
         className={cn(
           "border-border bg-surface hover:border-primary hover:shadow-glow-indigo duration-fast group flex items-center gap-4 rounded-lg border p-4 transition-all",
           className,
@@ -72,6 +74,8 @@ export async function GitHubStatsChip({
       target="_blank"
       rel="noreferrer"
       title={ago ? t("lastCommitTooltip", { ago }) : t("starOnGithub")}
+      data-analytics-event="github_star_click"
+      data-analytics-source-page
       className={cn(
         "border-border bg-surface hover:bg-bg-hover text-fg duration-fast inline-flex h-8 items-center gap-1.5 rounded-md border px-2.5 text-xs font-strong transition-colors",
         className,

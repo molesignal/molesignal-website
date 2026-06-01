@@ -128,6 +128,8 @@ export function CompareTable({
         <div className="flex justify-end">
           <Link
             href="/why#compare"
+            data-analytics-event="compare_table_expand"
+            data-analytics-source-page
             className="text-primary hover:text-marketing-accent duration-fast inline-flex items-center gap-1 text-sm font-strong transition-colors"
           >
             {tCommon("seeFullComparison")}

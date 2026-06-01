@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { track } from "@/lib/analytics";
 import {
   cloudWaitlistSchema,
   type CloudWaitlistInput,
@@ -45,7 +46,8 @@ export function CloudWaitlistForm({
 
   const onSubmit = async (data: CloudWaitlistInput) => {
     if (data.website && data.website.length > 0) {
-      // Honeypot tripped — silent success.
+      // Honeypot tripped — silent success (UI only). No API call, no 2xx,
+      // and deliberately no track(): bot traffic must not pollute the funnel.
       setSubmitted(true);
       return;
     }
@@ -56,6 +58,10 @@ export function CloudWaitlistForm({
         body: JSON.stringify({ email: data.email }),
       });
       if (!res.ok) throw new Error("Request failed");
+      // Only a real 2xx counts as a conversion. zod failures never reach here
+      // (react-hook-form blocks onSubmit); 429/5xx/network errors fall to catch.
+      // No props — email is PII and must never be sent to analytics.
+      track("waitlist_submit");
       setSubmitted(true);
     } catch {
       toast.error("Something went wrong. Please try again.");
@@ -77,6 +83,8 @@ export function CloudWaitlistForm({
           href="https://github.com/molesignal/molesignal"
           target="_blank"
           rel="noreferrer"
+          data-analytics-event="github_star_click"
+          data-analytics-source-page
           className="text-marketing-accent underline-offset-2 hover:underline"
         >
           {tf("successAction")}

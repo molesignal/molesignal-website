@@ -3,9 +3,13 @@
  * call sites don't have to depend on the global, and so a future provider
  * swap stays mechanical.
  *
+ * Event names are snake_case (verb-object), per 06§4.4 — the single source of
+ * truth for the conversion-funnel taxonomy. Keep call sites consistent with
+ * that table; a stray kebab-case name silently splits the funnel in Plausible.
+ *
  * Usage:
  *   import { track } from "@/lib/analytics";
- *   track("cta-click", { surface: "hero", target: "/start" });
+ *   track("cta_click", { label: "Try it", source_page: "/", destination: "/start" });
  */
 
 type Plausible = (

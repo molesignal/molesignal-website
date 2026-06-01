@@ -57,6 +57,7 @@ export async function QuickStartTabs({ className }: { className?: string }) {
           code={DOCKER_CMD}
           language="bash"
           filename={t("tabFilenames.docker")}
+          analytics={{ tab: "docker", snippet_type: "install" }}
         />
       </TabsContent>
 
@@ -65,6 +66,7 @@ export async function QuickStartTabs({ className }: { className?: string }) {
           code={HELM_CMD}
           language="bash"
           filename={t("tabFilenames.helm")}
+          analytics={{ tab: "helm", snippet_type: "install" }}
         />
       </TabsContent>
 
@@ -73,6 +75,7 @@ export async function QuickStartTabs({ className }: { className?: string }) {
           code={BINARY_CMD}
           language="bash"
           filename={t("tabFilenames.binary")}
+          analytics={{ tab: "binary", snippet_type: "install" }}
         />
       </TabsContent>
     </Tabs>
