@@ -11,7 +11,7 @@
  *
  * Exits 1 on any drift with a unified-diff-like report.
  */
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -57,10 +57,34 @@ const CHECKS: Check[] = [
   { label: "trace_id example in start page", needle: PHRASES.traceId, filePath: START_PAGE },
 ];
 
+// The canonical README lives in the *parent* product repo (`../README.md`).
+// When this website is checked out standalone (e.g. its own git repo in CI),
+// that sibling file is not present. In that case we honestly SKIP the
+// cross-repo checks (logging which ones) rather than hard-failing, while still
+// enforcing every within-repo website check. Run inside the monorepo to
+// exercise the full README ↔ website sync guard.
+const parentReadmePresent = existsSync(README_PATH);
+
 let failed = 0;
+let skipped = 0;
 console.log("\nQuickStart sync audit — README ↔ website\n");
 
+if (!parentReadmePresent) {
+  console.log(
+    `  note  parent README not found at ${README_PATH}\n` +
+      `        → skipping cross-repo sync checks (run inside the monorepo to enforce);\n` +
+      `        within-repo website checks still run.\n`,
+  );
+}
+
 for (const c of CHECKS) {
+  // Cross-repo check whose source file is unavailable in a standalone checkout.
+  if (!parentReadmePresent && c.filePath === README_PATH) {
+    console.log(`  skip  ${c.label} — parent README not present`);
+    skipped++;
+    continue;
+  }
+
   let body: string;
   try {
     body = readFileSync(c.filePath, "utf8");
@@ -79,12 +103,17 @@ for (const c of CHECKS) {
   }
 }
 
+const ran = CHECKS.length - skipped;
 console.log(
-  `\nFailures: ${failed}/${CHECKS.length} (in sync = ${CHECKS.length - failed})`,
+  `\nFailures: ${failed}/${ran} (in sync = ${ran - failed}${skipped ? `, skipped = ${skipped}` : ""})`,
 );
 
 if (failed > 0) {
   console.error("\nQuickStart drift detected. Resync the website copy with README.");
   process.exit(1);
 }
-console.log("\nWebsite QuickStart copy is in sync with the parent README.");
+console.log(
+  parentReadmePresent
+    ? "\nWebsite QuickStart copy is in sync with the parent README."
+    : "\nWithin-repo QuickStart checks passed (cross-repo sync skipped — parent README absent).",
+);

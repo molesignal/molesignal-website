@@ -2,7 +2,7 @@
 id: ISSUE-13
 type: feature
 title: [T12] 关键路径E2E(Playwright)
-status: verifying
+status: closed
 priority: P0
 assignee: fullstack-engineer
 created: 2026-06-01
@@ -82,3 +82,5 @@ updated: 2026-06-02
 **VERDICT: PASS**
 
 — qa-automation 2026-06-02
+- 2026-06-02 07:12:41 set status=closed
+- 2026-06-02 07:12:41 引擎周期#14: QA PASS, 关闭

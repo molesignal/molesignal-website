@@ -1,0 +1,113 @@
+# CI 门禁 (T13 / ISSUE-14)
+# Runs the full quality gate on every PR and push to main. A failing job
+# blocks the merge when the matching branch-protection rule requires the
+# "CI / quality-gate" check (see .github/branch-protection.md).
+#
+# Gate stages (all must pass):
+#   1. pnpm check          — typecheck + eslint + a11y:contrast + i18n parity
+#   2. pnpm lint:quickstart— website ↔ README command sync (cross-repo checks
+#                            self-skip when the parent README is absent)
+#   3. pnpm build          — production Next.js build
+#   4. pnpm lint:links     — every internal link resolves 2xx (against next start)
+#   5. pnpm test:e2e       — Playwright critical-path E2E (starts its own server)
+#
+# The pnpm store is cached (keyed on the lockfile) to speed up installs.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel superseded runs on the same ref to save minutes.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+  # Local link/E2E servers — no external keys; the app degrades gracefully.
+  LINK_PORT: "3000"
+
+jobs:
+  quality-gate:
+    name: quality-gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          # Caches the pnpm content-addressable store, keyed on pnpm-lock.yaml.
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # 1) typecheck + lint + a11y:contrast + i18n parity
+      - name: Lint & static checks
+        run: pnpm check
+
+      # 2) website ↔ README QuickStart command sync
+      - name: QuickStart sync
+        run: pnpm lint:quickstart
+
+      # 3) production build (needed by lint:links and E2E)
+      - name: Build
+        run: pnpm build
+
+      # 4) crawl internal links against a real production server
+      - name: Link check
+        run: |
+          pnpm exec next start -p "$LINK_PORT" &
+          SERVER_PID=$!
+          # Wait for the server to accept connections (max ~60s).
+          for i in $(seq 1 60); do
+            if curl -sf "http://localhost:${LINK_PORT}/" -o /dev/null; then
+              echo "server up after ${i}s"
+              break
+            fi
+            if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+              echo "::error::next start exited before becoming ready"
+              exit 1
+            fi
+            sleep 1
+          done
+          set +e
+          SITE="http://localhost:${LINK_PORT}" pnpm lint:links
+          RC=$?
+          set -e
+          kill "$SERVER_PID" 2>/dev/null || true
+          exit $RC
+
+      # 5) Playwright E2E — the config boots its own `next start` on :3210
+      - name: Install Playwright browser
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: E2E (Playwright)
+        run: pnpm test:e2e
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+          if-no-files-found: ignore
