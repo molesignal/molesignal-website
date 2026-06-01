@@ -26,7 +26,7 @@ READINESS_SCORE: 1/34
 - [ ] **Design Partner 申请持久化**：5 字段 zod 校验通过后 email 入 `RESEND_PARTNER_AUDIENCE_ID`（name 拆 first/last，幂等）；通知邮件正文含全 5 字段且 `replyTo`=申请人；蜜罐字段被填时 silent 200 不入库；缺 env 优雅降级 + 日志；成功态原位切换持久卡片（T02）〔需外部:RESEND_API_KEY + RESEND_PARTNER_AUDIENCE_ID〕
 
 ### 转化可观测（D7 · T05）
-- [ ] **埋点 11 点位接线**：§4.4 所列 11 个事件在对应组件真实调用 `track()`（含规范 props），两表单 submit 事件在 API 2xx 后才触发；QA 用 network 面板验证 prod+配域名时 Plausible 收到对应请求，无遗漏点位（T05）〔需外部:NEXT_PUBLIC_PLAUSIBLE 域名配置 才能验真实上报；本地可验 track() 被调用〕
+- [x] **埋点 11 点位接线**：§4.4 所列 11 个事件在对应组件真实调用 `track()`（含规范 props），两表单 submit 事件在 API 2xx 后才触发；QA 用 network 面板验证 prod+配域名时 Plausible 收到对应请求，无遗漏点位（T05）〔需外部:NEXT_PUBLIC_PLAUSIBLE 域名配置 才能验真实上报；本地可验 track() 被调用〕 ✅ ISSUE-2 closed · QA PASS 2026-06-02（真实浏览器 E2E 14/14：spy window.plausible 验 11 事件 snake_case 名+props 规范；AC3 两表单仅 API 2xx 后触发、429/500/蜜罐均不触发；AC4 去重；AC5 无 PII；pnpm check+build 过。AC8 真实 Plausible 上报延后补域名复验。非阻断观察：委托器 source_page 未去 locale，data-analyst 补域名前统一）
 
 ### 信任 / 合规（D1/D5/D8 红线 · T04/T06）
 - [ ] **死链 / 画饼治理**：Footer 移除 docs 链接、Discord 改禁用态（cursor-default+title，非 `href="#"`）、Download 改 coming-soon/锚到 /start binary；TopNav 移除 Docs 入口；community-callout Discord 同改禁用态；QuickStart helm/binary tab 加 "v1.0 target" notice；`messages/{en,zh}.json` 文案同步（T04）

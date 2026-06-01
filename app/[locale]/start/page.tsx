@@ -62,16 +62,18 @@ export default async function StartPage({
             {t("prereqTitle")}
           </h2>
           <ul className="grid gap-2 md:grid-cols-3">
-            {([
-              ["docker", t("prereqDocker")],
-              ["helm", t("prereqHelm")],
-              ["binary", t("prereqBinary")],
-            ] as const).map(([key, body]) => (
+            {(
+              [
+                ["docker", t("prereqDocker")],
+                ["helm", t("prereqHelm")],
+                ["binary", t("prereqBinary")],
+              ] as const
+            ).map(([key, body]) => (
               <li
                 key={key}
                 className="border-border bg-surface rounded-lg border p-4"
               >
-                <div className="text-fg-muted mb-1 text-xs font-strong uppercase tracking-wide">
+                <div className="text-fg-muted font-strong mb-1 text-xs tracking-wide uppercase">
                   {key}
                 </div>
                 <p className="text-fg text-sm">{body}</p>
@@ -89,12 +91,20 @@ export default async function StartPage({
       </Section>
 
       <Section padding="md">
-        <div className="grid gap-section-md">
+        <div className="gap-section-md grid">
           <Block id="ingest" title={t("ingestTitle")} body={t("ingestBody")}>
-            <CodeBlock code={OTLP_CURL} language="bash" filename={t("ingestFilename")} />
+            <CodeBlock
+              code={OTLP_CURL}
+              language="bash"
+              filename={t("ingestFilename")}
+            />
           </Block>
           <Block id="query" title={t("queryTitle")} body={t("queryBody")}>
-            <CodeBlock code={SQL_QUERY} language="bash" filename={t("queryFilename")} />
+            <CodeBlock
+              code={SQL_QUERY}
+              language="bash"
+              filename={t("queryFilename")}
+            />
           </Block>
         </div>
       </Section>
@@ -107,7 +117,7 @@ export default async function StartPage({
           {TROUBLESHOOT_KEYS.map((key) => (
             <li key={key}>
               <details className="border-border bg-surface group rounded-md border">
-                <summary className="text-fg cursor-pointer select-none px-4 py-3 text-sm font-strong">
+                <summary className="text-fg font-strong cursor-pointer px-4 py-3 text-sm select-none">
                   {t(`troubleshoot.${key}.q`)}
                 </summary>
                 <div className="text-fg-muted border-border border-t px-4 py-3 text-sm">
@@ -135,7 +145,7 @@ export default async function StartPage({
             iconElement={<ArrowRight size={14} aria-hidden />}
           />
           <NextCard
-            href="https://docs.molesignal.io"
+            href="https://github.com/molesignal/molesignal"
             external
             label={t("nextDocs")}
             iconElement={<ArrowUpRight size={12} aria-hidden />}

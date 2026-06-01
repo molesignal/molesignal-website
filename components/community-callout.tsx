@@ -5,14 +5,24 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 type CardProps = {
-  href: string;
+  href?: string;
   Icon: typeof Star;
   title: string;
   body: ReactNode;
   external?: boolean;
+  /**
+   * Honest "not yet" state (P0-4): renders a non-clickable card with a
+   * "launching soon" tooltip instead of a placeholder `href="#"`.
+   */
+  disabled?: boolean;
+  /** Tooltip shown on the disabled card. */
+  disabledTitle?: string;
   /** When set, clicking the card emits this funnel event (delegated tracker). */
   analyticsEvent?: string;
 };
+
+const CARD_CLASS =
+  "border-border bg-surface group duration-fast block rounded-lg border p-6 transition-all";
 
 function Card({
   href,
@@ -20,8 +30,42 @@ function Card({
   title,
   body,
   external = true,
+  disabled = false,
+  disabledTitle,
   analyticsEvent,
 }: CardProps) {
+  const inner = (
+    <div className="flex items-start gap-3">
+      <div className="bg-marketing-accent-dim text-marketing-accent flex h-10 w-10 shrink-0 items-center justify-center rounded-md">
+        <Icon size={18} aria-hidden />
+      </div>
+      <div className="flex-1 space-y-1">
+        <div
+          className={cn(
+            "font-strong flex items-center gap-1",
+            disabled ? "text-tx-3" : "text-fg",
+          )}
+        >
+          {title}
+          {!disabled && external && <ArrowUpRight size={10} aria-hidden />}
+        </div>
+        <p className="text-fg-muted text-sm">{body}</p>
+      </div>
+    </div>
+  );
+
+  if (disabled) {
+    return (
+      <div
+        aria-disabled="true"
+        title={disabledTitle}
+        className={cn(CARD_CLASS, "cursor-default")}
+      >
+        {inner}
+      </div>
+    );
+  }
+
   return (
     <a
       href={href}
@@ -32,20 +76,12 @@ function Card({
             "data-analytics-source-page": true,
           }
         : {})}
-      className="border-border bg-surface hover:border-marketing-accent hover:shadow-glow-pink group duration-fast block rounded-lg border p-6 transition-all"
+      className={cn(
+        CARD_CLASS,
+        "hover:border-marketing-accent hover:shadow-glow-pink",
+      )}
     >
-      <div className="flex items-start gap-3">
-        <div className="bg-marketing-accent-dim text-marketing-accent flex h-10 w-10 shrink-0 items-center justify-center rounded-md">
-          <Icon size={18} aria-hidden />
-        </div>
-        <div className="flex-1 space-y-1">
-          <div className="text-fg flex items-center gap-1 font-strong">
-            {title}
-            {external && <ArrowUpRight size={10} aria-hidden />}
-          </div>
-          <p className="text-fg-muted text-sm">{body}</p>
-        </div>
-      </div>
+      {inner}
     </a>
   );
 }
@@ -68,7 +104,8 @@ export function CommunityCallout({ className }: { className?: string }) {
         analyticsEvent="github_star_click"
       />
       <Card
-        href="#"
+        disabled
+        disabledTitle={t("discord.soonTitle")}
         Icon={MessageCircle}
         title={t("discord.title")}
         body={t("discord.body")}

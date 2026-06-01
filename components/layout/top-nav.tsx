@@ -39,20 +39,18 @@ const PRIMARY_ITEMS: PrimaryItem[] = [
   { kind: "link", href: "/cloud", labelKey: "cloud" },
 ];
 
+// Resources dropdown — honest destinations only (UX §2.2). The old "Docs"
+// entry pointed at docs.molesignal.io, which does not exist this milestone;
+// it is removed rather than left as a dead link (P0-4). "Download" stays but
+// anchors to the /start install section with a coming-soon sublabel, instead
+// of linking to an unpublished GitHub release. Uses #install (the Section's
+// real id), not #binary — Radix auto-ids its tab panels, so #binary resolves
+// to nothing.
 const RESOURCE_CHILDREN: ResourceChild[] = [
-  {
-    href: "https://docs.molesignal.io",
-    labelKey: "docs",
-    subKey: "docsSub",
-    external: true,
-  },
+  { href: "/roadmap", labelKey: "roadmap", subKey: "roadmapSub" },
+  { href: "/changelog", labelKey: "changelog", subKey: "changelogSub" },
   { href: "/blog", labelKey: "blog", subKey: "blogSub" },
-  {
-    href: "https://github.com/molesignal/molesignal/releases",
-    labelKey: "download",
-    subKey: "downloadSub",
-    external: true,
-  },
+  { href: "/start#install", labelKey: "download", subKey: "downloadSub" },
 ];
 
 /**
@@ -72,7 +70,11 @@ const RESOURCE_CHILDREN: ResourceChild[] = [
  * Mobile (< 768px) goes fully into the right-side Sheet drawer; the
  * Resources group becomes a header + indented children there.
  */
-export function TopNav({ githubStarsSlot }: { githubStarsSlot?: React.ReactNode }) {
+export function TopNav({
+  githubStarsSlot,
+}: {
+  githubStarsSlot?: React.ReactNode;
+}) {
   const t = useTranslations("nav");
   const tc = useTranslations("common");
   const pathname = usePathname();
@@ -111,7 +113,7 @@ export function TopNav({ githubStarsSlot }: { githubStarsSlot?: React.ReactNode 
           : "border-b border-transparent bg-transparent",
       )}
     >
-      <div className="page-container flex h-nav items-center justify-between gap-4">
+      <div className="page-container h-nav flex items-center justify-between gap-4">
         {/* Brand */}
         <Link
           href="/"
@@ -179,7 +181,7 @@ export function TopNav({ githubStarsSlot }: { githubStarsSlot?: React.ReactNode 
             data-analytics-event="cta_click"
             data-analytics-source-page
             data-analytics-props='{"label":"Try it","destination":"/start"}'
-            className="bg-primary text-primary-foreground hover:shadow-glow-indigo duration-fast inline-flex h-8 items-center gap-1 rounded-md px-3 text-sm font-strong transition-shadow"
+            className="bg-primary text-primary-foreground hover:shadow-glow-indigo duration-fast font-strong inline-flex h-8 items-center gap-1 rounded-md px-3 text-sm transition-shadow"
           >
             {tc("tryIt")}
             <span aria-hidden>→</span>
@@ -224,7 +226,7 @@ export function TopNav({ githubStarsSlot }: { githubStarsSlot?: React.ReactNode 
                     key={item.href}
                     href={item.href}
                     onClick={() => setMobileOpen(false)}
-                    className="text-fg hover:bg-bg-hover -mx-2 inline-flex items-center justify-between rounded-md px-2 py-2 text-base font-strong"
+                    className="text-fg hover:bg-bg-hover font-strong -mx-2 inline-flex items-center justify-between rounded-md px-2 py-2 text-base"
                   >
                     {t(item.labelKey)}
                   </Link>
@@ -232,7 +234,7 @@ export function TopNav({ githubStarsSlot }: { githubStarsSlot?: React.ReactNode 
 
                 {/* Resources group — header + indented children */}
                 <div className="border-border mt-2 border-t pt-2">
-                  <p className="text-fg-muted -mx-2 px-2 py-2 text-xs uppercase tracking-wide font-strong">
+                  <p className="text-fg-muted font-strong -mx-2 px-2 py-2 text-xs tracking-wide uppercase">
                     {t("resources")}
                   </p>
                   {RESOURCE_CHILDREN.map((child) => {
@@ -285,7 +287,7 @@ export function TopNav({ githubStarsSlot }: { githubStarsSlot?: React.ReactNode 
                   data-analytics-event="cta_click"
                   data-analytics-source-page
                   data-analytics-props='{"label":"Try it","destination":"/start"}'
-                  className="bg-primary text-primary-foreground hover:shadow-glow-indigo inline-flex w-full items-center justify-center gap-1 rounded-md px-4 py-2.5 text-base font-strong transition-shadow"
+                  className="bg-primary text-primary-foreground hover:shadow-glow-indigo font-strong inline-flex w-full items-center justify-center gap-1 rounded-md px-4 py-2.5 text-base transition-shadow"
                 >
                   {tc("tryIt")}
                   <span aria-hidden>→</span>
@@ -315,13 +317,9 @@ function ResourceMenuItem({
   const content = (
     <>
       <div className="flex items-center gap-1">
-        <span className="text-fg text-sm font-strong">{label}</span>
+        <span className="text-fg font-strong text-sm">{label}</span>
         {child.external && (
-          <ArrowUpRight
-            size={9}
-            aria-hidden
-            className="text-fg-muted"
-          />
+          <ArrowUpRight size={9} aria-hidden className="text-fg-muted" />
         )}
       </div>
       <span className="text-fg-muted text-xs">{sub}</span>
@@ -335,7 +333,7 @@ function ResourceMenuItem({
           href={child.href}
           target="_blank"
           rel="noreferrer"
-          className="flex flex-col items-start gap-0.5 cursor-pointer"
+          className="flex cursor-pointer flex-col items-start gap-0.5"
         >
           {content}
         </a>
@@ -346,7 +344,7 @@ function ResourceMenuItem({
     <DropdownMenuItem asChild>
       <Link
         href={child.href}
-        className="flex flex-col items-start gap-0.5 cursor-pointer"
+        className="flex cursor-pointer flex-col items-start gap-0.5"
       >
         {content}
       </Link>

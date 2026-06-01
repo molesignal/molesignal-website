@@ -8,8 +8,14 @@ import { Link } from "@/i18n/navigation";
 type LinkItem = {
   /** Translation key inside `footer.links.*` */
   key: string;
-  href: string;
+  /** Omitted for `disabled` items, which render as non-clickable text. */
+  href?: string;
   external?: boolean;
+  /**
+   * Honest "not yet" state (P0-4). Renders muted, non-clickable text with a
+   * "launching soon" tooltip instead of a placeholder `href="#"`.
+   */
+  disabled?: boolean;
 };
 
 type Col = {
@@ -34,13 +40,12 @@ const COLUMNS: Col[] = [
   {
     titleKey: "resources",
     items: [
-      { key: "docs", href: "https://docs.molesignal.io", external: true },
       { key: "blog", href: "/blog" },
-      {
-        key: "download",
-        href: "https://github.com/molesignal/molesignal/releases",
-        external: true,
-      },
+      // Anchors to the /start install section (Quick Start tabs). The binary
+      // tab's "v1.0 target" notice lives there. Uses #install — the Section's
+      // real id — because #binary maps to no DOM element (Radix auto-ids its
+      // tab panels and unmounts the inactive ones).
+      { key: "download", href: "/start#install" },
       { key: "designPartner", href: "/design-partner" },
     ],
   },
@@ -52,8 +57,9 @@ const COLUMNS: Col[] = [
         href: "https://github.com/molesignal/molesignal",
         external: true,
       },
-      { key: "discord", href: "#", external: true },
-      { key: "twitter", href: "#", external: true },
+      // Discord / Twitter aren't live yet — honest disabled state, not `href="#"`.
+      { key: "discord", disabled: true },
+      { key: "twitter", disabled: true },
     ],
   },
   {
@@ -83,13 +89,24 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           {COLUMNS.map((col) => (
             <div key={col.titleKey} className="space-y-3">
-              <h3 className="text-fg-muted text-xs font-strong tracking-wide uppercase">
+              <h3 className="text-fg-muted font-strong text-xs tracking-wide uppercase">
                 {t(col.titleKey)}
               </h3>
               <ul className="space-y-2">
                 {col.items.map((item) => (
                   <li key={item.key}>
-                    {item.external ? (
+                    {item.disabled ? (
+                      <span
+                        title={t("launchingSoon")}
+                        aria-disabled="true"
+                        className="text-tx-3 inline-flex cursor-default items-center gap-1.5 text-sm"
+                      >
+                        {tLinks(item.key)}
+                        <span className="border-border text-fg-muted rounded border px-1 py-px text-[10px] tracking-wide uppercase">
+                          {t("soon")}
+                        </span>
+                      </span>
+                    ) : item.external ? (
                       <a
                         href={item.href}
                         target="_blank"
@@ -101,7 +118,7 @@ export function Footer() {
                       </a>
                     ) : (
                       <Link
-                        href={item.href}
+                        href={item.href!}
                         className="text-fg hover:text-primary duration-fast text-sm transition-colors"
                       >
                         {tLinks(item.key)}

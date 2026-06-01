@@ -31,12 +31,14 @@
     "pricing": "定价",
     "cloud": "Cloud",
     "resources": "资源",
-    "docs": "文档",
-    "docsSub": "参考与指南",
+    "roadmap": "Roadmap",
+    "roadmapSub": "即将到来",
+    "changelog": "Changelog",
+    "changelogSub": "更新日志",
     "blog": "Blog",
     "blogSub": "工程笔记",
     "download": "下载",
-    "downloadSub": "Release 与二进制",
+    "downloadSub": "即将上线 · v1.0 目标",
     "menu": "菜单",
     "openMenu": "打开菜单",
     "closeMenu": "关闭菜单",
@@ -72,6 +74,8 @@
     "terms": "服务条款",
     "cloudComing": "Cloud 即将上线 · 加入候补",
     "copyright": "© {year} molesignal · Apache 2.0 协议",
+    "launchingSoon": "即将上线",
+    "soon": "即将",
     "links": {
       "why": "为什么是 molesignal",
       "architecture": "架构",
@@ -79,7 +83,6 @@
       "changelog": "Changelog",
       "pricing": "定价",
       "cloud": "Cloud",
-      "docs": "文档",
       "quickStart": "快速开始",
       "blog": "Blog",
       "download": "下载",
@@ -249,7 +252,8 @@
     "nextTitle": "下一步",
     "nextArch": "了解架构",
     "nextDp": "成为 Design Partner",
-    "nextDocs": "浏览文档 ↗",
+    "nextDocs": "在 GitHub 阅读源码 ↗",
+    "v1Notice": "Helm chart 与预编译二进制随 v1.0 发布，暂未发布。先用上面的 Docker Compose 路径体验 molesignal。",
     "tabs": {
       "docker": "docker compose",
       "helm": "Helm chart",
@@ -602,7 +606,8 @@
       },
       "discord": {
         "title": "Discord — 即将上线",
-        "body": "给 design partner 和贡献者准备的小空间。在 /design-partner 留邮箱，我们会发邀请。"
+        "body": "给 design partner 和贡献者准备的小空间。在 /design-partner 留邮箱，我们会发邀请。",
+        "soonTitle": "即将上线 —— 在 /design-partner 留邮箱获取邀请"
       }
     },
     "contributorWall": {
