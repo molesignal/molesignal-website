@@ -2,7 +2,7 @@
 id: ISSUE-14
 type: feature
 title: [T13] CI门禁(GitHub Actions)
-status: in_progress
+status: in_review
 priority: P0
 assignee: fullstack-engineer
 created: 2026-06-01
@@ -46,6 +46,24 @@ updated: 2026-06-02
 - `/opengraph-image` 修复连带让 READINESS「无死链门禁」可转绿（待 QA 复验后由 orchestrator 勾选）。
 - CI 不需任何外部密钥；缺 env 时 app 优雅降级，build/E2E 均不依赖真实外部服务。
 
+## 代码审查（code-reviewer, 2026-06-02）
+
+**结论：通过，建议放行到 QA 验证。0 处必改，2 处建议改，1 处可选。**
+
+逐项核对验收标准均满足：AC① 五道闸（`check`/`lint:quickstart`/`build`/`lint:links`/`test:e2e`）在 `ci.yml` 按序独立成 step，任一失败即红；AC② 红阻断由 `branch-protection.md` 文档化（workflow 无法自施加，属预期手动项）；AC③ `actions/setup-node` `cache: pnpm` 按 `pnpm-lock.yaml` keyed。提交规范符合 Conventional Commits。
+
+正确性已实证：
+- `proxy.ts` matcher 修复正确——根级 `app/opengraph-image.tsx`（无点）确被原 `.*\..*` 规则漏掉而吞进 locale 路由致 404；新增 `opengraph-image` 排除项位于负向先行断言起始锚点，仅命中以该串开头的根路径；locale 级 `app/[locale]/blog/[slug]/opengraph-image.tsx`（路径以 `blog`/`zh` 开头）不受影响。两路由文件均已确认存在。无残留 unicode。
+- `check-quickstart-sync.ts` SKIP 逻辑正确：`existsSync(README_PATH)` 缺失时跳过 `filePath===README_PATH` 的跨仓项，仓内项照跑；计数 `ran=CHECKS.length-skipped`、`failed/ran` 口径自洽；尾部信息分支文案准确，仍 `process.exit(1)` on drift。无静默放水。
+- `ci.yml` link-check step bash 健壮：`set +e/-e` 包裹捕获 RC、`kill -0` 探活早退、`exit $RC` 透传；GitHub 默认 `bash -eo pipefail` 下逻辑成立。`LINK_PORT=3000` 与 `check-links.ts` 默认 `SITE` 一致；E2E 自带 `:3210` server 与之无端口冲突。`lockfileVersion '9.0'` 与 pnpm 9 `--frozen-lockfile` 兼容，无 packageManager/engines 约束冲突。`concurrency` 取消、`permissions: contents:read` 最小权限、无不可信 `github.event.*` 入参——均良好。
+
+发现项：
+1. **[建议改]** `.github/workflows/ci.yml:99-112` 上传 `playwright-report/` artifact，但 `playwright.config.ts:17` reporter 仅 `[["list"]]` 且 `trace:"off"`——不会生成 `playwright-report/` 目录，`test-results/` 失败时也无 trace。该 artifact 实际恒为空（靠 `if-no-files-found: ignore` 不报错）。工单"E2E 报告作为 artifact 上传"的描述名不副实。建议：CI 下追加 `["html",{open:"never"}]` reporter（或 `--reporter=html`），否则失败时无可下载诊断物。未自动改：动 E2E 配置应经 QA 复跑确认零回归。
+2. **[建议改/可选]** `.github/branch-protection.md:36-43` 的 `gh api` 示例用 `-f 'required_status_checks[strict]=true'` 传布尔值（`-f` 发字符串 "true"），GitHub API 对 `strict` 期望 boolean，该命令实际可能被拒。建议改用 `--input` 传 JSON 或 `-F` 传布尔。属手动运维文档、非代码路径，影响有限。
+3. **[可选]** link-check 等待循环 60s 超时后若 server 仍存活则不报错直接续跑 `lint:links`，靠后者对未就绪 server 失败兜底；可在超时分支显式 `::error::` 提示以利排障。
+
+未自动修复任何项：1 触及已验证的 E2E 配置（交 QA 复跑把关），2/3 为文档/可观测性优化，均非必改，不阻断放行。
+
 ## 处理记录
 - 2026-06-01 23:30:28 工单创建（feature / P0）
 - 2026-06-02 07:14:31 set assignee=fullstack-engineer
@@ -54,3 +72,4 @@ updated: 2026-06-02
 - 2026-06-02 07:14:31 LANE: light
 - 2026-06-02 07:14:31 EXTRA_ROLES: none
 - 2026-06-02 07:14:46 set status=in_progress
+- 2026-06-02 07:23:17 set status=in_review
