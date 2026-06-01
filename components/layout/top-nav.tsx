@@ -96,12 +96,15 @@ export function TopNav({
     (c) => !c.external && pathname.startsWith(c.href),
   );
 
+  // Active state is an underline (2px brand bottom border), not a filled
+  // background pill (05-UI §3.4). Base reserves a transparent 2px bottom
+  // border so the row height doesn't shift when active.
   const itemClass = (active: boolean) =>
     cn(
-      "duration-fast inline-flex items-center gap-1 rounded-md px-3 py-1.5 text-sm font-strong transition-colors",
+      "duration-fast inline-flex items-center gap-1 border-b-2 px-3 py-1.5 text-sm font-strong transition-colors",
       active
-        ? "text-fg bg-bg-hover"
-        : "text-fg-muted hover:text-fg hover:bg-bg-hover",
+        ? "border-brand text-fg"
+        : "border-transparent text-fg-muted hover:text-fg",
     );
 
   return (
@@ -109,7 +112,7 @@ export function TopNav({
       className={cn(
         "sticky top-0 z-40 w-full transition-[background-color,border-color,backdrop-filter]",
         scrolled
-          ? "border-border bg-surface/85 border-b backdrop-blur"
+          ? "border-border bg-surface/90 border-b backdrop-blur-md"
           : "border-b border-transparent bg-transparent",
       )}
     >
@@ -120,7 +123,8 @@ export function TopNav({
           className="hover:bg-bg-hover duration-fast inline-flex items-center gap-2 rounded-md px-2 py-1 transition-colors"
         >
           <LogoMark size={22} />
-          <span className="text-fg font-display-strong text-base">
+          {/* Wordmark in monospace — reads like a CLI tool name (05-UI §3.4) */}
+          <span className="text-fg font-mono font-mono-strong text-mono-lg">
             molesignal
           </span>
         </Link>
@@ -144,7 +148,7 @@ export function TopNav({
             <DropdownMenuTrigger
               className={cn(
                 itemClass(resourcesActive),
-                "data-[state=open]:bg-bg-hover data-[state=open]:text-fg outline-none",
+                "data-[state=open]:text-fg outline-none",
               )}
             >
               {t("resources")}
@@ -181,7 +185,7 @@ export function TopNav({
             data-analytics-event="cta_click"
             data-analytics-source-page
             data-analytics-props='{"label":"Try it","destination":"/start"}'
-            className="bg-primary text-primary-foreground hover:shadow-glow-indigo duration-fast font-strong inline-flex h-8 items-center gap-1 rounded-md px-3 text-sm transition-shadow"
+            className="bg-primary text-primary-foreground hover:shadow-glow-brand duration-fast font-strong inline-flex h-8 items-center gap-1 rounded-md px-3 text-sm transition-shadow"
           >
             {tc("tryIt")}
             <span aria-hidden>→</span>
@@ -287,7 +291,7 @@ export function TopNav({
                   data-analytics-event="cta_click"
                   data-analytics-source-page
                   data-analytics-props='{"label":"Try it","destination":"/start"}'
-                  className="bg-primary text-primary-foreground hover:shadow-glow-indigo font-strong inline-flex w-full items-center justify-center gap-1 rounded-md px-4 py-2.5 text-base transition-shadow"
+                  className="bg-primary text-primary-foreground hover:shadow-glow-brand font-strong inline-flex w-full items-center justify-center gap-1 rounded-md px-4 py-2.5 text-base transition-shadow"
                 >
                   {tc("tryIt")}
                   <span aria-hidden>→</span>

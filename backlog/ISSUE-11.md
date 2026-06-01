@@ -2,7 +2,7 @@
 id: ISSUE-11
 type: feature
 title: [T10] 表单页+成本/对比视觉改造
-status: verifying
+status: closed
 priority: P0
 assignee: frontend-engineer
 created: 2026-06-01
@@ -132,3 +132,5 @@ updated: 2026-06-02
 - **全量回归**：Playwright 6 套 **50 通过 / 0 失败**（上轮 48/2 → 0 回退）；`issue5-ui-tokens.mjs` 字体/令牌 29/29（font-mono→Geist Mono 链未受 cn() 改动影响）。
 - **DEF-1 已根治（计算样式实证）**：对比表 ✓ 标记 computed `font-family="Geist Mono"…`（等宽）且 `font-weight=600`（font-strong 同时保留）；CostCalc Savings 大数 `Geist Mono / 32px(display-lg) / 700(display-strong) / amber` 四类全生效（潜伏缺陷一并修复）。证据：`08-测试报告.md`＞「自动化测试 — ISSUE-11/T10 复测」；截图 `/tmp/issue11-compare-table.png`、`/tmp/issue11-why.png`。
 - 测完已关 :3210（无僵尸进程）。建议放行合并。
+- 2026-06-02 06:36:05 set status=closed
+- 2026-06-02 06:36:05 引擎周期#12: QA PASS, 关闭

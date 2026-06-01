@@ -8,11 +8,16 @@ const pillVariants = cva(
   {
     variants: {
       variant: {
+        // 05-UI §3.6 — Pill semantic variants on the migrated teal/amber palette.
         default: "bg-surface-muted text-fg-muted",
-        brand: "bg-primary/10 text-primary",
-        marketing:
-          "bg-marketing-accent-dim text-marketing-accent",
+        brand: "border border-brand/20 bg-brand-dim text-brand",
+        amber: "bg-amber-dim text-amber",
         success: "bg-green-dim text-green",
+        danger: "bg-red-dim text-red",
+        muted: "bg-surface-muted text-fg-muted",
+        // `marketing` (amber accent) and `warning` (red) kept as back-compat
+        // aliases for existing call sites; prefer `amber` / `danger` going forward.
+        marketing: "bg-marketing-accent-dim text-marketing-accent",
         warning: "bg-red-dim text-red",
         outline: "border-border text-fg-muted border",
       },

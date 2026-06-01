@@ -15,7 +15,7 @@ const buttonVariants = cva(
          * primary "Try it" CTA in TopNav / Hero.
          */
         brand:
-          "bg-primary text-primary-foreground duration-fast transition-shadow hover:shadow-glow-indigo",
+          "bg-primary text-primary-foreground duration-fast transition-all hover:shadow-glow-brand active:scale-[0.98]",
         /**
          * Marketing CTA — indigo→pink gradient with a pink glow on hover. Use
          * sparingly: hero secondary CTA, design-partner closer, cloud waitlist.
@@ -24,7 +24,7 @@ const buttonVariants = cva(
          * style at the call site.
          */
         marketing:
-          "bg-[image:var(--marketing-gradient-cta)] text-marketing-accent-fg duration-fast transition-shadow hover:shadow-glow-pink",
+          "bg-[image:var(--marketing-gradient-cta)] text-marketing-accent-fg duration-fast transition-all hover:shadow-glow-amber active:scale-[0.98]",
         outline:
           "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
         secondary:
