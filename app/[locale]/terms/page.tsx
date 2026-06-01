@@ -1,8 +1,20 @@
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 
-import { Section } from "@/components/ui/section";
+import { LegalDocument, type LegalSection } from "@/components/legal/legal-document";
 
-const LAST_UPDATED = "2026-05-29";
+const LAST_UPDATED = "2026-06-02";
+const APACHE_LICENSE_URL = "https://www.apache.org/licenses/LICENSE-2.0";
+
+const licenseLink = (chunks: React.ReactNode) => (
+  <a
+    href={APACHE_LICENSE_URL}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-primary underline-offset-2 hover:underline"
+  >
+    {chunks}
+  </a>
+);
 
 export async function generateMetadata({
   params,
@@ -22,17 +34,30 @@ export default async function TermsPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("legal");
+
+  // `t()` only returns string leaves, so the structured `sections` array is
+  // read from the full message bundle and navigated to directly.
+  const messages = await getMessages();
+  const sections = (messages.legal as { terms: { sections: LegalSection[] } })
+    .terms.sections;
+
   return (
-    <Section padding="lg">
-      <div className="prose-container space-y-4">
-        <h1 className="text-display-lg font-display-strong tracking-tighter">
-          {t("termsTitle")}
-        </h1>
-        <p className="text-fg-muted text-sm">
-          {t("lastUpdated", { date: LAST_UPDATED })}
-        </p>
-        <p className="text-fg text-base">{t("stub")}</p>
-      </div>
-    </Section>
+    <LegalDocument
+      title={t("terms.title")}
+      lastUpdated={t("lastUpdated", { date: LAST_UPDATED })}
+      disclaimer={t.rich("disclaimer", {
+        email: (chunks) => (
+          <a
+            href="mailto:founders@molesignal.io"
+            className="text-primary underline-offset-2 hover:underline"
+          >
+            {chunks}
+          </a>
+        ),
+      })}
+      intro={t("terms.intro")}
+      sections={sections}
+      footer={t.rich("terms.license", { license: licenseLink })}
+    />
   );
 }
