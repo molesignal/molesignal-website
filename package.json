@@ -15,6 +15,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "a11y:contrast": "tsx scripts/check-contrast.ts",
+    "test:rate-limit": "tsx scripts/check-rate-limit.ts",
     "check": "pnpm typecheck && pnpm lint && pnpm a11y:contrast && pnpm lint:i18n"
   },
   "dependencies": {
@@ -23,6 +24,8 @@
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
     "@next/mdx": "^16.2.6",
+    "@upstash/ratelimit": "^2.0.8",
+    "@upstash/redis": "^1.38.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.40.0",

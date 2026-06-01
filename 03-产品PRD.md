@@ -157,7 +157,7 @@ molesignal 凭什么、用户为什么用/留下：
 
 1. **是否引入真实后端 / DB？**（影响 P0-2、P1-5）当前零 DB。轻量优先建议：候补/申请先进 **Resend Audience + 轻存储（Neon/Supabase/Vercel Postgres）**。**需用户定**：是否接受引入 DB？还是仅用邮件营销 list（候补可触达即可，申请暂不结构化）？—— 决定 P0-2 的实现深度。
 2. **候补名单存哪？**（P0-1 核心）建议 Resend Audiences（最轻，候补=可触达 list）。需用户确认是否已有 Resend 账号/付费档支持 Audiences，或选 Buttondown/Plunk。
-3. **限流后端**（P0-3）：Upstash Redis 需开账号（有免费档）。需用户确认是否可接入 Upstash，或用 Vercel KV / Cloudflare Turnstile 人机校验替代。
+3. ~~**限流后端**（P0-3）：Upstash Redis 需开账号~~ → **已决策（2026-06-01）**：采用 Upstash 直连（非 Vercel KV / 非 Turnstile）；本期不提供密钥，代码就绪 + 缺 env 内存兜底降级即达本期就绪，真实跨实例限流延后复验。见 ISSUE-1。
 4. **docs 站本期是否建？**（P0-4）`docs.molesignal.io` 当前不存在。**需用户定**：本期产出 docs 站，还是先把 Footer 链接改为诚实态（禁用/coming soon/指向 GitHub README）？后者更快达成"无死链"。
 5. **Discord / helm chart / binary release 等外部产物本期是否补齐？**（P0-4、P1-6）这些是跨仓库/跨团队产物。**需用户定**每一项：本期产出真实产物，还是先诚实标注？建议 M1 先诚实标注（不画饼），M2 产物就绪后切换。
 6. **GitHub 仓库 `molesignal/molesignal` 是否已公开 + 有 Release？**（P0-9、P1-3、P1-7）决定 stats/贡献者墙/changelog 是真实数据还是回退态。需用户提供仓库状态与是否配置 `GITHUB_TOKEN`。
@@ -169,6 +169,20 @@ molesignal 凭什么、用户为什么用/留下：
 **关键已核实事实（修正架构师存疑项）**：
 - ✅ **Roadmap tab 与 URL hash 同步已实现**（`components/roadmap-list.tsx` 监听 `hashchange`+读 `window.location.hash`）——架构师 #14 的存疑点确认为"已实现"，无需开发，仅纳入回归。
 - ⚠️ **埋点点位完全未铺设**（比架构师 #26 "需核实"更严重）：`lib/analytics.ts` 导出了 `track()`，但全仓库 `app/`+`components/` **零调用**、零 `data-analytics`/`plausible-event` 属性。即 Plausible 即便上线也只有 PV、**拿不到任何转化事件**。故 P0-5 是必须的真实开发项，而非"核实"。
+
+---
+
+## 8. 迭代细化记录
+
+> PM 在迭代中对 P0/P1 工单做的需求细化要点回写于此，保持 PRD 与 backlog 工单一致。
+
+### ISSUE-1 · 可靠限流后端（Upstash）— T11 / P0-3（2026-06-01）
+- **承接 PRD**：§4.1 P0-3「API 限流可靠化」，红线 full 道，是 T01/T02 表单真入库的前置安全闸门。
+- **细化结论**：`lib/rate-limit.ts` 改 async + `@upstash/ratelimit`（滑动窗口），两 route handler 改 `await`；阈值不变（cloud 10/h、dp 5/h）；429 + 非负整数 `Retry-After`。
+- **降级与容错**：缺 `UPSTASH_*` env → 内存 Map 兜底（warn 仅一次）；Upstash 运行时故障 → **fail-open 放行 + warn**，表单可用性优先，不返 5xx。
+- **明确不做**：不引 Vercel KV / 不引人机校验 / 不改阈值与 429 结构 / 不做限流指标上报。
+- **密钥政策**：本期不提供密钥，按"代码就绪 + 降级路径客观验证"判过；真实跨实例限流（AC8）延后复验。
+- 完整用户故事与 AC1–AC8 见 `backlog/ISSUE-1.md`。
 
 ---
 
