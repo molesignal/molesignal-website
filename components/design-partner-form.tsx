@@ -69,7 +69,7 @@ export function DesignPartnerForm({ className }: { className?: string }) {
       }
       if (!res.ok) throw new Error("Request failed");
       // Only a real 2xx counts as a conversion. zod failures never reach here
-      // (react-hook-form blocks onSubmit); 429/5xx/network errors fall to catch.
+      // (react-hook-form blocks onSubmit); 5xx/network errors fall to catch.
       // No props — name/email are PII and must never be sent to analytics.
       track("design_partner_submit");
       setSubmitted(true);

@@ -2,7 +2,7 @@
 id: ISSUE-11
 type: feature
 title: [T10] 表单页+成本/对比视觉改造
-status: in_progress
+status: in_review
 priority: P0
 assignee: frontend-engineer
 created: 2026-06-01
@@ -88,3 +88,35 @@ updated: 2026-06-02
 - `pnpm check` rc=0（tsc 0 错 / eslint 0 错〔5 个既有 setState-in-effect warning 与本改无关〕/ a11y 26/26 / i18n 511=511）；`pnpm build` rc=0。
 
 **遗留**：本修复让 `cn()` 全仓受益，凡此前被静默丢类的站点（如 cost-calculator Savings 大数）现一并恢复正确渲染——属修正非回归（family/size 与 weight/color 是不同 CSS 属性，丢弃本就是 bug）。建议 QA 复跑 issue11 套件，DEF-1 两例 glyphs 应转绿。
+- 2026-06-02 06:27:01 set status=in_review
+
+## 代码审查（code-reviewer / 2026-06-02 第2轮 — 复审 DEF-1 根因修复）
+
+**结论：0 必改遗留；1 处可选项已直接修复。建议放行 QA。**
+
+### 核心修复复审 —— `lib/utils.ts` cn() 根因修复（✅ 验证通过）
+- **判定正确，且为真根因修复而非补症状。** 经实证验证（实际 import 该 `extendTailwindMerge` 配置 + clsx 跑断言）：
+  - DEF-1：`cn("…font-mono font-strong…","text-green")` → 输出**同时含** `font-mono` 与 `font-strong` ✓（等宽 family 不再被静默丢弃）。
+  - Savings 大数：`cn("font-display-strong text-display-lg … font-mono tabular-nums","text-amber")` → 4 个类全保留 ✓（潜伏缺陷「大数实际没放大」一并修好）。
+  - 回归去重未破坏：两 family / 两 weight / 两 size / 两 color 仍各自「末位胜出」正常去重 ✓。
+- **契约/版本核对**：`tailwind-merge@^3.6.0`（v3 才支持 `theme['font-weight']`/`theme.text` 这两个 Tailwind v4 命名空间键；若是 v2 会被静默忽略致修复失效）—— 已确认是 v3.6.0，配置键合法、修复真实生效。
+- **token 名核对**：注册的 6 个字重名（body/ui/mono-strong/strong/display/display-strong）+ 12 个字号名（display-sm…3xl / mono-sm…3xl）与 `globals.css` `@theme` 内 `--font-weight-*`/`--text-*` 令牌**逐一对得上**。
+- **「mono」未注册进 font-weight 是有意且正确的**：`globals.css` 同时有 `--font-mono`(family,L384) 与 `--font-weight-mono:400`(L435)，若把 `mono` 也注册进 weight 组，`font-mono` 会被 twMerge 当成 weight、与 `font-strong` 互斥而再次丢类。当前不注册 → `font-mono` 留在 family 兜底组、与 weight 共存，正是 DEF-1 想要的。
+
+### 其余改动复审
+- **两表单 429 处理**：逻辑正确——`onSubmit` 入口 `setRateLimited(false)` 复位、命中 429 提前 return 不计转化、保留已填内容、`role="status"` 无障碍可达、amber 温和提示（非红 error）。契约：依赖后端限流返回 HTTP 429（T11/Upstash 提供），本工单仅前端展示态，已在工单注明，一致。
+- **i18n**：新增 3 键 EN↔ZH 对称，parity 511=511 ✓。
+- **语义色/视觉**：cost-calculator 三卡语义色重映射、CompareTable mono ✓✗~ + 3px 顶边、DP 三步 brand 圆形 —— 类名写法均用已注册的 `bg-primary/10`+`/30`（前轮 F1-F3 token 失效已修），不再有「类名不上色」风险。
+
+### 直接修复（可选项，已改并提交）
+- **C1（可选/已修）** `components/design-partner-form.tsx:72`：429 已在上方提前拦截 return，但注释仍写「429/5xx/network errors fall to catch」属过时（cloud-waitlist-form 同处已更新为「5xx/network…」）。已对齐改为「5xx/network errors fall to catch」，消除误导。纯注释，不影响逻辑/类型。
+
+### 可选改进（不阻断，留作 backlog）
+- `globals.css` 存在 `--font-mono`(family) 与 `--font-weight-mono`(weight) 同名 `.font-mono` 类的 Tailwind v4 令牌碰撞（本 PR 之前就存在）；当前 `--font-weight-mono` 实际无消费方、靠源序让 `font-strong` 胜出，可用但脆弱。建议后续重命名 weight 令牌（如 `--font-weight-mono` → 去除或改名）以消歧义。**非本工单引入，out of scope。**
+- DP 表单 429 提示可与 cloud 的 `RateLimitNotice` 组件去重（前轮已提）。
+
+### 验证
+- `pnpm check` 全绿：tsc rc=0（0 错）、eslint 0 error（5 个 setState-in-effect warning 均在 banner/roadmap/theme/toc 等**存量文件**，非本 PR 改动文件，无关）、a11y 26/26、i18n 511=511。
+- 实证脚本断言 cn() 行为如上（DEF-1 与 Savings 两核心场景均 PASS）。
+- 提交规范：历史提交均 Conventional Commits + 工单号，符合规范。
+- 2026-06-02 代码审查完成：建议 status→verifying 放行 QA 复跑 issue11 套件。
