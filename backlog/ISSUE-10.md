@@ -2,7 +2,7 @@
 id: ISSUE-10
 type: feature
 title: [T09] 核心页面视觉改造(Hero/Demo/Why-Stats/Start/DP CTA)
-status: in_review
+status: verifying
 priority: P0
 assignee: frontend-engineer
 created: 2026-06-01
@@ -65,3 +65,28 @@ updated: 2026-06-02
   - F2 `brand` pill `bg-primary-bg`（不编译，无底色）→ `bg-primary/10`（`components/ui/pill.tsx`，修好含 5min pill 在内 4 处）。
 - F3 根因（`@theme inline` 缺 `--color-primary-bg`/`--color-primary-muted` 桥接，致 8+ 组件 `bg-primary-bg`/`bg-primary-muted` 全站静默失效）属存量、跨多模块，建议另开 full 工单由架构师/前端配合全量视觉+a11y 重核，**未在本 light 工单改**。
 - 复测全绿：tsc rc=0 / build rc=0 / eslint 0 error / a11y 26/26 / i18n 508↔508。
+- 2026-06-02 05:36:46 set status=verifying
+
+### QA 验证结果 (qa-automation, 2026-06-02) — 通过
+
+真实生产服务(`next start`) + 真浏览器(Playwright Chromium)独立验证，证据见 `08-测试报告.md` §「自动化测试 — ISSUE-10 / T09」。
+
+**6 项 AC 全部命中（en/zh × 明暗双主题）：**
+1. Hero 左对齐(`.max-w-4xl`)、高亮纯 brand 色(`text-primary`，computed `background-image:none` 确认非渐变)、mono `$ 命令` 副标题 ✓
+2. 真实 `docker compose … --profile standalone up` 命令预览可见 ✓
+3. demo terminal：红/amber/绿三点 + amber trace_id(computed 暖色) + active tab 3px brand 下划线 ✓
+4. Why/Stats large chip 数字 `font-mono text-mono-2xl text-primary` ✓
+5. DP CTA `border-l-primary` 左边框(≥3px,非透明)、box-shadow 无粉色 glow、5min brand pill 有底色 ✓
+6. 明暗双主题均正常渲染、文字非透明 ✓
+
+**结果汇总（67 项断言全过 / 0 失败）：**
+- `pnpm check` rc=0（0 error，a11y 26/26，i18n 508↔508）；`pnpm build` rc=0
+- Playwright 全量 E2E **38 PASS / 0 FAIL**（新增 issue10-t09-visual 12 + analytics-funnel 14 + legal 6 + cost-calculator 6，均无回归）
+- UI token 脚本 issue5-ui-tokens.mjs **29 PASS / 0 FAIL**（含 `--marketing-hero-bg === none` glow 已移除）
+- 真浏览器明暗截图：`test-results/issue5/home-light.png` / `home-dark.png` / `zh-home.png`
+
+**缺陷：本工单范围内 0。** F3 token 桥接根因属跨模块存量、T09 已规避，建议另开 full 工单（不阻断本工单）。
+
+回归重跑：`pnpm build && pnpm exec playwright test`
+
+**VERDICT: PASS**
