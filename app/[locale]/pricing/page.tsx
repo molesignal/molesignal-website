@@ -22,6 +22,14 @@ const TIER_HREF: Record<TierKey, string> = {
   cloud: "/cloud",
 };
 
+// Stable English CTA labels for analytics (the visible `cta` text is
+// localized and would split the funnel across locales).
+const TIER_CTA_LABEL: Record<TierKey, string> = {
+  oss: "Pricing — Get started",
+  enterprise: "Pricing — Talk to founders",
+  cloud: "Pricing — Join cloud waitlist",
+};
+
 const COMPARE_DIMS = ["billing", "ops", "support", "deployment", "audit"] as const;
 
 const FAQ_KEYS = ["free", "oss-vs-cloud", "enterprise-when", "cloud-launch", "migrate"] as const;
@@ -175,12 +183,18 @@ export default async function PricingPage({
           <div className="flex flex-wrap justify-center gap-3 pt-2">
             <a
               href="mailto:founders@molesignal.io?subject=Pricing%20question"
+              data-analytics-event="cta_click"
+              data-analytics-source-page
+              data-analytics-props='{"label":"Talk to founders","destination":"mailto:founders"}'
               className="bg-primary text-primary-foreground hover:shadow-glow-indigo duration-fast inline-flex h-11 items-center gap-2 rounded-md px-5 text-base font-strong transition-shadow"
             >
               {t("ctaTalk")} <ArrowRight size={16} aria-hidden />
             </a>
             <Link
               href="/cloud"
+              data-analytics-event="cta_click"
+              data-analytics-source-page
+              data-analytics-props='{"label":"Join the waitlist","destination":"/cloud"}'
               className="border-border text-fg hover:bg-bg-hover duration-fast inline-flex h-11 items-center gap-2 rounded-md border px-5 text-base font-strong transition-colors"
             >
               {t("ctaWaitlist")}
@@ -219,6 +233,14 @@ function TierCard({
   const isMarketing = tier === "cloud";
   const href = TIER_HREF[tier];
   const externalCTA = href.startsWith("mailto:") || href.startsWith("http");
+  const ctaAnalytics = {
+    "data-analytics-event": "cta_click",
+    "data-analytics-source-page": true,
+    "data-analytics-props": JSON.stringify({
+      label: TIER_CTA_LABEL[tier],
+      destination: href,
+    }),
+  } as const;
 
   return (
     <article
@@ -273,6 +295,7 @@ function TierCard({
         {externalCTA ? (
           <a
             href={href}
+            {...ctaAnalytics}
             className={cn(
               "duration-fast inline-flex h-10 w-full items-center justify-center gap-1 rounded-md text-sm font-strong transition-shadow",
               isPrimary
@@ -292,6 +315,7 @@ function TierCard({
         ) : (
           <Link
             href={href}
+            {...ctaAnalytics}
             className={cn(
               "duration-fast inline-flex h-10 w-full items-center justify-center gap-1 rounded-md text-sm font-strong transition-shadow",
               isPrimary

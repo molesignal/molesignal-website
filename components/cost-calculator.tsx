@@ -1,8 +1,9 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
+import { track } from "@/lib/analytics";
 import { calculateCost, formatUsd } from "@/lib/cost-formula";
 import { cn } from "@/lib/utils";
 
@@ -23,6 +24,28 @@ export function CostCalculator({ className }: { className?: string }) {
   const locale = useLocale();
   const [gbPerDay, setGb] = useState(DEFAULT_GB);
   const [retention, setRetention] = useState(DEFAULT_RETENTION);
+  const interactedRef = useRef(false);
+
+  // Fire once per mount on the first slider drag (either control), carrying
+  // the values at the moment of interaction. Guarded by a ref so subsequent
+  // ticks/drags don't spam the funnel.
+  const fireInteract = (gb: number, days: number) => {
+    if (interactedRef.current) return;
+    interactedRef.current = true;
+    track("cost_calculator_interact", {
+      ingest_gb: gb,
+      retention_days: days,
+    });
+  };
+
+  const onGbChange = (n: number) => {
+    setGb(n);
+    fireInteract(n, retention);
+  };
+  const onRetentionChange = (n: number) => {
+    setRetention(n);
+    fireInteract(gbPerDay, n);
+  };
 
   const result = useMemo(
     () => calculateCost({ gbPerDay, retentionDays: retention }),
@@ -49,7 +72,7 @@ export function CostCalculator({ className }: { className?: string }) {
           max={1000}
           step={10}
           unit={t("ingestUnit")}
-          onChange={setGb}
+          onChange={onGbChange}
         />
         <SliderField
           label={t("retention")}
@@ -58,7 +81,7 @@ export function CostCalculator({ className }: { className?: string }) {
           max={90}
           step={1}
           unit={t("retentionUnit")}
-          onChange={setRetention}
+          onChange={onRetentionChange}
         />
       </div>
 

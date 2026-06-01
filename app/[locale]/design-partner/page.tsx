@@ -136,6 +136,8 @@ export default async function DesignPartnerPage({
               href="https://github.com/molesignal/molesignal"
               target="_blank"
               rel="noreferrer"
+              data-analytics-event="github_star_click"
+              data-analytics-source-page
               className="text-primary hover:text-marketing-accent duration-fast inline-flex items-center gap-1 font-strong transition-colors"
             >
               {t("notReadyStar")} <ArrowRight size={12} aria-hidden />

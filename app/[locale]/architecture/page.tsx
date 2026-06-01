@@ -123,6 +123,9 @@ export default async function ArchitecturePage({
             <div className="flex flex-wrap gap-3 pt-2">
               <Link
                 href="/start"
+                data-analytics-event="cta_click"
+                data-analytics-source-page
+                data-analytics-props='{"label":"Try it","destination":"/start"}'
                 className="bg-primary text-primary-foreground hover:shadow-glow-indigo duration-fast inline-flex h-11 items-center gap-2 rounded-md px-5 text-base font-strong transition-shadow"
               >
                 {tCommon("tryIt")} <ArrowRight size={16} aria-hidden />
@@ -131,6 +134,9 @@ export default async function ArchitecturePage({
                 href="https://github.com/molesignal/molesignal"
                 target="_blank"
                 rel="noreferrer"
+                data-analytics-event="cta_click"
+                data-analytics-source-page
+                data-analytics-props='{"label":"Read the code","destination":"https://github.com/molesignal/molesignal"}'
                 className="border-border text-fg hover:bg-bg-hover duration-fast inline-flex h-11 items-center gap-2 rounded-md border px-5 text-base font-strong transition-colors"
               >
                 {tCommon("readCode")} <ArrowUpRight size={12} aria-hidden />

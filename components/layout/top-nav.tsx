@@ -176,6 +176,9 @@ export function TopNav({ githubStarsSlot }: { githubStarsSlot?: React.ReactNode 
           <ThemeToggle className="hidden lg:inline-flex" />
           <Link
             href="/start"
+            data-analytics-event="cta_click"
+            data-analytics-source-page
+            data-analytics-props='{"label":"Try it","destination":"/start"}'
             className="bg-primary text-primary-foreground hover:shadow-glow-indigo duration-fast inline-flex h-8 items-center gap-1 rounded-md px-3 text-sm font-strong transition-shadow"
           >
             {tc("tryIt")}
@@ -279,6 +282,9 @@ export function TopNav({ githubStarsSlot }: { githubStarsSlot?: React.ReactNode 
                 <Link
                   href="/start"
                   onClick={() => setMobileOpen(false)}
+                  data-analytics-event="cta_click"
+                  data-analytics-source-page
+                  data-analytics-props='{"label":"Try it","destination":"/start"}'
                   className="bg-primary text-primary-foreground hover:shadow-glow-indigo inline-flex w-full items-center justify-center gap-1 rounded-md px-4 py-2.5 text-base font-strong transition-shadow"
                 >
                   {tc("tryIt")}

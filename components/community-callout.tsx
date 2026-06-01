@@ -10,13 +10,28 @@ type CardProps = {
   title: string;
   body: ReactNode;
   external?: boolean;
+  /** When set, clicking the card emits this funnel event (delegated tracker). */
+  analyticsEvent?: string;
 };
 
-function Card({ href, Icon, title, body, external = true }: CardProps) {
+function Card({
+  href,
+  Icon,
+  title,
+  body,
+  external = true,
+  analyticsEvent,
+}: CardProps) {
   return (
     <a
       href={href}
       {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
+      {...(analyticsEvent
+        ? {
+            "data-analytics-event": analyticsEvent,
+            "data-analytics-source-page": true,
+          }
+        : {})}
       className="border-border bg-surface hover:border-marketing-accent hover:shadow-glow-pink group duration-fast block rounded-lg border p-6 transition-all"
     >
       <div className="flex items-start gap-3">
@@ -50,6 +65,7 @@ export function CommunityCallout({ className }: { className?: string }) {
         Icon={Star}
         title={t("github.title")}
         body={t("github.body")}
+        analyticsEvent="github_star_click"
       />
       <Card
         href="#"

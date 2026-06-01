@@ -60,6 +60,9 @@ export function PreReleaseBanner({ className }: { className?: string }) {
     >
       <Link
         href="/design-partner"
+        data-analytics-event="cta_click"
+        data-analytics-source-page
+        data-analytics-props='{"label":"Pre-release banner","destination":"/design-partner"}'
         className="hover:text-primary group inline-flex items-center gap-1.5 transition-colors"
       >
         <span className="truncate">{t("preRelease")}</span>

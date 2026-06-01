@@ -77,6 +77,7 @@ export default async function ChangelogPage({
           <div className="flex items-center justify-center gap-3 pt-2">
             <a
               href="/changelog/rss.xml"
+              data-analytics-event="rss_subscribe"
               className="border-border text-fg-muted hover:text-fg hover:bg-bg-hover duration-fast inline-flex h-8 items-center gap-1.5 rounded-md border px-3 text-xs font-strong transition-colors"
             >
               <Rss size={12} aria-hidden /> {t("rss")}
@@ -144,12 +145,16 @@ export default async function ChangelogPage({
           <div className="flex flex-wrap justify-center gap-3">
             <Link
               href="/cloud"
+              data-analytics-event="cta_click"
+              data-analytics-source-page
+              data-analytics-props='{"label":"Get the digest","destination":"/cloud"}'
               className="bg-primary text-primary-foreground hover:shadow-glow-indigo duration-fast inline-flex h-10 items-center gap-2 rounded-md px-4 text-sm font-strong transition-shadow"
             >
               {t("getDigest")}
             </Link>
             <a
               href="/changelog/rss.xml"
+              data-analytics-event="rss_subscribe"
               className="border-border text-fg hover:bg-bg-hover duration-fast inline-flex h-10 items-center gap-1.5 rounded-md border px-4 text-sm font-strong transition-colors"
             >
               <Rss size={12} aria-hidden /> RSS

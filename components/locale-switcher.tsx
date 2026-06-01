@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing, type Locale } from "@/i18n/routing";
+import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 const LABELS: Record<Locale, string> = {
@@ -35,6 +36,7 @@ export function LocaleSwitcher({ className }: { className?: string }) {
 
   const onChange = (next: Locale) => {
     if (next === locale) return;
+    track("locale_switch", { from: locale, to: next, page: pathname });
     startTransition(() => {
       router.replace(pathname, { locale: next });
     });

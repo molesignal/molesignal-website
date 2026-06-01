@@ -1,6 +1,9 @@
 import type { BundledLanguage } from "shiki";
 
-import { CodeBlockCopy } from "@/components/ui/code-block.client";
+import {
+  CodeBlockCopy,
+  type CodeBlockAnalytics,
+} from "@/components/ui/code-block.client";
 import { highlight } from "@/lib/shiki";
 import { cn } from "@/lib/utils";
 
@@ -11,6 +14,12 @@ export type CodeBlockProps = {
   filename?: string;
   /** Class on the outer wrapper. */
   className?: string;
+  /**
+   * When set, copying this block emits a `quickstart_copy` funnel event with
+   * these props. Pass only where a copy is a real conversion signal (the
+   * quick-start install tabs); leave undefined for incidental code blocks.
+   */
+  analytics?: CodeBlockAnalytics;
 };
 
 /**
@@ -26,6 +35,7 @@ export async function CodeBlock({
   language = "bash",
   filename,
   className,
+  analytics,
 }: CodeBlockProps) {
   const html = await highlight(code, language);
 
@@ -40,7 +50,7 @@ export async function CodeBlock({
       {(filename || language) && (
         <div className="border-marketing-code bg-bg-2 text-fg-muted flex items-center justify-between border-b px-3 py-1.5 text-xs">
           <span className="font-strong">{filename ?? language}</span>
-          <CodeBlockCopy code={code} />
+          <CodeBlockCopy code={code} analytics={analytics} />
         </div>
       )}
       <div
