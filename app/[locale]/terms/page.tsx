@@ -3,7 +3,17 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 import { LegalDocument, type LegalSection } from "@/components/legal/legal-document";
 
 const LAST_UPDATED = "2026-06-02";
+const FOUNDERS_EMAIL = "founders@molesignal.io";
 const APACHE_LICENSE_URL = "https://www.apache.org/licenses/LICENSE-2.0";
+
+const emailLink = (chunks: React.ReactNode) => (
+  <a
+    href={`mailto:${FOUNDERS_EMAIL}`}
+    className="text-primary underline-offset-2 hover:underline"
+  >
+    {chunks}
+  </a>
+);
 
 const licenseLink = (chunks: React.ReactNode) => (
   <a
@@ -45,16 +55,7 @@ export default async function TermsPage({
     <LegalDocument
       title={t("terms.title")}
       lastUpdated={t("lastUpdated", { date: LAST_UPDATED })}
-      disclaimer={t.rich("disclaimer", {
-        email: (chunks) => (
-          <a
-            href="mailto:founders@molesignal.io"
-            className="text-primary underline-offset-2 hover:underline"
-          >
-            {chunks}
-          </a>
-        ),
-      })}
+      disclaimer={t.rich("disclaimer", { email: emailLink })}
       intro={t("terms.intro")}
       sections={sections}
       footer={t.rich("terms.license", { license: licenseLink })}
