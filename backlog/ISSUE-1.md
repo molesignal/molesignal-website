@@ -2,11 +2,11 @@
 id: ISSUE-1
 type: feature
 title: [T11] 可靠限流后端(Upstash)
-status: in_progress
+status: verifying
 priority: P0
 assignee: backend-engineer
 created: 2026-06-01
-updated: 2026-06-01
+updated: 2026-06-02
 ---
 
 ## 描述
@@ -124,3 +124,44 @@ updated: 2026-06-01
   **阻塞项**: 无。
   **环境变量(列给运维)**: `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN`(两者同时配齐才启用 Upstash，否则内存兜底；`.env.local.example` 已含占位符)。
   **需安全复审**(security-auditor 落地后复审项)：fail-open 分支、降级判定、`getClientIp` 取信源(H1 已按建议改 x-real-ip/XFF 末段)。
+- 2026-06-02 00:01:45 set status=in_review
+- 2026-06-02 代码审查(full道·code-reviewer):
+
+  **结论：通过，建议放行到 QA 验证。必改问题 0 个。** 已独立复跑验证（非仅采信报告）：
+  - `tsx scripts/check-rate-limit.ts` ✅ 11/11 断言全过（两表单内存兜底限流正确 + fail-open 放行，含真实 `fetch failed` → 放行）。
+  - `tsc --noEmit` ✅ exit 0；`eslint` 四个改动文件 ✅ exit 0。
+
+  **正确性核对（逐 AC）**：
+  - AC1 ✅ `rateLimit()` 改 `async`/`Promise<RateLimitResult>`；全仓 `grep` 确认仅 cloud-waitlist、design-partner 两处调用，均已 `await`，无遗漏调用点。
+  - AC2 ✅ 缺 env 走 `memoryRateLimit`；`warnedFallback` 模块级 flag 保证 warn 只打一次。
+  - AC3 ✅ 阈值 10/h、5/h 与 key `{form}:{ip}` 未变。
+  - AC4 ✅ 两 route `Retry-After = Math.max(0, Math.ceil((resetAt-now)/1000))`，非负整数；429 响应体结构未动。
+  - AC5/AC6 ✅ 脚本覆盖内存兜底 + 子进程注入 bogus env 验 fail-open。
+  - AC7 ✅ typecheck/lint 通过；依赖入 package.json + pnpm-lock。
+
+  **契约/安全核对**：`RateLimitResult` 形状不变，下游两 route 仅消费 `ok`/`resetAt`（`remaining` 实际未被消费），契约零破坏。H1 修复正确：`getClientIp` 改为优先 `x-real-ip`、回退 XFF **末段**，杜绝客户端伪造首段绕过。M1 修复正确：`STORE` 加 10k 上限 + 惰性清扫（先删过期、再按 resetAt 升序淘汰，`-MAX+1` 为新条目留位），淘汰仅在新窗口（增长路径）触发，逻辑闭合无 off-by-one 破坏。fail-open `retry:{retries:1}` 快速失败合理。
+
+  **可选改进（非阻塞，不必本工单处理）**：
+  - ⚪ `evictIfNeeded` 在满容量时每次插入对全 Map 排序 O(n log n)；内存兜底为降级路径、上限 1 万，可接受。若日后内存兜底成常态可换近似淘汰（采样/FIFO）。
+  - ⚪ Upstash 路径 `limit()` 的 `pending`（analytics/多区同步）未 `waitUntil`，本期无 analytics，无影响。
+  - ⚪ `cloud-waitlist/route.ts:54` 将 IP+email 写入通知邮件正文，属安全审计 L2「IP/email 进日志邮件」，已转后续（隐私政策 P0-6 覆盖），非本工单范围。
+
+  **放行建议**：本期 AC1–AC7 全部满足，可流转 qa-automation 独立验证；AC8（真实跨实例）待补 `UPSTASH_*` 密钥后复验，不阻塞 DONE。
+- 2026-06-02 00:04:36 set status=verifying
+- 2026-06-02 QA 验证结果（qa-automation·真实运行验证，非采信报告）：**VERDICT: PASS**
+
+  **方法**：起真实 Next.js dev server（`next dev -p 3199`，Turbopack，Ready 245ms），用 curl 打真实 HTTP 接口驱动两个 route handler，观察状态码/`Retry-After` 头/服务端日志。无 `UPSTASH_*` → 走内存兜底（本期默认生产路径）；另起一次带 bogus `UPSTASH_*` 的实例验 fail-open。
+
+  **逐 AC 运行结果**：
+  - **AC1（异步接线）✅** 两 route 真实响应正常，`await rateLimit(...)` 生效——超阈值即从 200 切到 429，证明 async 限流已正确接线。
+  - **AC3 阈值 ✅** design-partner：第 1–5 次 `HTTP 200`、第 6/7 次 `HTTP 429`（5/h）；cloud-waitlist：第 1–10 次 `HTTP 200`、第 11/12 次 `HTTP 429`（10/h）。两表单 key 独立计数（design-partner 耗尽不影响 cloud-waitlist）。
+  - **AC4 限流响应 ✅** 429 响应头 `Retry-After: 3600`（非负整数秒）；响应体 `{"error":"Too many requests. Try again later."}` 结构与现状一致。
+  - **AC5 可复现 ✅** 第 (max+1) 次稳定 429（两表单各复现）；阈值内全 200。HTTP 层真实复现，非仅脚本。
+  - **AC2 缺 env 优雅降级 ✅** 无 `UPSTASH_*` 时正常服务、不崩；~26 次请求服务端日志只打 **1 条** "falling back to in-memory" 警告（warn-once 运行时确认）。
+  - **AC6 fail-open ✅** 带 bogus `UPSTASH_*` 重启（Upstash 路径激活、host 不可达）后，连打 8 次（超 max 5）**全部 HTTP 200**，无 5xx、无误拦；日志每请求 1 条 "failing open"（`TypeError: fetch failed`），内存兜底警告 0 条——证明降级判定走 Upstash 路径且运行时异常正确 fail-open。
+  - **H1 安全修复 ✅（附加探针）** 轮换客户端可控的 XFF 最左段（`10.0.0.1..7`）但保持尾段 `7.7.7.7` 不变 → 第 6 次起 429，证明最左段不能被伪造轮换绕过限流（getClientIp 取 x-real-ip/XFF 末段生效）。
+  - **AC7（构建门禁）** 属 CI 域，开发者与 code-reviewer 已独立跑过 typecheck/lint/build/audit；本次按"运行时验证"口径不复跑（非验证手段）。
+  - **AC8（真实跨实例）** 本期延后（无真实 `UPSTASH_*` 密钥，用户决策），不阻塞 DONE。
+
+  **缺陷**：无（阻断级 0）。**回归套件**：`pnpm test:rate-limit`（内存兜底 + fail-open 子进程断言）；HTTP 层手动驱动脚本见 08-测试报告.md。**证据**：详见 `08-测试报告.md` §自动化测试。
+  **放行建议**：本期 AC1–AC7 全过，AC8 延后，建议合并放行。
