@@ -2,7 +2,7 @@
 id: ISSUE-16
 type: feature
 title: [T15] Blog富文本渲染
-status: in_progress
+status: in_review
 priority: P1
 assignee: frontend-engineer
 created: 2026-06-01
@@ -60,3 +60,12 @@ updated: 2026-06-02
 **遗留 / 观察（非阻塞）**：
 - 运营若在 .mdx 写入 MDX 敌意语法（裸 `<`、`{`）会在 build 期硬失败（MDX 严格性，内容为一方可信）；可日后加 frontmatter/正文 lint。
 - blog 仍 EN-only（ZH 友好提示，属 M3/T21 决策范畴，未触碰）。
+- 2026-06-02 08:12:32 set status=in_review
+
+### 代码审查结论（code-reviewer, 2026-06-02）
+**通过，建议放行 QA。必改 0（1 项已直接修复）/ 建议改 1 / 可选 2。** 详见 08-测试报告.md「代码审查 — ISSUE-16」。
+- **已直接修（原属必改）**：`lib/shiki.ts` `resolveLanguage` 的 `lang in bundledLanguages` 会命中 `Object.prototype` 继承键（`toString`/`constructor`/`valueOf`），以这些词作代码围栏语言标签会被误判合法、传入 `codeToHtml` 抛错（仅靠 try/catch 兜底）并错标 `data-language`。改用 `Object.hasOwn`，别名（js/ts）行为不变、原型键正确回退 bash。提交 `fix(ISSUE-16)`，typecheck 0 错 + node 实测验证。
+- **契约**：provider（`content/blog.ts`/`body:string`/`getRelatedPosts`）零改，富文本在消费层完成，4 消费方未触碰——AC3 相关文章按 tag 仍工作。
+- **实证复跑**：`pnpm typecheck` 0 错、`pnpm test:blog` 全绿（快照逐字节守护）。E2E 留 QA 环执行（自述 69 passed）。
+- **建议改/可选（非阻断）**：`extractCode` 对 `pre` children 形态的隐含约定可加数组兜底；`ProseLink` 双分支 className 可抽常量；修复后 `highlight` catch 近乎不可达（保留无害）。
+- 放行建议：**可进入 QA 验证。**
