@@ -2,7 +2,7 @@
 id: ISSUE-25
 type: feature
 title: [T24] 内容运营工作流文档
-status: in_review
+status: verifying
 priority: P2
 assignee: fullstack-engineer
 created: 2026-06-01
@@ -81,3 +81,45 @@ updated: 2026-06-02
 - 分支提交 `docs(ISSUE-25): T24 ...` —— Conventional Commits 合规、含工单号。✅
 
 **必改问题数：0**（唯一明确错误的章节号已由审查员直接修复）。建议放行 QA。
+- 2026-06-02 11:17:24 set status=verifying
+
+## QA 验证结果（qa-automation，2026-06-02，light 道 · 纯文档工单）
+
+**环境**：PATH 经 nvm node v23.6.1 / pnpm 11.5.0；feature/ISSUE-25 分支。纯文档/模板工单，零代码·零 schema·零 API 改动 → 无服务可起、无 UI 可走 E2E；验证 = 产物完整性 + 文档断言对照源码核实 + 回归套件真实执行。
+
+### 1. 产物完整性（验收逐条核对）
+- **验收①「blog/changelog/roadmap 更新文档，每套含数据源/字段约定/更新步骤/发布前自检/边界」— ✅ PASS**
+  `docs/ops/content-workflow.md`（9.8KB）实测含：§0 一页速览表；§1 Blog（数据源+8 字段表+发布步骤+常见坑）；§2 Changelog（双源模型+方式A/B+字段+自检）；§3 Roadmap（数据源+6 字段表+步骤）；§4 发布前总检查清单；§5 边界与维护约定。五要素三套齐备。
+- **验收②「三套各配一份可复制模板」— ✅ PASS**
+  实测三份模板均存在且非空：`docs/ops/templates/blog-post.mdx.template`(1198B) / `changelog-entry.ts.template`(978B) / `roadmap-item.json.template`(773B)。
+
+### 2. 文档断言对照源码（抽样复核，全部相符）
+| 文档断言 | 核对源 | 结论 |
+|---|---|---|
+| blog loader 同步扫描 `content/blog/*.mdx`、gray-matter、date 降序、`BLOG_POSTS`/`getPostBySlug`/`getRelatedPosts` 同步契约 | `content/blog.ts:29-76` | ✅ 逐行相符 |
+| 模板不污染 blog loader（目录仅 2 篇真文章） | `content/blog/` 实测 2 个 `.mdx`；`test:blog` 断言 length 匹配快照 | ✅ |
+| changelog item 形状 `{version,date,title,items:[{tag,text}]}` | `content/changelog.ts` | ✅ 相符 |
+| version 不带 `v` 前缀，锚点 `"0.8.0"`→`#v0-8-0`；保留前导 v、点→横杠 | `lib/changelog-anchor.ts:20-22` `versionAnchor` | ✅ 相符 |
+| roadmap 按 `phase` 分桶、`id` 为列表项标识键 | `content/roadmap.json` + 组件契约 | ✅ 相符 |
+| 模板交叉引用 §2（changelog 双源模型）非 §3 | `changelog-entry.ts.template:6` 实测为 §2 | ✅ 审查员修正已落实 |
+
+### 3. 回归套件真实执行（退出码客观佐证）
+- `pnpm typecheck` — **rc=0**
+- `pnpm test:blog` — **rc=0**（全绿：AC1~AC5 含 BLOG_POSTS 数组/快照长度/newest-first 排序/字段类型；blog 目录未被模板污染）
+- `pnpm test:changelog` — **rc=0**（全绿：版本锚点正/反例、versionAnchor 三处调用、`getReleases()` 失败→静态 CHANGELOG 兜底且不捏造）
+- `pnpm build` — **rc=0**（生产构建成功，blog SSG / `/changelog/rss.xml` / sitemap 全正常产出）
+
+### 4. 缺陷
+阻断级 0 / 一般 0。（审查员遗留的「非标准 commit type 示例」为可选风格项，非阻塞，不影响验收。）
+
+### 5. 回归套件重跑命令
+```bash
+export PATH="$HOME/.nvm/versions/node/v23.6.1/bin:$PATH"
+pnpm typecheck && pnpm test:blog && pnpm test:changelog && pnpm build
+```
+
+### 6. 放行建议
+两项验收标准客观满足，文档断言与源码一致，回归四件套 rc 全 0，无阻断缺陷。**建议放行合并。** 测后无遗留进程（本工单未起任何服务）。
+
+**QA 验证结果：通过**
+VERDICT: PASS
