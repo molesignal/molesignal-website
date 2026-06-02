@@ -23,6 +23,7 @@
     "test:audiences": "tsx scripts/check-resend-audiences.ts",
     "test:design-partner": "tsx scripts/check-design-partner-route.ts",
     "test:blog": "tsx scripts/check-blog-mdx.ts",
+    "test:compare": "tsx scripts/check-compare-data.ts",
     "test:e2e": "playwright test",
     "check": "pnpm typecheck && pnpm lint && pnpm a11y:contrast && pnpm lint:i18n"
   },

@@ -11,6 +11,30 @@
  *
  * Updates to row data must also update the same key in both
  * messages/en.json and messages/zh.json (verified by pnpm lint:i18n).
+ *
+ * ── How to safely update a row (no component change needed) ─────────────────
+ * The CompareTable component (components/compare-table.tsx) is a pure renderer
+ * over COMPARE_ROWS — you change data here, never the component. To add, edit,
+ * remove, or reorder a row:
+ *   1. Edit COMPARE_ROWS below. For a NEW row give it a unique `id` (a simple
+ *      identifier, e.g. `myDimension`), the three cells (saas/oss/molesignal)
+ *      each with a `value` (English factual string) + `verdict`
+ *      (good | mixed | bad | neutral), and `hasDetail: true` ONLY if you also
+ *      add a one-line detail/tooltip.
+ *   2. Add the matching i18n keys in BOTH messages/en.json and messages/zh.json
+ *      under `components.compareTable.rows`:
+ *        - `<id>`        — the dimension label (required, both locales)
+ *        - `<id>Detail`  — the detail line (required IFF `hasDetail: true`)
+ *      Removing a row? Delete its `<id>` (and `<id>Detail`) keys from both files
+ *      so no orphan keys linger.
+ *   3. Run `pnpm test:compare` — it asserts the data↔i18n↔type contract
+ *      (label keys present in en+zh, Detail keys iff hasDetail, no orphan keys,
+ *      legal verdicts, unique ids, cost floor sane). Then `pnpm lint:i18n`.
+ *
+ * ── Ordering matters for Home ──────────────────────────────────────────────
+ * The slim table on Home renders the FIRST 4 rows (COMPARE_ROWS.slice(0, 4));
+ * /why renders all of them. Reordering rows here therefore changes which four
+ * dimensions surface on the homepage — keep the four highest-impact rows on top.
  */
 
 export type CompareRow = {
