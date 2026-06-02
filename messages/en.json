@@ -266,6 +266,10 @@
       "helm": "terminal · Helm install (v1.0 target)",
       "binary": "terminal · binary install (v1.0 target)"
     },
+    "tabFilenamesReady": {
+      "helm": "terminal · Helm install",
+      "binary": "terminal · binary install"
+    },
     "troubleshoot": {
       "port": {
         "q": "Port 5080 is already in use",
