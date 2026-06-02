@@ -2,7 +2,7 @@
 id: ISSUE-15
 type: feature
 title: [T14] 内容迁MDX(blog接线)
-status: verifying
+status: closed
 priority: P1
 assignee: fullstack-engineer
 created: 2026-06-01
@@ -134,3 +134,5 @@ updated: 2026-06-02
 进程/端口已清理（3137 free、无残留 next start）；临时探针文件已删；工作树仅 ISSUE-15.md（本记录）变更。无僵尸进程。
 
 **VERDICT: PASS**
+- 2026-06-02 07:57:29 set status=closed
+- 2026-06-02 07:57:29 引擎周期#16: QA PASS, 关闭

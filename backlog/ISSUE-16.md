@@ -2,7 +2,7 @@
 id: ISSUE-16
 type: feature
 title: [T15] Blog富文本渲染
-status: in_review
+status: verifying
 priority: P1
 assignee: frontend-engineer
 created: 2026-06-01
@@ -69,3 +69,33 @@ updated: 2026-06-02
 - **实证复跑**：`pnpm typecheck` 0 错、`pnpm test:blog` 全绿（快照逐字节守护）。E2E 留 QA 环执行（自述 69 passed）。
 - **建议改/可选（非阻断）**：`extractCode` 对 `pre` children 形态的隐含约定可加数组兜底；`ProseLink` 双分支 className 可抽常量；修复后 `highlight` catch 近乎不可达（保留无害）。
 - 放行建议：**可进入 QA 验证。**
+- 2026-06-02 08:17:11 set status=verifying
+
+### QA 验证结果（qa-automation, 2026-06-02）
+**VERDICT: PASS** —— 真实生产构建 + 真实浏览器(Chromium/Playwright)驱动，三条验收标准全部满足。
+
+**环境**：`pnpm build` (Next.js 16.2.6, RC=0, blog 2 slug×SSG 正常生成) → `pnpm start` PORT=3399 → curl 接口断言 + Chromium headless 实驱 + 截图。node v23.6.1/pnpm 11.5.0 (nvm)。注：`/en/...` 经 next-intl middleware 307→`/blog/...`（en 为默认 locale 无前缀），属预期路由行为。
+
+**AC① body 经 MDX 渲染富文本 —— ✅**
+- parquet 篇（浏览器实测）：正文 `<article>` 内 3×`<h2>`、1×`<ul class="list-disc">`(3 li)、行内 code 芯片、段落均真实渲染；全页截图 `/tmp/issue16-parquet-full.png` 可见标题/标签/小标题/列表/代码块/Related 完整版式。
+- incident 篇（曾被旧渲染器破坏的列表）：2×`<h2>` + 1 项目符号列表正确渲染。
+
+**AC② 代码块复用 Shiki —— ✅**
+- SQL 块输出 `<pre class="shiki shiki-themes vitesse-light vitesse-dark">`，原始 HTML 含 `data-language="sql"`、双主题 token 变量 `--shiki-light/--shiki-dark`；浏览器内测得 27 个着色 token span；截图 `/tmp/issue16-shiki-block.png` 可见 SELECT/FROM/WHERE 关键字着色；Copy 按钮存在。
+
+**AC③ 相关文章按 tag —— ✅**
+- parquet 篇底部 "Related posts" 区渲染，含兄弟文章卡片链接 `/blog/what-we-learned-from-100-incident-reviews`（getRelatedPosts 按 tag 命中）。
+
+**探针（happy-path 之外）**：
+- 🔍 未知 slug `/blog/this-slug-does-not-exist` → HTTP 404（notFound 生效）。
+- 🔍 `/zh/blog/...` → 200，渲染 EN-only 友好提示「Blog 在 v1 仅英文。阅读英文版 →」+ 指向 EN 版链接（属既定 M3/T21 决策，非缺陷）。
+- 🔍 代码审查已直接修复的 `resolveLanguage` 原型键回退（Object.hasOwn）：当前 content 无原型键语言标签，未能在真实页面触发该路径；逻辑由 commit 71b20ac 的 node 实测 + 单元守卫覆盖，本环以 SQL 块实跑确认正常语言走通。
+
+**观察（非阻塞）**：
+- DOM 上 `data-language` 属性挂在 CodeBlock 外层包裹元素而非 `<pre.shiki>` 本身（locator 直查 pre 的该属性为 null，但原始 HTML grep 确认 `data-language="sql"` 存在）——不影响渲染，仅记录。
+
+**缺陷**：0 阻断 / 0 一般。
+**放行建议**：PASS，可合并回 main。
+- 2026-06-02 QA 验证 PASS（qa-automation）
+
+VERDICT: PASS
