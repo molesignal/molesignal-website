@@ -2,6 +2,7 @@ import { Clock } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
+import { MdxBody } from "@/components/blog/mdx-body";
 import { BlogPostCard } from "@/components/blog-post-card";
 import { Pill } from "@/components/ui/pill";
 import { Section } from "@/components/ui/section";
@@ -105,10 +106,8 @@ export default async function BlogPostPage({
 
       <Section padding="md">
         <article className="prose-container">
-          <div className="text-fg space-y-4 text-base leading-relaxed">
-            {post.body.split("\n\n").map((para, i) => (
-              <p key={i}>{para}</p>
-            ))}
+          <div className="text-fg text-base leading-relaxed">
+            <MdxBody source={post.body} />
           </div>
         </article>
       </Section>

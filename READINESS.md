@@ -1,4 +1,4 @@
-READINESS_SCORE: 15/31
+READINESS_SCORE: 16/31
 
 # READINESS · molesignal-website 上线就绪清单
 
@@ -52,7 +52,7 @@ READINESS_SCORE: 15/31
 
 ## M2 运营可持续（P1 · T14–T20）
 
-- [ ] **内容迁 MDX 接线**：`next.config.ts` 接 `@next/mdx`+`remark-gfm`，新增 `content/blog/*.mdx`，抽 `lib/content/blog.ts` provider（`getAllPosts`/`getPost` 签名不变），现有 2 篇迁移无丢失，改内容不改组件，`build` 过（T14）
+- [x] **内容迁 MDX 接线**：`next.config.ts` 接 `@next/mdx`+`remark-gfm`，新增 `content/blog/*.mdx`，抽 `lib/content/blog.ts` provider（`getAllPosts`/`getPost` 签名不变），现有 2 篇迁移无丢失，改内容不改组件，`build` 过（T14）✅ ISSUE-15 closed · QA PASS 2026-06-02（full 道：开发→代码审查→独立 QA。**契约纠偏**：真实契约为 `@/content/blog` 的 `BLOG_POSTS`/`getPostBySlug`/`getRelatedPosts`，原文档 `lib/content/blog.ts`+`getAllPosts` 提案未落地——「签名不变」= 原地改造 `content/blog.ts` 内部实现（`node:fs` 同步读 `content/blog/*.mdx`+gray-matter 解 frontmatter，模块级求值，按 date 降序），4 处消费方零改。next.config `withNextIntl(withMDX())` 组合、remark 用字符串名规避 Turbopack 序列化约束、新增 `mdx-components.tsx`、body 仍为 string（富文本渲染留 T15）。`test:blog` 30/30 逐字段+body 逐字节快照对比、`pnpm check`(tsc0/eslint0/a11y26/i18n511)+`build`(2 slug 静态页)+`lint:links`(0/33)+`test:e2e`(66/66) 全绿；QA 真实 next start 复核 AC1–AC9 含 AC9 临时新增 .mdx 自证「改内容不改代码」。非阻断观察：frontmatter 零校验，运营漏填字段时 build 硬失败但不指明坏文件，留作健壮性增强）
 - [ ] **Blog 富文本渲染**：blog body 经 MDX 渲染富文本（标题/列表/代码块），代码块复用 Shiki 高亮，相关文章按 tag 仍工作（T15）
 - [ ] **贡献者墙真实数据**：仓库公开+token 下真实拉 `/contributors` 渲染头像/链接正确，私有/失败回退空态不报错（T16）〔需外部:GITHUB_TOKEN + 仓库公开〕
 - [ ] **社区入口真实化**：若 Discord 邀请链接已就绪，community-callout/Footer 指向真实链接、文案与现状一致、无死链；未就绪则保持 T04 诚实禁用态（T17）〔需外部:真实 Discord 邀请链接〕
