@@ -1,13 +1,15 @@
 import type { MDXComponents } from "mdx/types";
 
+import { mdxProseComponents } from "@/components/blog/mdx-prose";
+
 /**
  * Global MDX component map. Required by `@next/mdx` with the App Router (T14
- * infrastructure). Empty for now — blog bodies still render as plain paragraphs
- * via content/blog.ts; T15 will map elements (headings/lists/code) to styled
- * components and wire Shiki highlighting.
+ * infrastructure). Maps elements to the styled marketing prose components so
+ * any file-based MDX renders consistently with the runtime-rendered blog
+ * bodies (T15). The runtime renderer (`MdxBody`) passes the same map explicitly.
  */
 export function useMDXComponents(
   components: MDXComponents,
 ): MDXComponents {
-  return { ...components };
+  return { ...mdxProseComponents, ...components };
 }

@@ -1,7 +1,13 @@
 /**
- * T14 migration guard: prove the MDX-backed `content/blog.ts` provider returns
- * exactly the same data as the pre-migration hardcoded array (captured in
- * scripts/blog-migration-snapshot.json), and that the provider contract holds.
+ * Blog provider guard. Proves the MDX-backed `content/blog.ts` provider returns
+ * the canonical content captured in scripts/blog-migration-snapshot.json
+ * (byte-exact bodies + meta) and that the provider contract holds (sorted
+ * newest-first, typed fields, getPostBySlug / getRelatedPosts behaviour).
+ *
+ * Originated as T14's pre-migration zero-loss guard; the snapshot was
+ * regenerated in T15 when blog bodies were enriched with Markdown structure
+ * (headings/lists/code blocks) for rich rendering. It now doubles as a
+ * content-stability canary: any accidental change to a post body fails here.
  *
  * Run: pnpm test:blog
  */
