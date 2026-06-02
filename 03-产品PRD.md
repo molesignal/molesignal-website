@@ -234,6 +234,14 @@ molesignal 凭什么、用户为什么用/留下：
 - **密钥政策**：纯前端内容接线，**不依赖任何外部 env**，QA 可全程本地验证（build/check/E2E + 浏览器逐字核对迁移无丢 + 临时加 .mdx 自证运营可改性）。
 - 完整用户故事与 AC1–AC9 见 `backlog/ISSUE-15.md`。
 
+### ISSUE-17 · 贡献者墙真实数据验证 — T16 / P1-3（2026-06-02）
+- **承接 PRD**：§4.2 P1-3「贡献者墙真实数据(#4)」（D5 社区与集成证明 / Proof over promise）。命中红线②（动数据源）→ full 道，EXTRA_ROLES: none。
+- **承接架构**：`06 §3.3` GitHub provider——`lib/github.ts` `getContributors()` 兜底接口**本期不改签名**。前置 T07（ISSUE-7 closed）已验三兜底态；本工单聚焦贡献者墙这一条，补「真实数据渲染路径 + 头像/链接正确性 + a11y」。
+- **现状缺口（已核实）**：① 真实数据渲染路径未被独立验证（T07 主要验兜底态），需 mock/fixture 验头像 `src=avatar_url`/链接 `href=html_url`/bot 滤除；② **a11y 缺口（本期修）**：头像链接 `<img alt="">` + 无链接文本 → 无可访问名（`title` 不可靠），需补 `aria-label`/visually-hidden login；③ 私有/失败/空数组兜底回归不退化。
+- **明确不做**：不引 `next/image` 远端域名配置（留 M5）、不改 `getContributors` 签名/revalidate/不新增 route、不做真实 token 联调（本期无密钥，mock/脚本验证即判 `[x]`，真实联调延后复验）、不改 `shadow-glow-indigo`（经核已桥接 brand-teal 且全站一致，非死 token，非阻塞）。
+- **密钥政策**：本期不提供 `GITHUB_TOKEN`，真实数据态以注入 fixture/mock 客观验证（脚本或 E2E）；缺 env 真实联调延后补密钥复验（不影响本期就绪）。
+- 完整用户故事与 AC1–AC8 见 `backlog/ISSUE-17.md`。
+
 ---
 
 **产出路径**：`/Users/ukulele/claude-project/self-code/workspace/molesignal-website/03-产品PRD.md`

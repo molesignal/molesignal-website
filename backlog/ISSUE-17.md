@@ -2,7 +2,7 @@
 id: ISSUE-17
 type: feature
 title: [T16] 贡献者墙真实数据验证
-status: in_progress
+status: verifying
 priority: P1
 assignee: backend-engineer
 created: 2026-06-01
@@ -120,3 +120,29 @@ updated: 2026-06-02
   - 注：`lint:links`/`test:e2e` 需先起 server，已起 `pnpm start` 后复验通过。
 
   **阻塞项**：无。唯一遗留为 AC7 真实 token 联调（按工单「不做」与就绪政策延后，需运维补 `GITHUB_TOKEN` 后复验并在 READINESS 标注），非本工单阻塞。
+- 2026-06-02 08:34:26 set status=in_review
+- 2026-06-02 代码审查（code-reviewer）：**通过，建议放行 QA。必改 0 / 已直接修 0 / 建议改 0 / 可选 2**。详见 08-测试报告.md「代码审查 — ISSUE-17」。
+  - **实证复跑（非采信自述）**：`tsc --noEmit` 0 错；`test:contributor-wall` 13/13 全绿；`test:github` 回归全绿；`lint:i18n` EN 512=ZH 512 parity OK。E2E/build 属 QA 环未本环节重跑。
+  - **契约/正确性**：`getContributors` 签名/`Contributor` 类型/bot 过滤/revalidate 全未动，零契约变更（合 06 §3.3）；props `{size,className}` 不变，唯一运行时消费方 `app/[locale]/page.tsx:163` 零改动。纯函数字段映射正确，`.slice` 二次封顶构成纵深防御。AC3 经真实 `getContributors`+mock fetch 端到端验证 Bot/Organization 不达墙面。AC4 a11y `aria-label`（i18n）+`alt=""` 为 WAI-ARIA 标准做法，处置得当。
+  - **发现项（均可选，非阻断）**：① `title` 中 "contributions" 硬编码英文（既有行为、非回归，可访问名已由 i18n aria-label 承载）；② 组件 `Size` 与 lib `ContributorWallSize` 同义重复，可 import 消重。另核 EN avatarLabel 的 ICU 撇号 `'s` 按字面量正常渲染，非缺陷。
+  - **未产生修复提交**（0 必改/0 建议改）。提交规范合 Conventional Commits。
+  - **遗留**：AC7 真实 `GITHUB_TOKEN` 联调延后复验（按工单「不做」与就绪政策，需运维补密钥后在 READINESS 标注），非本工单阻塞。
+- 2026-06-02 08:37:32 set status=verifying
+- 2026-06-02 QA 独立验证（qa-automation，真实执行非采信自述）：**VERDICT: PASS**
+
+  **执行环境**：node v23.6.1 / pnpm（nvm）；prod build + `next start -p 3100`（health /en→200，已起后台、测完 kill，端口 3100/3210 复查无僵尸）。
+
+  **AC 逐条独立复跑证据**
+  - AC1/AC2/AC3/AC4/AC5（渲染路径）✅ `pnpm test:contributor-wall` **12/12 全绿**（src===avatar_url、href===html_url；顺序保序；compact 截 12 / default 截 30、40 输入不超额；Bot+Organization 经真实 `getContributors`→view 端到端被滤、仅 alice 上墙；title 含 login+128、ariaLabel 注入式 i18n「alice 的 GitHub 主页」含 login；`[]`→空态分支）。server component fetch 无法被 E2E 拦截，纯函数脚本是客观验证渲染路径的正解。
+  - AC4 a11y 组件落地 ✅ 复核 `components/contributor-wall.tsx:66` 头像链接 `aria-label={item.ariaLabel}`（走 `t("avatarLabel",{login})`）+ `alt=""`，WAI-ARIA 标准做法。
+  - AC5 空态 ✅ **实时验证**：prod 首页（无 `GITHUB_TOKEN`，构建期未授权拉取→`[]`）EN 渲染 "Be the first contributor — open an issue or PR"、ZH 渲染 "成为第一个贡献者 —— 开 issue 或 PR"，均含真实 `github.com/molesignal/molesignal` 链接；**无 populated ul、无 avatars 域名、无破图、无伪造数字**（curl 抓 146KB 真实 HTML 核验）。
+  - AC6 失败降级 ✅ `pnpm test:github` 回归 **22/22 全绿**（throw / 403 / 404 → `[]`→空态，不退化）。
+  - AC7 零改码切换 ✅ 脚本 fixture 等价真实 200 响应即生效（AC1/AC3）+ test:github 第 3 段「200 OK→真实数据」证明；真实 `GITHUB_TOKEN` 联调按工单「不做」延后（需运维补密钥后在 READINESS 标注），非阻塞。
+  - AC8 质量门 ✅ `pnpm check` 全绿（typecheck 0 err；lint 0 error，仅 toc.tsx 5 个既有 warning 与本工单无关；a11y:contrast 26/26；lint:i18n EN 512=ZH 512 parity OK）+ `build` 成功 + `lint:links` **0/33 失败** + `test:e2e` **69 passed**。
+
+  **缺陷**：0（无阻断/无回归）。**回归套件重跑**：`pnpm test:contributor-wall && pnpm test:github && pnpm check && pnpm build && SITE=http://localhost:3100 pnpm lint:links && pnpm test:e2e`（lint:links 需先起 `pnpm start`，e2e 自带 3210 webServer）。
+  - **遗留（非阻塞）**：AC7 真实 token 联调延后复验，需运维补 `GITHUB_TOKEN` 后在 READINESS 标注。
+
+QA 验证结果：**通过** — AC1–AC8 全部满足，证据见上（脚本 12/12 + github 22/22 + e2e 69 + 质量门全绿 + 实时空态双语核验）。
+
+VERDICT: PASS
