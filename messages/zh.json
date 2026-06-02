@@ -534,7 +534,9 @@
     "noPostsTitle": "暂无文章",
     "noPostsBody": "我们在写第一篇 launch 文章。稍后回来，或者通过 Cloud 候补订阅。",
     "relatedTitle": "相关文章",
-    "zhUnavailable": "Blog 在 v1 仅英文。阅读英文版 →"
+    "zhUnavailable": "Blog 目前仅支持英文版",
+    "zhReadEnglish": "阅读英文版 Blog →",
+    "zhReadEnglishPost": "阅读该文章英文版 →"
   },
 
   "errors": {

@@ -534,7 +534,9 @@
     "noPostsTitle": "No posts yet",
     "noPostsBody": "We're writing the first launch article. Come back, or subscribe via the Cloud waitlist.",
     "relatedTitle": "Related posts",
-    "zhUnavailable": "Blog is English-only in v1. Read the English version →"
+    "zhUnavailable": "Blog is currently English-only",
+    "zhReadEnglish": "Read the English Blog →",
+    "zhReadEnglishPost": "Read this post in English →"
   },
 
   "errors": {

@@ -49,8 +49,14 @@ export default async function BlogPostPage({
   setRequestLocale(locale);
   const t = await getTranslations("blog");
 
-  // Blog is EN-only — ZH users get a friendly redirect notice (M4.15)
+  // Blog is EN-only — ZH users get a friendly redirect notice (M4.15).
+  // Dead-link guard (AC2): only deep-link to the EN post when the slug really
+  // exists; otherwise fall back to the EN blog index so an unknown slug never
+  // links to a 404.
   if (locale === "zh") {
+    const exists = Boolean(getPostBySlug(slug));
+    const href = exists ? `/blog/${slug}` : "/blog";
+    const label = exists ? t("zhReadEnglishPost") : t("zhReadEnglish");
     return (
       <Section padding="lg">
         <div className="mx-auto max-w-xl space-y-4 text-center">
@@ -59,11 +65,11 @@ export default async function BlogPostPage({
           </h1>
           <p>
             <Link
-              href={`/blog/${slug}`}
+              href={href}
               locale="en"
               className="text-primary hover:text-marketing-accent text-sm font-strong"
             >
-              /blog/{slug} →
+              {label}
             </Link>
           </p>
         </div>

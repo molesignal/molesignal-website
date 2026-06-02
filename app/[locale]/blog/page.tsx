@@ -42,7 +42,7 @@ export default async function BlogIndex({
               locale="en"
               className="text-primary hover:text-marketing-accent text-sm font-strong"
             >
-              /blog →
+              {t("zhReadEnglish")}
             </Link>
           </p>
         </div>

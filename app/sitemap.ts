@@ -2,7 +2,6 @@ import type { MetadataRoute } from "next";
 
 import { BLOG_POSTS } from "@/content/blog";
 import { CHANGELOG } from "@/content/changelog";
-import { routing } from "@/i18n/routing";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://molesignal.io";
 
@@ -71,8 +70,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Individual blog posts (EN only)
   for (const post of BLOG_POSTS) {
-    const fallback = routing.locales; // satisfy TS
-    void fallback;
     entries.push({
       url: `${SITE}/blog/${post.slug}`,
       lastModified: new Date(post.date),
