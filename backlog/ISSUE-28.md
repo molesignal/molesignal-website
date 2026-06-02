@@ -2,7 +2,7 @@
 id: ISSUE-28
 type: feature
 title: 全站可信度终验+转化埋点闭环E2E
-status: in_progress
+status: verifying
 priority: P1
 assignee: fullstack-engineer
 created: 2026-06-02
@@ -67,3 +67,30 @@ AC8 收尾: 全部通过后由 orchestrator 将 READINESS.md 第74行改 [x] 并
 - 2026-06-02 13:02:04 EXTRA_ROLES: none
 - 2026-06-02 13:02:24 set status=in_progress
 - 2026-06-02 fullstack 终验完成：AC1–AC6 全部客观通过（lint:links 0/33 · a11y 26/26 · check tsc0/eslint0/i18n518=518 · build rc0 · CI五闸同序全绿 · test:e2e 106 passed · analytics-funnel 14 passed）；零缺陷、零生产代码改动。AC8 收尾移交 orchestrator 于独立 QA PASS 后执行。
+- 2026-06-02 13:07:33 set status=in_review
+- 2026-06-02 代码审查（code-reviewer）：必改=0，关键 bug=0。核对事实——分支唯一提交为 chore 留痕、`git diff main...feature/ISSUE-28` 仅 backlog/ISSUE-28.md（零生产代码改动属实，提交规范合规）；逐条复核留痕真实性全相符：`href="#"` 5 处全在注释、`lib/analytics.ts:30-36` 降级路径如述、`analytics-funnel.spec.ts` 14 用例事件名/误触发断言一一对应、READINESS 第74行仍 `[ ]`（符合 light 道不自判通过纪律）。**VERDICT: PASS，建议放行至独立 QA**。AC8 收尾须由 orchestrator 在 qa-automation 独立 QA PASS 后执行，本审查不替代独立 QA。详见 08-测试报告.md「代码审查 — ISSUE-28」节。
+- 2026-06-02 13:09:15 set status=verifying
+
+## QA 验证结果（qa-automation 独立验证，2026-06-02）
+
+**VERDICT: PASS** — 全部 AC（AC1–AC7）经本机真实执行客观通过；零阻断缺陷；零生产代码改动属实。AC8 收尾（翻 [x] + 回写 31/31 → DONE）移交 orchestrator 于本 PASS 后执行（light 道修复者不自判通过，独立 QA 已完成）。
+
+环境：node v23.6.1 / pnpm 11.5.0；生产构建 `next start`（:3000）+ Playwright Chromium（自启 :3210）。测毕已 kill :3000/:3210，无僵尸残留。
+
+| AC | 验法（QA 现场复跑） | 结果 |
+|---|---|---|
+| AC1 死链=0 | `SITE=http://localhost:3000 pnpm lint:links`（对 `next start` 生产服务器爬全站内链），rc 单独捕获 | **Failures: 0/33，rc=0** ✅ |
+| AC2 画饼链接=0 | `grep -rn 'href="#"' app components` | 命中 5 处，**全部在注释/docblock 内**（community-callout.tsx:16/95、footer.tsx:17/31/64，均 `*`/`//` 注释说明"绝不用 href=#"），**0 处真实 JSX 占位** ✅ |
+| AC3 无障碍 AA | `pnpm a11y:contrast` | **Failures: 0/26（target met=26）**，明暗双主题全 ≥WCAG AA ✅ |
+| AC4 质量门全绿 | `pnpm check` + `pnpm build` + CI 各闸本地同序复跑 | tsc **0**、eslint **0**、a11y **26/26**、i18n parity **EN 518 = ZH 518 OK**；`build` **rc=0**（全路由清单产出）。CI 同序：`check`✅ → `lint:quickstart`（0/5，跨仓 README 缺失按设计 skip 4）✅ → `test:changelog`（真实-release 回退不退化）✅ → `build`✅ → `lint:links`（0/33 rc=0）✅ → `test:e2e`✅ ✅ |
+| AC5 全量回归 | `pnpm test:e2e`（自启 :3210 生产服务器） | **106 passed (59.2s)，0 failed，零退化**（与开发自测一致）✅ |
+| AC6 转化埋点闭环（降级验法） | `pnpm exec playwright test tests/e2e/analytics-funnel.spec.ts` —— spy `window.plausible` 录事件名+props | **14 passed**。两表单 2xx 后确触发对应 `track()`：`waitlist_submit`（#4，props 空无 PII）、`design_partner_submit`（#7，props 空）；**误触发防护全过**：429 不触发（#5）、500 不触发（#8）、蜜罐不触发且不发 API（#6）。已核实 spec 系真桩——`window.plausible` 被替换为录制器写 sessionStorage，断言事件名+props+2xx 时序；`lib/analytics.ts` `track()` 在 `window.plausible` 未注入时直接 `return` 空转、try/catch 永不破页，降级路径如述。即 LAUNCH.md「上线48h≥1条真实转化」闭环的**代码就绪半程**客观验证 ✅ |
+| AC7 诚实标注 | 核对工单内 AC8 收尾指令的备注原文 | 已含「真实 Plausible 上报+Resend 入库的转化闭环联调延后补密钥复验，本期未验真实转化，不伪称已验」标注，待 AC8 写入 READINESS；READINESS 第74行此刻仍 `[ ]`（符合 light 道不自判通过纪律）✅ |
+| AC8 收尾 | 翻 READINESS.md 第74行 [x] + 回写 `READINESS_SCORE: 31/31` → DONE | **移交 orchestrator**，本 QA PASS 后执行 ⏳ |
+
+证据日志：`/tmp/issue28-build.log`、`/tmp/issue28-links.log`、`/tmp/issue28-e2e.log`、`/tmp/issue28-funnel.log`、`/tmp/issue28-qs.log`、`/tmp/issue28-cl.log`。
+缺陷数：**0**（阻断/严重/一般均 0）。生产代码改动：**0**（已核 `git diff main...feature/ISSUE-28` 仅 backlog 留痕）。
+
+**放行建议：合并放行。** 三环（开发→审查→独立 QA）齐备，AC1–AC7 全部本机实证通过，零退化、零阻断缺陷。真实外部联调（Plausible 上报 + Resend 入库）按本期降级政策延后补密钥复验，不阻塞本期 DONE。
+
+**VERDICT: PASS**
