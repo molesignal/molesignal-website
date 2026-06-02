@@ -719,6 +719,7 @@
     },
     "contributorWall": {
       "ariaLabel": "贡献者",
+      "avatarLabel": "{login} 的 GitHub 主页",
       "empty": "成为第一个贡献者 ——",
       "emptyAction": "开 issue 或 PR"
     },

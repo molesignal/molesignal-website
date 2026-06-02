@@ -2,7 +2,7 @@
 id: ISSUE-16
 type: feature
 title: [T15] Blog富文本渲染
-status: verifying
+status: closed
 priority: P1
 assignee: frontend-engineer
 created: 2026-06-01
@@ -99,3 +99,5 @@ updated: 2026-06-02
 - 2026-06-02 QA 验证 PASS（qa-automation）
 
 VERDICT: PASS
+- 2026-06-02 08:21:09 set status=closed
+- 2026-06-02 08:21:09 引擎周期#17: QA PASS, 关闭

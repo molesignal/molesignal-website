@@ -18,6 +18,7 @@
     "test:rate-limit": "tsx scripts/check-rate-limit.ts",
     "test:cost": "tsx scripts/check-cost-formula.ts",
     "test:github": "tsx scripts/check-github-fallback.ts",
+    "test:contributor-wall": "tsx scripts/check-contributor-wall.ts",
     "test:audiences": "tsx scripts/check-resend-audiences.ts",
     "test:design-partner": "tsx scripts/check-design-partner-route.ts",
     "test:blog": "tsx scripts/check-blog-mdx.ts",
