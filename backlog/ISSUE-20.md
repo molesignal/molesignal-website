@@ -2,7 +2,7 @@
 id: ISSUE-20
 type: feature
 title: [T19] QuickStart产物就绪切换
-status: verifying
+status: closed
 priority: P1
 assignee: frontend-engineer
 created: 2026-06-01
@@ -101,3 +101,5 @@ QuickStart 的 Helm / binary 安装页签当前带 T04 的 "v1.0 target" 诚实 
 - 2026-06-02 09:21:50 set status=in_progress
 - 2026-06-02 09:27:54 set status=in_review
 - 2026-06-02 09:29:34 set status=verifying
+- 2026-06-02 09:33:34 set status=closed
+- 2026-06-02 09:33:34 引擎周期#21: QA PASS, 关闭
