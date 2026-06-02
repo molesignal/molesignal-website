@@ -260,6 +260,16 @@ molesignal 凭什么、用户为什么用/留下：
 - **密钥政策**：本期不提供 `GITHUB_TOKEN` 且仓库无真实 Release（T07 现场确认）；按「代码就绪 + 真实数据路径经 mock/脚本验证正确」判 `[x]`，补密钥 + 发版后翻真实复验（呼应 READINESS T20 外部前置、与 ISSUE-7 AC⑤ 同构）。
 - 完整用户故事 US-1~3 与 AC1–AC8 见 `backlog/ISSUE-21.md`。
 
+### ISSUE-22 · Blog 中文支持决策落地 — T21 / P2-1（2026-06-02）
+- **承接 PRD**：§4.3 P2-1「Blog 中文支持(#17 i18n#6)」+ §7 开放问题 #7（标注「需用户拍板是否本期改变 EN-only」）+ §1 目标用户表（原设计「全站 ZH 镜像，blog 除外，EN-only」）。
+- **本期决策（PM 推荐 · 可随时翻案）**：用户拍板询问已发起但被跳过 → 按 PRD §1 原设计 + 本期「精简·诚实内容」政策 + P2 最低优先级，与其余「需用户拍板」项一致地采用稳妥默认：**本期明确保留 Blog EN-only，不做中文正文**。范围聚焦把现有 `/zh/blog*` 不可用提示打磨到位并补客观验收（友好提示 + 零死链 + SEO 一致 + 决策落档），ZH 全管线列为**已就绪的延后 scope**，翻案成本低。
+- **现状（已核实）**：`/zh/blog`、`/zh/blog/[slug]` **已实现** `locale==="zh"` 友好提示（`blog.zhUnavailable`，EN/ZH 双语键齐全）；`app/sitemap.ts` blog 条目**已是 EN-only**（无 ZH hreflang）；`content/blog/*.mdx` 仅 2 篇英文、**无译稿**；provider 契约（`BLOG_POSTS`/`getPostBySlug`/`getRelatedPosts`）**无 locale 维度**。本工单以**验收闭环 + 提示打磨**为主，非从零开发。
+- **细化结论（本期做）**：① `/zh/blog` 与 `/zh/blog/[slug]`（含**不存在**的 slug）渲染友好提示且**链接安全无死链**——slug 不存在时回退指向 `/blog` 列表（修当前「`/zh/blog/不存在`→链到 `/blog/不存在`(404)」潜在死链）；② sitemap **不含** `/zh/blog*` 条目、blog 不带 `zh` hreflang（不宣告不存在页）；③ 提示页复用全站 UI token、明暗双主题 + a11y AA；④ LocaleSwitcher 在 `/blog*` 切 ZH 落到提示页不 404、保滚动；⑤ 不回归 EN 富文本/相关文章/复制；⑥ `lint:links`/`lint:i18n`/`check`/`build`/`test:e2e` 全绿并补 ZH 路径 E2E 守卫。
+- **延后 scope（翻案路径，本期不做）**：per-locale 内容管线（`content/blog/{en,zh}/...` + provider 加 locale 维度，评估 4 处消费方）、翻译 2 篇 + 持续翻译运营（并入 T24）、相关文章按 locale 过滤、`/zh/blog` 列表渲染 ZH 并对缺译稿文章逐篇降级、sitemap 仅对有译稿文章补 `en/zh/x-default` hreflang。**翻案命中红线②（动内容契约）→ 必须 full 道**。
+- **明确不做**：不引入机器翻译自动生成正文（质量不可控、与诚实内容原则冲突）。
+- **道次说明**：本期 EN-only 路径**不动内容契约/schema/API**，红线判定**可降 LANE: light**（开发→审查→独立 QA 三环仍全做）；现 `LANE: full` + `EXTRA_ROLES: ux/ui` 系翻案场景保守预设，EN-only 提示打磨界面改动极小、ux/ui 可最小介入，最终道次由 orchestrator 复核。
+- 完整用户故事 US-1~4 与 AC1–AC8、延后 scope 见 `backlog/ISSUE-22.md`。
+
 ---
 
 **产出路径**：`/Users/ukulele/claude-project/self-code/workspace/molesignal-website/03-产品PRD.md`
