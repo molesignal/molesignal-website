@@ -21,6 +21,18 @@ const AUTO_INTERVAL_MS = 2600;
  * Auto-plays a tour through the three tabs on mount (2 full cycles), then
  * stops on the last tab. User interaction (click / keyboard) cancels the
  * auto-tour. `prefers-reduced-motion` skips the auto-tour entirely.
+ *
+ * ── T23 data-source decision (ISSUE-24, 2026-06-02) ──────────────────────
+ * The sample below is an INTENTIONAL hardcoded illustration, not live data.
+ * There is no real/sandbox query backend to wire to: the molesignal query
+ * engine is a separate cross-project product, and this is the marketing
+ * site's "five-second demo" (see the honest `pill` copy). Connecting a real
+ * backend is a cross-project call that needs an explicit user/product
+ * decision; the task default — kept here — is to stay with the hardcoded
+ * sample. Should a sandbox query endpoint land later, swap the three
+ * View fixtures for a fetch without touching the tab/auto-tour shell.
+ * The `prefers-reduced-motion` guard below MUST be preserved across any
+ * such change (locked by tests/e2e/issue24-t23-cross-signal-demo.spec.ts).
  */
 export function CrossSignalDemo({ className }: { className?: string }) {
   const t = useTranslations("components.crossSignalDemo");
@@ -58,6 +70,7 @@ export function CrossSignalDemo({ className }: { className?: string }) {
 
   return (
     <div
+      data-testid="cross-signal-demo"
       className={cn(
         "border-border bg-surface shadow-hero-card relative overflow-hidden rounded-2xl border",
         className,
