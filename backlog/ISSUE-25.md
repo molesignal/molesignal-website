@@ -2,7 +2,7 @@
 id: ISSUE-25
 type: feature
 title: [T24] 内容运营工作流文档
-status: verifying
+status: closed
 priority: P2
 assignee: fullstack-engineer
 created: 2026-06-01
@@ -123,3 +123,5 @@ pnpm typecheck && pnpm test:blog && pnpm test:changelog && pnpm build
 
 **QA 验证结果：通过**
 VERDICT: PASS
+- 2026-06-02 11:19:30 set status=closed
+- 2026-06-02 11:19:30 引擎周期#26: QA PASS, 关闭
