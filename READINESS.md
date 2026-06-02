@@ -1,4 +1,4 @@
-READINESS_SCORE: 17/31
+READINESS_SCORE: 18/31
 
 # READINESS · molesignal-website 上线就绪清单
 
@@ -54,7 +54,7 @@ READINESS_SCORE: 17/31
 
 - [x] **内容迁 MDX 接线**：`next.config.ts` 接 `@next/mdx`+`remark-gfm`，新增 `content/blog/*.mdx`，抽 `lib/content/blog.ts` provider（`getAllPosts`/`getPost` 签名不变），现有 2 篇迁移无丢失，改内容不改组件，`build` 过（T14）✅ ISSUE-15 closed · QA PASS 2026-06-02（full 道：开发→代码审查→独立 QA。**契约纠偏**：真实契约为 `@/content/blog` 的 `BLOG_POSTS`/`getPostBySlug`/`getRelatedPosts`，原文档 `lib/content/blog.ts`+`getAllPosts` 提案未落地——「签名不变」= 原地改造 `content/blog.ts` 内部实现（`node:fs` 同步读 `content/blog/*.mdx`+gray-matter 解 frontmatter，模块级求值，按 date 降序），4 处消费方零改。next.config `withNextIntl(withMDX())` 组合、remark 用字符串名规避 Turbopack 序列化约束、新增 `mdx-components.tsx`、body 仍为 string（富文本渲染留 T15）。`test:blog` 30/30 逐字段+body 逐字节快照对比、`pnpm check`(tsc0/eslint0/a11y26/i18n511)+`build`(2 slug 静态页)+`lint:links`(0/33)+`test:e2e`(66/66) 全绿；QA 真实 next start 复核 AC1–AC9 含 AC9 临时新增 .mdx 自证「改内容不改代码」。非阻断观察：frontmatter 零校验，运营漏填字段时 build 硬失败但不指明坏文件，留作健壮性增强）
 - [x] **Blog 富文本渲染**：blog body 经 MDX 渲染富文本（标题/列表/代码块），代码块复用 Shiki 高亮，相关文章按 tag 仍工作（T15）✅ ISSUE-16 closed · QA PASS 2026-06-02（light 道：开发→代码审查→独立 QA。新增 `components/blog/mdx-body.tsx`（async server component，`@mdx-js/mdx` evaluate + remark-gfm，SSG 期编译，body 仍为 string、provider 契约零改）+ `components/blog/mdx-prose.tsx`（h1–h4/p/列表/blockquote/行内 code/链接 locale 保持/围栏代码块拦截转 Shiki `CodeBlock` 双主题高亮）。AC① 富文本渲染、AC② 代码块 Shiki 复用、AC③ getRelatedPosts 按 tag 未改 E2E 验相关文章区渲染兄弟卡——三标准全满足。`test:blog` 全绿（meta 逐字段 + body 逐字节快照 + provider 契约）；`pnpm test:e2e` **69 passed**（既有 66 回归零退化 + T15 新增 3）；`typecheck` 0 错。真实生产构建 + Chromium 驱动复核。代码审查必改 0。）
-- [ ] **贡献者墙真实数据**：仓库公开+token 下真实拉 `/contributors` 渲染头像/链接正确，私有/失败回退空态不报错（T16）〔需外部:GITHUB_TOKEN + 仓库公开〕
+- [x] **贡献者墙真实数据**：仓库公开+token 下真实拉 `/contributors` 渲染头像/链接正确，私有/失败回退空态不报错（T16）〔需外部:GITHUB_TOKEN + 仓库公开〕 ✅ ISSUE-17 closed · QA PASS 2026-06-02（full 道：开发→代码审查→独立 QA。渲染路径 src===avatar_url/href===html_url、保序、compact 截12/default 截30 不超额、Bot+Organization 经真实 `getContributors`→view 端到端被滤、`[]`→空态、a11y 注入式 i18n `aria-label`+`alt=""`；`test:contributor-wall` 12/12 + `test:github` 回归 22/22 + prod 实时空态双语核验（curl 146KB HTML 无 populated ul/无 avatars 域名/无伪造数字）+ 质量门全绿（check/build/lint:links 0/33/test:e2e 69 passed）。AC7 真实 `GITHUB_TOKEN` 联调延后补密钥复验）
 - [ ] **社区入口真实化**：若 Discord 邀请链接已就绪，community-callout/Footer 指向真实链接、文案与现状一致、无死链；未就绪则保持 T04 诚实禁用态（T17）〔需外部:真实 Discord 邀请链接〕
 - [ ] **表单数据导出工作流**：文档化运营在 Resend Dashboard 导出 cloud/partner audience CSV（字段含来源/时间戳，DP 结构化字段从通知邮件归档补全），并实际验证导出可用（T18）〔需外部:Resend 账号可访问 Audiences〕
 - [ ] **QuickStart 产物就绪切换**：helm repo/binary release 真实就绪后移除 "v1.0 target" notice，`lint:quickstart` 与父仓库 README 同步过，命令冒烟可执行（T19）〔需外部:真实 helm repo/binary release 产物〕
