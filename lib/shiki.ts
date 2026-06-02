@@ -11,7 +11,11 @@ import {
  * build/SSG time.
  */
 export function resolveLanguage(lang?: string): BundledLanguage {
-  if (lang && lang in bundledLanguages) {
+  // `Object.hasOwn` (not `in`) so inherited Object.prototype keys like
+  // `toString` / `constructor` / `valueOf` used as a code-fence label don't
+  // falsely resolve to a non-grammar and force the highlight() catch path.
+  // Shiki's bundled aliases (`js`, `ts`, …) are own keys, so they still pass.
+  if (lang && Object.hasOwn(bundledLanguages, lang)) {
     return lang as BundledLanguage;
   }
   return "bash";
