@@ -1,0 +1,16 @@
+// Template for one roadmap item in content/roadmap.json.
+// content/roadmap.json is a JSON ARRAY of objects like the one below.
+// JSON has no comments — copy ONLY the object (the {...} block) into the array
+// and drop these comment lines. Group order in the file is free; the UI buckets
+// items by `phase`.
+{
+  "id": "kebab-case-stable-id",
+  "phase": "now",
+  "//phase": "one of: now | next | later | done",
+  "title": "Feature name as users would search for it",
+  "summary": "One sentence: what it is + honest current state. No overpromising.",
+  "estimate": "Q2 2026",
+  "//estimate": "free text: 'Q3 2026' | 'v1.0' | 'Post-1.0' | 'Shipped'",
+  "issueUrl": "https://github.com/molesignal/molesignal/issues",
+  "//issueUrl": "tracking link, or null if none yet"
+}

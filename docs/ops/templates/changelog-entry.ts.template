@@ -1,0 +1,17 @@
+// Template for a static CHANGELOG entry in content/changelog.ts.
+// Copy this object literal into the CHANGELOG array, NEWEST FIRST (top of array).
+// This static array is the FALLBACK / preview source. When a real GitHub
+// Release exists, the live page + RSS render from GitHub Releases instead
+// (see docs/ops/content-workflow.md §2). Keep this array curated so the
+// "previewing" state and the RSS feed are never empty.
+{
+  version: "0.0.0",              // semver WITHOUT the leading "v"; anchor becomes #v0-0-0
+  date: "2026-01-01",            // ISO yyyy-mm-dd; drives newest-first sort
+  title: "Short release headline",
+  items: [
+    // tag ∈ "feat" | "fix" | "perf" | "chore" | "breaking"
+    { tag: "feat", text: "User-facing sentence, present tense, no trailing period needed" },
+    { tag: "fix", text: "What broke and is now fixed, from the reader's POV" },
+    { tag: "breaking", text: "Call out migrations explicitly — what to rename/change" },
+  ],
+},

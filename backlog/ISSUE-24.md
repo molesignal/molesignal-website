@@ -2,7 +2,7 @@
 id: ISSUE-24
 type: feature
 title: [T23] CrossSignalDemo接真实查询
-status: verifying
+status: closed
 priority: P2
 assignee: frontend-engineer
 created: 2026-06-01
@@ -62,3 +62,5 @@ updated: 2026-06-02
   测后已确认 3210 端口释放、无 next start 僵尸进程。
   **QA 验证结果：通过**
   VERDICT: PASS
+- 2026-06-02 11:08:36 set status=closed
+- 2026-06-02 11:08:36 引擎周期#25: QA PASS, 关闭
