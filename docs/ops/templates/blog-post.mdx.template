@@ -1,0 +1,38 @@
+---
+slug: your-post-slug-here
+title: 'Your post title — keep it specific, not clickbait'
+excerpt: >-
+  One or two sentences shown on the /blog index card and in the social/OG
+  preview. Lead with the insight, not the topic. ~160 chars max.
+date: '2026-01-01'
+author: molesignal team
+readTimeMinutes: 7
+tags:
+  - Architecture
+  - Storage
+# coverUrl: /blog/your-post-slug-here/cover.png   # optional, omit if none
+---
+## Open with the problem, not the product
+
+First paragraph earns the read. State the tension a reader feels before they
+know we have an answer. No "In this post we will…".
+
+## Use real headings
+
+Markdown / MDX renders to rich text (h2–h4, lists, blockquotes, links, inline
+`code`). Fenced code blocks are syntax-highlighted with Shiki in both themes:
+
+```ts
+// real, runnable snippets only — no pseudo-code
+const span = await store.query({ traceId: "abc123" });
+```
+
+- Bullet lists work
+- So do [internal links](/start) and external links
+
+> Pull-quotes via blockquote for the one line you want remembered.
+
+## Close with a next step
+
+End with one concrete action: try the sandbox, read the related post, join the
+waitlist. Related posts are auto-selected by shared `tags`.
