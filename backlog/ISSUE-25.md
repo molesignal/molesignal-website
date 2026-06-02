@@ -2,7 +2,7 @@
 id: ISSUE-25
 type: feature
 title: [T24] 内容运营工作流文档
-status: in_progress
+status: in_review
 priority: P2
 assignee: fullstack-engineer
 created: 2026-06-01
@@ -48,3 +48,36 @@ updated: 2026-06-02
 - 2026-06-02 11:10:28 LANE: light
 - 2026-06-02 11:10:28 EXTRA_ROLES: none
 - 2026-06-02 11:10:43 set status=in_progress
+- 2026-06-02 11:14:57 set status=in_review
+
+## 代码审查（code-reviewer，2026-06-02）
+
+**结论：建议放行到 QA**（纯文档工单，零代码/契约改动；文档断言逐条对照源码核实，准确度高）。
+
+审查范围：`git diff main...feature/ISSUE-25`（1 个文档 + 3 个模板，266 行新增）。
+
+### 契约/正确性核实（逐条对照源码，全部相符）
+| 文档断言 | 核对源 | 结论 |
+|---|---|---|
+| blog loader 同步扫描 `content/blog/*.mdx`、gray-matter、按 date 降序、`BLOG_POSTS`/`getPostBySlug`/`getRelatedPosts` 契约 | `content/blog.ts` | ✅ 完全相符 |
+| frontmatter 字段表（8 字段，仅 `coverUrl` 可选） | `components/blog-post-card.ts` `BlogPostMeta` | ✅ 相符（`coverUrl?` 可选，余必填） |
+| changelog 双源：`getReleases()`→静态 `CHANGELOG` 兜底；RSS 与页同源同序 | `lib/changelog-feed.ts` `collectChangelogFeedItems` | ✅ 相符 |
+| draft 被过滤、prerelease 保留并标记 | `lib/github.ts` `getReleases`（`.filter(r=>!r.draft)`、保 `prerelease`） | ✅ 相符 |
+| 解析器识别 `feat/fix/perf/chore/breaking` 前缀 | `lib/parse-release.ts` `LINE_RE`/`normalizeTag` | ✅ 相符 |
+| 锚点 `"0.8.0"`→`#v0-8-0`（version 不带 v，锚点自动加） | `lib/changelog-anchor.ts` `versionAnchor` | ✅ 相符 |
+| changelog item 形状 `{version,date,title,items:[{tag,text}]}`，tag 枚举 | `components/changelog-entry.tsx` `ChangelogMeta`/`ChangelogTag` | ✅ 相符 |
+| roadmap 按 `phase` 分桶、URL hash 用 phase（非 id）、`id` 为 React list key | `components/roadmap-list.tsx`（`#${phase}`、`key={m.id}`） | ✅ 相符（已纠正初稿 id 用途误述） |
+| roadmap 字段表（`issueUrl` 为 JSON `null`） | `content/roadmap.json` + 组件 `Milestone` 类型 | ✅ 相符 |
+| 自检脚本 `test:blog`/`test:changelog`/`typecheck`/`build`/`lint:links`/`lint:quickstart`/`check` | `package.json` scripts | ✅ 全部存在 |
+| CI 步骤（check+build+lint:links+lint:quickstart+e2e） | `.github/workflows/ci.yml` | ✅ 相符（CI 另含 `test:changelog`，文档未列，无害） |
+| 引用文档 `docs/ops/data-export.md` | 文件存在 | ✅ |
+| 模板放 `docs/ops/templates/` 用 `.mdx.template` 不污染 blog loader | blog 目录仍 2 篇真文章 | ✅ 已验证 |
+
+### 发现与处置
+- **[已修·建议改] 交叉引用章节号错误**：`docs/ops/templates/changelog-entry.ts.template` 注释 "see content-workflow.md §3" 应为 **§2**（双源模型在 §2，§3 是 Roadmap）。审查员已 Edit 修正并提交。
+- **[可选·风格] 非标准 commit type**：手册 §2.3/§3.5 示例用 `content(changelog):`/`content(roadmap):` 作 commit type，项目 Git 规范（CLAUDE.md）的类型集为 `feat/fix/refactor/test/chore`（+docs）。若 repo 配了 commitlint 可能被拒。建议改用 `docs(...)`/`chore(...)` 或在规范中正式登记 `content` 类型。非阻塞，留作后续。
+
+### 提交规范
+- 分支提交 `docs(ISSUE-25): T24 ...` —— Conventional Commits 合规、含工单号。✅
+
+**必改问题数：0**（唯一明确错误的章节号已由审查员直接修复）。建议放行 QA。

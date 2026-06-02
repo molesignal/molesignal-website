@@ -2,7 +2,7 @@
 // Copy this object literal into the CHANGELOG array, NEWEST FIRST (top of array).
 // This static array is the FALLBACK / preview source. When a real GitHub
 // Release exists, the live page + RSS render from GitHub Releases instead
-// (see docs/ops/content-workflow.md §3). Keep this array curated so the
+// (see docs/ops/content-workflow.md §2). Keep this array curated so the
 // "previewing" state and the RSS feed are never empty.
 {
   version: "0.0.0",              // semver WITHOUT the leading "v"; anchor becomes #v0-0-0
