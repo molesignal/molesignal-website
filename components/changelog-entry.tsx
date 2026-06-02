@@ -2,6 +2,7 @@ import { ArrowUpRight, Link as LinkIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
 import { Pill } from "@/components/ui/pill";
+import { versionAnchor } from "@/lib/changelog-anchor";
 import { cn } from "@/lib/utils";
 
 export type ChangelogTag = "feat" | "fix" | "breaking" | "chore" | "perf";
@@ -59,7 +60,7 @@ export function ChangelogEntry({
     locale === "zh" ? "zh-CN" : "en-US",
     DATE_OPTIONS,
   );
-  const anchor = `v${entry.version.replace(/\./g, "-")}`;
+  const anchor = versionAnchor(entry.version);
   return (
     <article
       id={anchor}

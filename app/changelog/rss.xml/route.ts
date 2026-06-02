@@ -1,6 +1,8 @@
-import { CHANGELOG } from "@/content/changelog";
-import { getReleases } from "@/lib/github";
-import { parseReleaseBody } from "@/lib/parse-release";
+import { versionAnchor } from "@/lib/changelog-anchor";
+import {
+  collectChangelogFeedItems,
+  sortFeedNewestFirst,
+} from "@/lib/changelog-feed";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://molesignal.io";
 
@@ -26,50 +28,12 @@ function xmlEscape(s: string) {
 
 export const revalidate = 3600; // 1h, matches getReleases() ISR window
 
-type FeedItem = {
-  version: string;
-  title: string;
-  date: string;
-  description: string;
-};
-
-async function collectItems(): Promise<FeedItem[]> {
-  const releases = await getReleases(30);
-  if (releases.length > 0) {
-    return releases.map((r) => {
-      const { items } = parseReleaseBody(r.bodyMarkdown);
-      const summary = items
-        .map((it) => `${it.tag.toUpperCase()}: ${it.text}`)
-        .join("\n");
-      const titleSuffix =
-        r.name && r.name !== r.tag ? ` — ${r.name}` : "";
-      return {
-        version: r.version,
-        title: `v${r.version}${titleSuffix}`,
-        date: r.publishedAt,
-        description: summary || r.bodyMarkdown.trim(),
-      };
-    });
-  }
-  return CHANGELOG.map((entry) => ({
-    version: entry.version,
-    title: entry.title
-      ? `v${entry.version} — ${entry.title}`
-      : `v${entry.version}`,
-    date: entry.date,
-    description: entry.items
-      .map((it) => `${it.tag.toUpperCase()}: ${it.text}`)
-      .join("\n"),
-  }));
-}
-
 export async function GET() {
-  const feed = await collectItems();
-  feed.sort((a, b) => +new Date(b.date) - +new Date(a.date));
+  const feed = sortFeedNewestFirst(await collectChangelogFeedItems());
 
   const itemsXml = feed
     .map((item) => {
-      const anchor = `v${item.version.replace(/\./g, "-")}`;
+      const anchor = versionAnchor(item.version);
       const url = `${SITE}/changelog#${anchor}`;
       return `<item>
   <title>${xmlEscape(item.title)}</title>

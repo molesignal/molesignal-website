@@ -66,6 +66,10 @@ jobs:
       - name: QuickStart sync
         run: pnpm lint:quickstart
 
+      # 2b) offline data-path unit checks (no external keys; stubbed fetch)
+      - name: Data-path checks
+        run: pnpm test:changelog
+
       # 3) production build (needed by lint:links and E2E)
       - name: Build
         run: pnpm build
