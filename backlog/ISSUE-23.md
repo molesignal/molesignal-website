@@ -2,7 +2,7 @@
 id: ISSUE-23
 type: feature
 title: [T22] CompareTable动态化
-status: verifying
+status: closed
 priority: P2
 assignee: fullstack-engineer
 created: 2026-06-01
@@ -120,3 +120,5 @@ updated: 2026-06-02
   - **AC8** `lib/compare-data.ts` 头注释含"安全更新一行"4 步 + slim=前4行/调序改 Home 约定。
   - 阻断缺陷 0；唯一可选项为 AC3⑥ 注释 "smallest"↔"首个" 措辞（等价、非 bug、不阻塞）。测毕服务已关、端口 3210 释放、无僵尸。报告详见 08-测试报告.md「自动化测试 — ISSUE-23」节。
 - 2026-06-02 **VERDICT: PASS**
+- 2026-06-02 10:53:06 set status=closed
+- 2026-06-02 10:53:06 引擎周期#24: QA PASS, 关闭

@@ -1,4 +1,4 @@
-READINESS_SCORE: 25/31
+READINESS_SCORE: 26/31
 
 # READINESS · molesignal-website 上线就绪清单
 
@@ -66,7 +66,7 @@ READINESS_SCORE: 25/31
 ## M3 体验增强（P2 · T21–T24）
 
 - [x] **Blog 中文支持决策落地**：`/zh/blog*` 渲染中文内容，或明确保留 EN-only 并有友好提示（需用户拍板，PRD §7-7）；若做则 sitemap 补 hreflang（T21）〔需外部:用户对中文 blog 的拍板决策〕 ✅ ISSUE-22 closed · QA PASS 2026-06-02（full 道：fullstack 开发→代码审查→独立 QA。本期决策＝明确保留 Blog EN-only（PRD §1 原设计 + P2 + 精简政策，用户拍板被跳过取稳妥默认），范围聚焦打磨 ZH 不可用提示 + 补客观验收。AC1 `/zh/blog` 渲染 `Blog 目前仅支持英文版` + 描述性链接 `阅读英文版 Blog →`(307→200 非死链)；AC2 死链守卫——存在文章深链 `/en/blog/<slug>`(200)、不存在 slug 回退 `/en/blog` 且页面无 `/blog/<bad>` 链接（裸 GET 反证 404/200）；AC5 `sitemap.xml` 中 `zh/blog` 出现 0 次、blog 三条 loc 均 NO_ALTERNATE 不向 SEO 宣告不存在的 ZH blog；AC3 messages `zhUnavailable/zhReadEnglish/zhReadEnglishPost` 三键双语对齐、parity 518=518。门禁全独立复跑：typecheck rc=0/eslint 0 err/a11y 26/26 AA/build rc=0(blog 两篇 SSG·/zh/blog* 动态)/test:e2e **76 passed**(含 issue22-t21 三条)/lint:links **0/33**。缺陷 0。属诚实标注类按本期政策判 [x]，用户日后翻案改 ZH 正文路径已写明，可低成本启动复验。〔hreflang 一项因决策为 EN-only 故 N/A——sitemap 不补、不产生死链〕
-- [ ] **CompareTable 动态化**：对比数据迁内容系统/数据源，改数据不改组件（T22）
+- [x] **CompareTable 动态化**：对比数据迁内容系统/数据源，改数据不改组件（T22）✅ ISSUE-23 closed · QA PASS 2026-06-02（full 道：PM细化→架构评估→开发→代码审查→独立 QA，已 `merge --no-ff` 回 main）。现状即「证明+上锁」：`COMPARE_ROWS` 为单一数据源、`components/compare-table.tsx` 纯展示零硬编码行数据；新增 `scripts/check-compare-data.ts`+`test:compare` 守护三方契约（label 键 en+zh 齐全非空 / Detail 键当且仅当 hasDetail / 无孤儿键且 en≡zh / verdict∈{good,mixed,bad,neutral}+value 非空 / id 唯一 / cost 行下限不与定价快照相悖），含 mutate-and-revert 负向自证脚本有牙；AC2「改数据不改组件」以临时增行→两处渲染→还原自证、`compare-table.tsx` diff 为空；`test:e2e` **78 passed** 零退化（含 issue11-t10-visual 既有断言），`a11y:contrast` AA 全过。
 - [ ] **CrossSignalDemo 接真实查询**：接真实/沙箱查询后端，或明确保持写死样本（默认保持，需用户决策），reduce-motion 守卫保留（T23）〔需外部:产品查询后端就绪 + 用户决策〕
 - [ ] **内容运营工作流文档**：提供 blog/changelog/roadmap 更新文档与模板（T24）
 - [ ] **M3 已实现项回归**：roadmap tab 与 URL hash 同步（PRD §7 已核实实现）经 QA 在改版后验证不退化
