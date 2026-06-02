@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 
 import { CodeBlock } from "@/components/ui/code-block";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { quickStartArtifactsReady } from "@/lib/artifact-readiness";
 import { cn } from "@/lib/utils";
 
 const DOCKER_CMD = `# Postgres + MinIO + molesignal standalone, 1 command
@@ -44,6 +45,9 @@ molesignal --listen 0.0.0.0:5080 --workdir /var/molesignal`;
  * Honest "not yet shippable" banner for the Helm / binary tabs (P0-4). The
  * Helm repo and prebuilt binaries are a v1.0 target; the Docker path works
  * today. Shown above the command so nobody pastes a command that 404s.
+ *
+ * Hidden once `NEXT_PUBLIC_QUICKSTART_ARTIFACTS_READY=true` flips the artifacts
+ * to ready (T19) — see `quickStartArtifactsReady()`.
  */
 function V1TargetNotice({ message }: { message: string }) {
   return (
@@ -59,6 +63,16 @@ function V1TargetNotice({ message }: { message: string }) {
 
 export async function QuickStartTabs({ className }: { className?: string }) {
   const t = await getTranslations("start");
+  // T19: when the Helm repo + binary release are published, one env var flips
+  // both tabs to their ready state — drop the notice and the "(v1.0 target)"
+  // filename suffix. Until then the honest v1.0-target labels stay.
+  const ready = quickStartArtifactsReady();
+  const helmFilename = ready
+    ? t("tabFilenamesReady.helm")
+    : t("tabFilenames.helm");
+  const binaryFilename = ready
+    ? t("tabFilenamesReady.binary")
+    : t("tabFilenames.binary");
   return (
     <Tabs defaultValue="docker" className={cn("w-full", className)}>
       <TabsList className="bg-surface border-border inline-flex h-auto rounded-md border p-1">
@@ -77,21 +91,21 @@ export async function QuickStartTabs({ className }: { className?: string }) {
       </TabsContent>
 
       <TabsContent value="helm" className="mt-4">
-        <V1TargetNotice message={t("v1Notice")} />
+        {!ready && <V1TargetNotice message={t("v1Notice")} />}
         <CodeBlock
           code={HELM_CMD}
           language="bash"
-          filename={t("tabFilenames.helm")}
+          filename={helmFilename}
           analytics={{ tab: "helm", snippet_type: "install" }}
         />
       </TabsContent>
 
       <TabsContent value="binary" className="mt-4">
-        <V1TargetNotice message={t("v1Notice")} />
+        {!ready && <V1TargetNotice message={t("v1Notice")} />}
         <CodeBlock
           code={BINARY_CMD}
           language="bash"
-          filename={t("tabFilenames.binary")}
+          filename={binaryFilename}
           analytics={{ tab: "binary", snippet_type: "install" }}
         />
       </TabsContent>

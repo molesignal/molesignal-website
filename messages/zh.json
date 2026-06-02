@@ -266,6 +266,10 @@
       "helm": "终端 · Helm 安装（v1.0 目标）",
       "binary": "终端 · 二进制安装（v1.0 目标）"
     },
+    "tabFilenamesReady": {
+      "helm": "终端 · Helm 安装",
+      "binary": "终端 · 二进制安装"
+    },
     "troubleshoot": {
       "port": {
         "q": "5080 端口被占用",
