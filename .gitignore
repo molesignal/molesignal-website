@@ -42,3 +42,6 @@ next-env.d.ts
 
 # 产研团队迭代引擎运行时(锁/状态/心跳/日志,按项目隔离,不入库)
 engine/
+
+# 运营导出的真实数据 CSV 含高敏 PII，禁止入库（ISSUE-19 / docs/ops/data-export.md §7）
+*.csv

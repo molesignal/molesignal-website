@@ -242,6 +242,14 @@ molesignal 凭什么、用户为什么用/留下：
 - **密钥政策**：本期不提供 `GITHUB_TOKEN`，真实数据态以注入 fixture/mock 客观验证（脚本或 E2E）；缺 env 真实联调延后补密钥复验（不影响本期就绪）。
 - 完整用户故事与 AC1–AC8 见 `backlog/ISSUE-17.md`。
 
+### ISSUE-19 · 表单数据导出工作流（运营 runbook）— T18 / P1-5（2026-06-02）
+- **承接 PRD**：§4.2 P1-5「表单提交结构化看板/导出（#11#12 增强）」（D2 转化）。本期已锁定「轻量托管、不自建 DB」→ 本工单**产文档不产代码**：一份运营数据导出 runbook（建议 `docs/ops/data-export.md`，内部文档不进导航、不计 i18n parity）。命中红线①（涉隐私/PII 导出）→ full 道，**EXTRA_ROLES: security-auditor**。
+- **承接架构**：`06 §3.1` Resend Contact 字段映射。数据落在**两个数据汇**，手册讲清拼合：① **Resend Audience**（可导出 CSV）——cloud 仅 `email`、DP 为 `email+firstName+lastName`（`splitName` 拆，size/stack/pain 不入库以最小化 PII）；② **founders@ 通知邮件归档**——subject 前缀标签即**来源**、正文 `Sent:` ISO 即**时间戳**、DP 结构化全字段（size/stack/pain）+IP 仅此处可得。
+- **细化结论**：① 统一导出**字段字典必须含 `source`（cloud-waitlist|design-partner）与 `timestamp`（ISO8601）**并标注取处；② DP 的 size/stack/pain 按 email 从通知邮件补全到导出行；③ 含 cloud/partner 各一份脱敏样例 CSV 模板；④ 手册须与 `cloud-waitlist`/`design-partner` route + `lib/split-name.ts` 真实行为逐项核对（防臆造 audience 不存在的字段）；⑤ 隐私节（security-auditor 把关）：访问最小授权、保存/清理、删除请求从 audience+邮件两处删（承接 ISSUE-4 §6「GDPR 走邮件人工」）。
+- **明确不做**：不自建 DB/CRM、不接 Supabase/Neon、不做后台看板/导出 UI、不写 ETL 脚本、不新增 API/route、不改表单字段/schema、不把 size/stack/pain 塞进 audience、仓库内零真实 PII（样例全虚构）。
+- **密钥政策**：本期不提供 `RESEND_API_KEY`+两 audience id，无法真实 Dashboard 导出联调；按「文档就绪 + 字段映射经核对正确」判 `[x]`，真实导出联调延后补密钥复验（呼应 READINESS T18 与 ISSUE-8/9 的 AC8）。
+- 完整用户故事 US-1~3 与 AC1–AC8 见 `backlog/ISSUE-19.md`。
+
 ---
 
 **产出路径**：`/Users/ukulele/claude-project/self-code/workspace/molesignal-website/03-产品PRD.md`
