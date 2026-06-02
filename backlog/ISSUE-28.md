@@ -2,7 +2,7 @@
 id: ISSUE-28
 type: feature
 title: 全站可信度终验+转化埋点闭环E2E
-status: verifying
+status: closed
 priority: P1
 assignee: fullstack-engineer
 created: 2026-06-02
@@ -94,3 +94,5 @@ AC8 收尾: 全部通过后由 orchestrator 将 READINESS.md 第74行改 [x] 并
 **放行建议：合并放行。** 三环（开发→审查→独立 QA）齐备，AC1–AC7 全部本机实证通过，零退化、零阻断缺陷。真实外部联调（Plausible 上报 + Resend 入库）按本期降级政策延后补密钥复验，不阻塞本期 DONE。
 
 **VERDICT: PASS**
+- 2026-06-02 13:14:07 set status=closed
+- 2026-06-02 13:14:07 引擎周期#29: QA PASS, 关闭

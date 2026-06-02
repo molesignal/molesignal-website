@@ -1,4 +1,4 @@
-READINESS_SCORE: 30/31
+READINESS_SCORE: 31/31
 
 # READINESS · molesignal-website 上线就绪清单
 
@@ -71,7 +71,7 @@ READINESS_SCORE: 30/31
 - [x] **内容运营工作流文档**：提供 blog/changelog/roadmap 更新文档与模板（T24）✅ ISSUE-25 closed · QA PASS 2026-06-02（light 道：开发→代码审查→独立 QA，纯文档零代码改动）。产出 `docs/ops/content-workflow.md`（§0 速览 + §1 Blog frontmatter 8 字段表/发布步骤 + §2 Changelog 双源模型 GitHub Release→静态兜底/RSS 同源 + §3 Roadmap phase 分桶/字段表 + §4 发布前检查清单 + §5 边界）+ 三套可复制模板 `docs/ops/templates/{blog-post.mdx,changelog-entry.ts,roadmap-item.json}.template`；模板用 `.mdx.template` 扩展名放 `docs/ops/templates/` 不污染 blog loader（blog 目录仍 2 篇真文章）。文档断言逐条对照源码核实全相符（`content/blog.ts`/`lib/changelog-feed.ts`/`lib/changelog-anchor.ts`/`components/roadmap-list.tsx`，含纠正 roadmap id 用途初稿误述、交叉引用 §3→§2 修正）；回归四件套真实执行 rc 全 0（`typecheck`/`test:blog`/`test:changelog`/`build`）。代码审查必改 0。
 - [x] **M3 已实现项回归**：roadmap tab 与 URL hash 同步（PRD §7 已核实实现）经 QA 在改版后验证不退化 ✅ ISSUE-27 closed · QA PASS 2026-06-02（light 道：开发→代码审查→独立 QA，已 merge --no-ff 回 main）。新增 `tests/e2e/issue27-t-roadmap-hash-sync.spec.ts` 5 用例对 `components/roadmap-list.tsx` 的 tab↔hash 双向同步写客观断言（生产代码零改动，核查无退化无需修复）：AC1 点 tab→URL `#now/#next/#later/#done` 更新+内容切换+aria-selected；AC2 深链 `/roadmap#done`/`#later` 挂载即定位、非法 hash 回退默认 tab 不崩；AC3 浏览器前进/后退经 hashchange 与 tab+内容联动；AC4 ZH locale 一致。真实 chromium 跑生产 `next build`+`next start`，全量 `pnpm test:e2e` **106 passed**（既有 101 零退化 + 新增 5）；`pnpm check`(tsc 0/eslint 0/a11y 26/26 AA/i18n parity EN 518=ZH 518)+`build` 双 rc=0。契约纠偏：roadmap 在 `/[locale]/roadmap` 非首页、hash 即 phase 键、tab 点击用 `history.replaceState`（有意不入栈）。
 - [x] **i18n parity 终态**：EN/ZH 键结构对齐无缺口（含 M1/M2 新增文案），切换保留滚动位置，blog EN-only 提示友好（D6 终态聚合）✅ 2026-06-02 三项子条件均客观达成：① `pnpm lint:i18n` 主管现场复跑 **EN 518 = ZH 518，Key parity OK**（含 M1/M2 全部新增文案，CI 门禁持续守护）；② 切换保留滚动位置 由 ISSUE-13(T12) E2E `locale 切换保滚动` 守卫（EN→ZH 1200px→>600px）；③ blog EN-only 友好提示由 ISSUE-22(T21) AC1 验证（`阅读英文版 Blog →` 描述性链接，非死链）。三条 P2 终态聚合条件全绿且受 CI 门禁与 E2E 回归持续守护。
-- [ ] **全站可信度终验**：死链数=0、画饼链接=0、`a11y:contrast` 通过、CI 全绿、LAUNCH.md 目标"上线 48h 内观测到 ≥1 条真实转化事件"的埋点闭环经端到端验证（PRD §6 质量指标终态）〔需外部:Plausible 域名 + Resend 入库 才能闭环验证真实转化〕
+- [x] **全站可信度终验**：死链数=0、画饼链接=0、`a11y:contrast` 通过、CI 全绿、LAUNCH.md 目标"上线 48h 内观测到 ≥1 条真实转化事件"的埋点闭环经端到端验证（PRD §6 质量指标终态）〔需外部:Plausible 域名 + Resend 入库 才能闭环验证真实转化〕 ✅ ISSUE-28 closed · QA PASS 2026-06-02（light 道：聚合终验，零生产代码改动，已 merge --no-ff 回 main）。死链 `lint:links` **0/33**、画饼链接 0（`href="#"` 仅注释内 5 处，主管现场复扫真实占位=0）、`a11y:contrast` **26/26 AA**、`pnpm check`(tsc0/eslint0/i18n 518=518)+`build` 双 rc=0、CI 五道闸本地同序全绿、`test:e2e` **106 passed 零退化**；转化埋点闭环按**降级验法**——`analytics-funnel.spec.ts` 14 用例 spy `window.plausible` 证两表单 2xx 后确触发 `waitlist_submit`/`design_partner_submit`（props=null 无 PII）、429/500/蜜罐路径不误触发。**真实 Plausible 上报 + Resend 入库的转化闭环联调延后补密钥复验，本期未验真实转化，不伪称已验。**
 
 ---
 
