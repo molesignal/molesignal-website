@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { LogoMark } from "@/components/logo-mark";
 import { Link } from "@/i18n/navigation";
+import { GITHUB_REPO_URL, getDiscordInviteUrl } from "@/lib/community";
 
 type LinkItem = {
   /** Translation key inside `footer.links.*` */
@@ -24,52 +25,59 @@ type Col = {
   items: LinkItem[];
 };
 
-const COLUMNS: Col[] = [
-  {
-    titleKey: "product",
-    items: [
-      { key: "why", href: "/why" },
-      { key: "quickStart", href: "/start" },
-      { key: "architecture", href: "/architecture" },
-      { key: "pricing", href: "/pricing" },
-      { key: "cloud", href: "/cloud" },
-      { key: "roadmap", href: "/roadmap" },
-      { key: "changelog", href: "/changelog" },
-    ],
-  },
-  {
-    titleKey: "resources",
-    items: [
-      { key: "blog", href: "/blog" },
-      // Anchors to the /start install section (Quick Start tabs). The binary
-      // tab's "v1.0 target" notice lives there. Uses #install — the Section's
-      // real id — because #binary maps to no DOM element (Radix auto-ids its
-      // tab panels and unmounts the inactive ones).
-      { key: "download", href: "/start#install" },
-      { key: "designPartner", href: "/design-partner" },
-    ],
-  },
-  {
-    titleKey: "community",
-    items: [
-      {
-        key: "github",
-        href: "https://github.com/molesignal/molesignal",
-        external: true,
-      },
-      // Discord / Twitter aren't live yet — honest disabled state, not `href="#"`.
-      { key: "discord", disabled: true },
-      { key: "twitter", disabled: true },
-    ],
-  },
-  {
-    titleKey: "legal",
-    items: [
-      { key: "privacy", href: "/privacy" },
-      { key: "terms", href: "/terms" },
-    ],
-  },
-];
+/**
+ * Builds the footer columns. The Discord item is config-driven (T17): when
+ * `discordInvite` is set it renders a real external link; otherwise it keeps
+ * the honest disabled "launching soon" state (never a placeholder `href="#"`).
+ */
+function buildColumns(discordInvite: string | null): Col[] {
+  return [
+    {
+      titleKey: "product",
+      items: [
+        { key: "why", href: "/why" },
+        { key: "quickStart", href: "/start" },
+        { key: "architecture", href: "/architecture" },
+        { key: "pricing", href: "/pricing" },
+        { key: "cloud", href: "/cloud" },
+        { key: "roadmap", href: "/roadmap" },
+        { key: "changelog", href: "/changelog" },
+      ],
+    },
+    {
+      titleKey: "resources",
+      items: [
+        { key: "blog", href: "/blog" },
+        // Anchors to the /start install section (Quick Start tabs). The binary
+        // tab's "v1.0 target" notice lives there. Uses #install — the Section's
+        // real id — because #binary maps to no DOM element (Radix auto-ids its
+        // tab panels and unmounts the inactive ones).
+        { key: "download", href: "/start#install" },
+        { key: "designPartner", href: "/design-partner" },
+      ],
+    },
+    {
+      titleKey: "community",
+      items: [
+        { key: "github", href: GITHUB_REPO_URL, external: true },
+        // Discord flips to a real external link once an invite URL is
+        // configured; until then it stays an honest disabled state, not `href="#"`.
+        discordInvite
+          ? { key: "discord", href: discordInvite, external: true }
+          : { key: "discord", disabled: true },
+        // Twitter / X isn't live yet — honest disabled state.
+        { key: "twitter", disabled: true },
+      ],
+    },
+    {
+      titleKey: "legal",
+      items: [
+        { key: "privacy", href: "/privacy" },
+        { key: "terms", href: "/terms" },
+      ],
+    },
+  ];
+}
 
 /**
  * Site footer: 4 columns on desktop, single stacked column on mobile.
@@ -82,12 +90,13 @@ export function Footer() {
   const t = useTranslations("footer");
   const tLinks = useTranslations("footer.links");
   const year = new Date().getFullYear();
+  const columns = buildColumns(getDiscordInviteUrl());
 
   return (
     <footer className="bg-surface border-border mt-section-md border-t">
       <div className="page-container py-section-md">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-          {COLUMNS.map((col) => (
+          {columns.map((col) => (
             <div key={col.titleKey} className="space-y-3">
               <h3 className="text-fg-muted font-strong text-xs tracking-wide uppercase">
                 {t(col.titleKey)}
