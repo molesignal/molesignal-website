@@ -2,6 +2,7 @@ import { ArrowUpRight, MessageCircle, Star } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 
+import { GITHUB_REPO_URL, getDiscordInviteUrl } from "@/lib/community";
 import { cn } from "@/lib/utils";
 
 type CardProps = {
@@ -88,28 +89,39 @@ function Card({
 
 /**
  * Two-up community callout. Used on Home (bottom of "Live stats") and at
- * the footer of /design-partner. The Discord card explicitly says
- * "launching soon" until a real invite link is configured (Phase 5 open
- * question S6).
+ * the footer of /design-partner. The Discord card flips automatically: when
+ * `NEXT_PUBLIC_DISCORD_INVITE_URL` is set it becomes a real external link;
+ * otherwise it keeps the honest "launching soon" disabled state (T04 / open
+ * question S6) — never a placeholder `href="#"`.
  */
 export function CommunityCallout({ className }: { className?: string }) {
   const t = useTranslations("components.community");
+  const discordInvite = getDiscordInviteUrl();
   return (
     <div className={cn("grid gap-4 md:grid-cols-2", className)}>
       <Card
-        href="https://github.com/molesignal/molesignal"
+        href={GITHUB_REPO_URL}
         Icon={Star}
         title={t("github.title")}
         body={t("github.body")}
         analyticsEvent="github_star_click"
       />
-      <Card
-        disabled
-        disabledTitle={t("discord.soonTitle")}
-        Icon={MessageCircle}
-        title={t("discord.title")}
-        body={t("discord.body")}
-      />
+      {discordInvite ? (
+        <Card
+          href={discordInvite}
+          Icon={MessageCircle}
+          title={t("discord.titleLive")}
+          body={t("discord.bodyLive")}
+        />
+      ) : (
+        <Card
+          disabled
+          disabledTitle={t("discord.soonTitle")}
+          Icon={MessageCircle}
+          title={t("discord.title")}
+          body={t("discord.body")}
+        />
+      )}
     </div>
   );
 }

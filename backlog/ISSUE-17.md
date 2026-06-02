@@ -2,7 +2,7 @@
 id: ISSUE-17
 type: feature
 title: [T16] 贡献者墙真实数据验证
-status: verifying
+status: closed
 priority: P1
 assignee: backend-engineer
 created: 2026-06-01
@@ -146,3 +146,5 @@ updated: 2026-06-02
 QA 验证结果：**通过** — AC1–AC8 全部满足，证据见上（脚本 12/12 + github 22/22 + e2e 69 + 质量门全绿 + 实时空态双语核验）。
 
 VERDICT: PASS
+- 2026-06-02 08:42:15 set status=closed
+- 2026-06-02 08:42:15 引擎周期#18: QA PASS, 关闭

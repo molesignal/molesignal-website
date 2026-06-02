@@ -715,7 +715,9 @@
       },
       "discord": {
         "title": "Discord — launching soon",
+        "titleLive": "Join our Discord",
         "body": "A small space for design partners and contributors to chat. Drop your email at /design-partner and we'll send an invite.",
+        "bodyLive": "Chat with design partners and contributors. Click to join our community space.",
         "soonTitle": "Launching soon — drop your email at /design-partner for an invite"
       }
     },

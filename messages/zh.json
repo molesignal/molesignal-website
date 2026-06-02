@@ -713,7 +713,9 @@
       },
       "discord": {
         "title": "Discord — 即将上线",
+        "titleLive": "加入 Discord",
         "body": "给 design partner 和贡献者准备的小空间。在 /design-partner 留邮箱，我们会发邀请。",
+        "bodyLive": "和 design partner、贡献者一起聊聊。点击加入我们的社区空间。",
         "soonTitle": "即将上线 —— 在 /design-partner 留邮箱获取邀请"
       }
     },
