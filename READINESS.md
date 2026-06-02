@@ -1,4 +1,4 @@
-READINESS_SCORE: 28/31
+READINESS_SCORE: 29/31
 
 # READINESS · molesignal-website 上线就绪清单
 
@@ -46,7 +46,7 @@ READINESS_SCORE: 28/31
 ### 自动化守护（D8/D9 · T12/T13）
 - [x] **关键路径 E2E**：Playwright 已装，`pnpm test:e2e` 本地全绿，覆盖两表单端到端（mock API 2xx→成功卡片）、locale 切换保滚动、CodeBlock 复制、内链 2xx、限流 429 态（T12） ✅ ISSUE-13 closed · QA PASS 2026-06-02（light 道：开发→代码审查→独立 QA。新增 `tests/e2e/issue13-t12-critical-paths.spec.ts`（7 用例）+ `test:e2e` 脚本；真实 chromium 跑生产 `next start`，全量 `pnpm test:e2e` **66/66 PASS** 零退化（本工单 7 + 既有 59 回归）；两表单 2xx 持久成功卡 + 429 amber 保留态、locale EN→ZH 保滚动（1200px→切后 >600px）、CodeBlock 翻转 Copied、12 条内链 EN+ZH 全 2xx。systematic-debugging 根因修复：`locale-switcher.tsx` 缺 `scroll:false` 致切换滚顶，E2E 首跑捕获→修复→#52 用例守卫。`pnpm check`(tsc0/eslint0/a11y26/26/i18n511=511)+`build` exit 0）
 - [x] **CI 门禁**：`.github/workflows/ci.yml` 跑 `pnpm check`+`build`+`lint:links`+`lint:quickstart`+E2E，PR 失败阻断合并，缓存 pnpm store（T13）✅ ISSUE-14 closed · QA PASS 2026-06-02（light 道：开发→代码审查→独立 QA。单 job `quality-gate` 五道闸按序独立成 step（check→lint:quickstart→build→lint:links→test:e2e），任一失败即红；`cache: pnpm` 按 lockfile keyed、`concurrency` 取消旧跑、`permissions: contents:read` 最小权限、无不可信 `github.event.*` 入参。QA 本地按 ci.yml 同序复跑五道闸**全绿**（check 0/tsc·eslint·a11y26·i18n511、lint:quickstart 仓内5/5+跨仓诚实SKIP、build 含 `ƒ /opengraph-image`、lint:links 0/33、test:e2e 66 passed），证明门禁非空转可通过。AC② PR 红阻断由 `.github/branch-protection.md` 文档化 required check=`quality-gate`，需仓库 admin 在 GitHub 一次性勾选——属预期人工运维项，非代码缺陷不阻断。）
-- [ ] **M1 已实现项回归不退化**：#1 Hero、#2 CrossSignalDemo、#7 架构图、#8 sticky TOC、#10 CodeBlock 复制、#16 RSS、#18 OG 图、#19 sitemap/robots/hreflang、#20 主题切换防闪烁、#21 语言切换保滚动、#23 PreReleaseBanner、#25 a11y、#27 Pricing 在 UI 改版后经 QA 验证均端到端可用无回归（PRD §4.1 回归范围）
+- [x] **M1 已实现项回归不退化**：#1 Hero、#2 CrossSignalDemo、#7 架构图、#8 sticky TOC、#10 CodeBlock 复制、#16 RSS、#18 OG 图、#19 sitemap/robots/hreflang、#20 主题切换防闪烁、#21 语言切换保滚动、#23 PreReleaseBanner、#25 a11y、#27 Pricing 在 UI 改版后经 QA 验证均端到端可用无回归（PRD §4.1 回归范围）✅ ISSUE-26 closed · QA PASS 2026-06-02（light 道：开发→代码审查→独立 QA，已 merge --no-ff 回 main）。新增 `tests/e2e/issue26-m1-regression-guard.spec.ts` 19 用例逐项对源码写断言（非快照），真实生产 `next build`+`next start` 上跑：全量 `pnpm test:e2e` **101 passed**（82 基线零退化 + 本套 19 全绿）；AC2 双主题 teal/amber token computed style 精确比对（#88 light/#89 dark）；AC3 `a11y:contrast` 26/26 AA；AC5 `pnpm check`(tsc0/eslint0/i18n EN 518=ZH 518)+`build` 双 rc=0；AC6 `lint:links` 0/33 全 2xx。独立 curl 探针佐证：rss.xml→200 application/rss+xml、opengraph-image→200 image/png、robots.txt 含 Disallow /api/+Sitemap、sitemap.xml hreflang en/zh/x-default 三者俱全。13 项 M1 既有功能改版后端到端无退化，无阻断缺陷。
 
 ---
 

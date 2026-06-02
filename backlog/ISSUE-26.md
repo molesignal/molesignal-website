@@ -2,7 +2,7 @@
 id: ISSUE-26
 type: feature
 title: M1 已实现项 UI 改版后回归守卫(13 项端到端无退化)
-status: verifying
+status: closed
 priority: P0
 assignee: fullstack-engineer
 created: 2026-06-02
@@ -129,3 +129,5 @@ updated: 2026-06-02
 - 2026-06-02 12:29:17 set status=in_review
 - 2026-06-02 code-reviewer 审查完成：必改 0；19 用例逐条对源码 MATCH（守卫真实有效）；3 项可选 E2E 观察不阻塞；建议放行至 qa-automation 独立验证
 - 2026-06-02 12:34:18 set status=verifying
+- 2026-06-02 12:37:47 set status=closed
+- 2026-06-02 12:37:47 引擎周期#27: QA PASS, 关闭
