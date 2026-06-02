@@ -16,7 +16,10 @@ export const metadata: Metadata = {
   description:
     "Self-hosted, OpenTelemetry-native observability. Three signals share one storage layer and one query engine — without the Datadog bill.",
   icons: {
-    icon: "/favicon.svg",
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
   },
 };
 
