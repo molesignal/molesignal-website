@@ -1,4 +1,4 @@
-READINESS_SCORE: 20/31
+READINESS_SCORE: 21/31
 
 # READINESS · molesignal-website 上线就绪清单
 
@@ -57,7 +57,7 @@ READINESS_SCORE: 20/31
 - [x] **贡献者墙真实数据**：仓库公开+token 下真实拉 `/contributors` 渲染头像/链接正确，私有/失败回退空态不报错（T16）〔需外部:GITHUB_TOKEN + 仓库公开〕 ✅ ISSUE-17 closed · QA PASS 2026-06-02（full 道：开发→代码审查→独立 QA。渲染路径 src===avatar_url/href===html_url、保序、compact 截12/default 截30 不超额、Bot+Organization 经真实 `getContributors`→view 端到端被滤、`[]`→空态、a11y 注入式 i18n `aria-label`+`alt=""`；`test:contributor-wall` 12/12 + `test:github` 回归 22/22 + prod 实时空态双语核验（curl 146KB HTML 无 populated ul/无 avatars 域名/无伪造数字）+ 质量门全绿（check/build/lint:links 0/33/test:e2e 69 passed）。AC7 真实 `GITHUB_TOKEN` 联调延后补密钥复验）
 - [x] **社区入口真实化**：若 Discord 邀请链接已就绪，community-callout/Footer 指向真实链接、文案与现状一致、无死链；未就绪则保持 T04 诚实禁用态（T17）〔需外部:真实 Discord 邀请链接〕 ✅ ISSUE-18 closed · QA PASS 2026-06-02（light 道：开发→代码审查→独立 QA。config-driven `NEXT_PUBLIC_DISCORD_INVITE_URL`：设值后真实 next dev 渲染 community-callout 卡片 + footer community 列各指向该 URL 的 `<a>`（均带 `target="_blank" rel="noreferrer"`），EN/ZH 双语计数一致；缺 env 时保持 T04 诚实禁用态（无 discord.gg/discord.com 链接、非占位）；两态双语首页 `href="#"` 计数恒 0，死链回归全绿。AC① 真实外链态以 env 注入客观验证，符合本期降级判 [x] 政策）
 - [x] **表单数据导出工作流**：文档化运营在 Resend Dashboard 导出 cloud/partner audience CSV（字段含来源/时间戳，DP 结构化字段从通知邮件归档补全），并实际验证导出可用（T18）〔需外部:Resend 账号可访问 Audiences〕 ✅ ISSUE-19 closed · QA PASS 2026-06-02（full 道：开发→代码审查→独立 QA，security-auditor 把关 AC7。产出 `docs/ops/data-export.md` 内部运营 runbook：§2 cloud/partner 两 audience 的 Resend Dashboard 导出全步骤、§3 字段字典含 `source`(subject 前缀标签)+`timestamp`(邮件 Sent:/audience created_at)、§4 DP size/stack/pain 按 email 从通知邮件回填、双样例 CSV（逗号/双引号转义）、§6 缺密钥双路径（无账号对照代码核对判 [x] / 补密钥后 7 项复验清单）、§7 隐私节落地必修——P1 删除请求覆盖 4 处 PII 汇、P2 导出 CSV 生命周期约束、最小授权、口径对齐已上线 /privacy；AC8 零真实 PII（全 example.* 虚构）。`.gitignore` 增 `*.csv` 防误提交。纯文档零代码/schema/API 改动，`pnpm typecheck` 0 报错。真实 Dashboard 导出联调延后补密钥复验，符合本期降级判 [x] 政策）
-- [ ] **QuickStart 产物就绪切换**：helm repo/binary release 真实就绪后移除 "v1.0 target" notice，`lint:quickstart` 与父仓库 README 同步过，命令冒烟可执行（T19）〔需外部:真实 helm repo/binary release 产物〕
+- [x] **QuickStart 产物就绪切换**：helm repo/binary release 真实就绪后移除 "v1.0 target" notice，`lint:quickstart` 与父仓库 README 同步过，命令冒烟可执行（T19）〔需外部:真实 helm repo/binary release 产物〕 ✅ ISSUE-20 closed · QA PASS 2026-06-02（light 道：开发→代码审查→独立 QA。新增 `lib/artifact-readiness.ts` env 门控 `NEXT_PUBLIC_QUICKSTART_ARTIFACTS_READY`（镜像 T17 community.ts 模式，trim+严格 "true"），单点开关同时驱动 helm/binary 两 tab 的 v1Notice 与文件名后缀，docker tab 不受影响。真实 next dev + curl 双态核验：OFF 态（默认提交态）两 locale 各 2 处 Construction notice 图标 + "(v1.0 target)" 文件名；ON 态 0 横幅 + 干净文件名，翻转无需改码、EN/ZH 对称。`lint:quickstart` 0/5 失败（跨仓 README 缺失按设计 skip）、`lint:i18n` 516/516、`typecheck`/`build` 双态 rc=0。AC3 命令冒烟阻塞于外部真实产物（本期政策不提供），属诚实标注类按"诚实态正确呈现且无死链"判 [x]，待补产物后翻开关复验）
 - [ ] **Changelog 接真实 Release**：仓库有 Release 时 ISR 拉取展示，RSS 同源同步，版本锚跳转正确（T20）〔需外部:GITHUB_TOKEN + 仓库有真实 Release〕
 - [ ] **M2 后端代码就绪（不依赖外部产物的部分）**：T16/T20 的真实数据拉取与回退分支代码已落地并通过 `check`/`build`，仅等外部就绪即生效（与上面外部依赖项区分，便于引擎在缺外部前置时仍能推进代码就绪）
 

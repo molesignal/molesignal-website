@@ -250,6 +250,16 @@ molesignal 凭什么、用户为什么用/留下：
 - **密钥政策**：本期不提供 `RESEND_API_KEY`+两 audience id，无法真实 Dashboard 导出联调；按「文档就绪 + 字段映射经核对正确」判 `[x]`，真实导出联调延后补密钥复验（呼应 READINESS T18 与 ISSUE-8/9 的 AC8）。
 - 完整用户故事 US-1~3 与 AC1–AC8 见 `backlog/ISSUE-19.md`。
 
+### ISSUE-21 · Changelog 接真实 Release — T20 / P1-7（2026-06-02）
+- **承接 PRD**：§4.2 P1-7「Changelog 接真实 Release(#16)」（D3 文档与内容可信）。命中红线②（动数据源）→ **full 道**，EXTRA_ROLES: none。
+- **承接架构**：`06 §3.3` GitHub provider——`lib/github.ts:getReleases()`（ISR 1h `revalidate=3600`、滤 draft、保留 prerelease、失败返 `[]`）**本期不改签名**。
+- **与 T07（ISSUE-7）边界**：T07 已验**兜底/previewing 态**；本工单聚焦**真实 Release 数据路径**——有 Release 时 ISR 拉取展示、RSS 同源同序、版本锚跳转端到端正确，回退态不退化。
+- **现状（已核实）**：代码基本落地——page/RSS 同调 `getReleases(30)` 同源回退 `content/changelog.ts`；版本锚 `#vMAJOR-MINOR-PATCH` 在 entry `id`/nav `href`/RSS `guid+link` 三处同一推导；`parse-release` 页面与 RSS 复用。**本工单以客观验证 + 补缺口为主，非从零开发**。
+- **细化结论**：① 真实数据态以注入 release fixture/mock 验证（进 `source="github"`、`sourceLive` brand pill、entry 字段正确）；② RSS 同源同序逐条锚点与页面 entry `id` 对应一致、item 数相等；③ 锚点含 `-rc.x` 预发布 tag 仍一致可跳；④ **prerelease 须展示且带可识别预发布标记**（不隐藏不冒充正式版）；⑤ 回退态回归与 T07 一致；⑥ 补 `test:changelog`/E2E 留痕。
+- **明确不做**：不改 `getReleases` 签名/`REPO`/`revalidate`、不加分页「加载更多」、不接 Release body i18n 翻译、不改静态兜底内容与 RSS 结构、不做真实 token 联调（本期无密钥/无真实 Release，fixture/mock 验证即判 `[x]`）。
+- **密钥政策**：本期不提供 `GITHUB_TOKEN` 且仓库无真实 Release（T07 现场确认）；按「代码就绪 + 真实数据路径经 mock/脚本验证正确」判 `[x]`，补密钥 + 发版后翻真实复验（呼应 READINESS T20 外部前置、与 ISSUE-7 AC⑤ 同构）。
+- 完整用户故事 US-1~3 与 AC1–AC8 见 `backlog/ISSUE-21.md`。
+
 ---
 
 **产出路径**：`/Users/ukulele/claude-project/self-code/workspace/molesignal-website/03-产品PRD.md`

@@ -6,6 +6,7 @@ import { Pill } from "@/components/ui/pill";
 import { Section } from "@/components/ui/section";
 import { Link } from "@/i18n/navigation";
 import { CHANGELOG } from "@/content/changelog";
+import { versionAnchor } from "@/lib/changelog-anchor";
 import { getReleases } from "@/lib/github";
 import { releaseToChangelogMeta } from "@/lib/parse-release";
 
@@ -123,7 +124,7 @@ export default async function ChangelogPage({
                 {versionsSorted.map(({ meta }) => (
                   <li key={meta.version + meta.date}>
                     <a
-                      href={`#v${meta.version.replace(/\./g, "-")}`}
+                      href={`#${versionAnchor(meta.version)}`}
                       className="text-fg-muted hover:text-fg duration-fast transition-colors font-mono"
                     >
                       v{meta.version}
