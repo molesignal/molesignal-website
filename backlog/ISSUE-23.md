@@ -2,7 +2,7 @@
 id: ISSUE-23
 type: feature
 title: [T22] CompareTable动态化
-status: in_progress
+status: verifying
 priority: P2
 assignee: fullstack-engineer
 created: 2026-06-01
@@ -108,3 +108,15 @@ updated: 2026-06-02
   - `pnpm build` ✓。
   - `pnpm lint:links` ✓（**0/33**，对 `next start` 跑；空跑无服务器会假阳性 18/18，须起服务器）。
   - `pnpm test:e2e` ✓（**78 passed**，含新 2 例 + issue11-t10-visual CompareTable 既有断言，零退化）。
+- 2026-06-02 10:44:00 set status=in_review
+- 2026-06-02 代码审查（code-reviewer）：**REVIEW: PASS，必改 0 条**。复核 `main...feature/ISSUE-23` 全部改动（守卫脚本/E2E/数据头注释/package.json；组件 diff 为空已核实）。**实跑** `pnpm test:compare` 全断言✓ + `pnpm typecheck` rc=0；静态核查 AC1（组件无硬编码行 value）；核 E2E `table tbody tr` 选择器可靠性（grep 确认 Home/why 各仅一个 `<table>`，移动端 MobileCard 用 div+md:hidden，slim=4/full=8 计数无歧义）；CTA `href` 正则与组件 `/why#compare`+`data-analytics-event` 对齐。AC1–AC8 复核通过。**可选项 1 条（不阻塞）**：脚本 AC3⑥ 注释"smallest dollar figure"实为"首个"匹配，当前单金额行为等价、断言正确，仅多金额时才偏差，建议后续顺手改注释。结论写入 08-测试报告.md「代码审查 — ISSUE-23」节。**建议放行至独立 QA（qa-automation）**做 AC2 加行自证 + AC4 E2E + 全门禁实跑。
+- 2026-06-02 10:47:11 set status=verifying
+- 2026-06-02 QA 验证结果（qa-automation，独立验证，分支 `feature/ISSUE-23`，生产构建 `next start -p 3210`）：**通过**。证据——
+  - **AC3** `pnpm test:compare` exit 0，①–⑥ 全断言✓（cost 行 modeled $5900 ≥ floor $2000）；**负向自测**注入非法 verdict+空 value → 捕获 3 条失败、exit 1，还原后 git 干净 exit 0（守卫确有牙）。
+  - **AC4** `pnpm test:e2e` #65/#66✓：slim(Home)=4 行 + CTA `href` 匹配 `/why#compare`；full(/why)=8 行（=`COMPARE_ROWS.length`，无写死）。
+  - **AC2 活体自证**：临时注入第 9 行 `qaProbe`+两份 i18n 键 → `test:compare` 仍✓(9行) → 重建 → e2e 自适应：slim 仍=4、full=9（页面真随数据增长）；DOM 抽查 /why 现 qaProbe、Home 不渲染该行（Home 命中仅出现在 next-intl 消息载荷 JSON，非渲染单元格）；**`compare-table.tsx` sha 注入前后不变（58c5346…）→ 改数据不改组件**；还原后 git 干净。
+  - **AC1/AC6** 组件零改动达成（sha 不变 + 静态确认纯 `map(COMPARE_ROWS)`）；全量回归 **78 passed**（含 issue11-t10 CompareTable 视觉断言，零退化）。
+  - **AC5/AC7** `pnpm check` 绿（tsc/eslint/a11y **26/26 AA**/i18n **518=518**）、`pnpm build` OK、`lint:links` **0/33**（对真实服务器）、`test:e2e` 78、`test:compare` exit 0。
+  - **AC8** `lib/compare-data.ts` 头注释含"安全更新一行"4 步 + slim=前4行/调序改 Home 约定。
+  - 阻断缺陷 0；唯一可选项为 AC3⑥ 注释 "smallest"↔"首个" 措辞（等价、非 bug、不阻塞）。测毕服务已关、端口 3210 释放、无僵尸。报告详见 08-测试报告.md「自动化测试 — ISSUE-23」节。
+- 2026-06-02 **VERDICT: PASS**

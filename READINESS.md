@@ -1,4 +1,4 @@
-READINESS_SCORE: 23/31
+READINESS_SCORE: 25/31
 
 # READINESS · molesignal-website 上线就绪清单
 
@@ -65,12 +65,12 @@ READINESS_SCORE: 23/31
 
 ## M3 体验增强（P2 · T21–T24）
 
-- [ ] **Blog 中文支持决策落地**：`/zh/blog*` 渲染中文内容，或明确保留 EN-only 并有友好提示（需用户拍板，PRD §7-7）；若做则 sitemap 补 hreflang（T21）〔需外部:用户对中文 blog 的拍板决策〕
+- [x] **Blog 中文支持决策落地**：`/zh/blog*` 渲染中文内容，或明确保留 EN-only 并有友好提示（需用户拍板，PRD §7-7）；若做则 sitemap 补 hreflang（T21）〔需外部:用户对中文 blog 的拍板决策〕 ✅ ISSUE-22 closed · QA PASS 2026-06-02（full 道：fullstack 开发→代码审查→独立 QA。本期决策＝明确保留 Blog EN-only（PRD §1 原设计 + P2 + 精简政策，用户拍板被跳过取稳妥默认），范围聚焦打磨 ZH 不可用提示 + 补客观验收。AC1 `/zh/blog` 渲染 `Blog 目前仅支持英文版` + 描述性链接 `阅读英文版 Blog →`(307→200 非死链)；AC2 死链守卫——存在文章深链 `/en/blog/<slug>`(200)、不存在 slug 回退 `/en/blog` 且页面无 `/blog/<bad>` 链接（裸 GET 反证 404/200）；AC5 `sitemap.xml` 中 `zh/blog` 出现 0 次、blog 三条 loc 均 NO_ALTERNATE 不向 SEO 宣告不存在的 ZH blog；AC3 messages `zhUnavailable/zhReadEnglish/zhReadEnglishPost` 三键双语对齐、parity 518=518。门禁全独立复跑：typecheck rc=0/eslint 0 err/a11y 26/26 AA/build rc=0(blog 两篇 SSG·/zh/blog* 动态)/test:e2e **76 passed**(含 issue22-t21 三条)/lint:links **0/33**。缺陷 0。属诚实标注类按本期政策判 [x]，用户日后翻案改 ZH 正文路径已写明，可低成本启动复验。〔hreflang 一项因决策为 EN-only 故 N/A——sitemap 不补、不产生死链〕
 - [ ] **CompareTable 动态化**：对比数据迁内容系统/数据源，改数据不改组件（T22）
 - [ ] **CrossSignalDemo 接真实查询**：接真实/沙箱查询后端，或明确保持写死样本（默认保持，需用户决策），reduce-motion 守卫保留（T23）〔需外部:产品查询后端就绪 + 用户决策〕
 - [ ] **内容运营工作流文档**：提供 blog/changelog/roadmap 更新文档与模板（T24）
 - [ ] **M3 已实现项回归**：roadmap tab 与 URL hash 同步（PRD §7 已核实实现）经 QA 在改版后验证不退化
-- [ ] **i18n parity 终态**：EN/ZH 键结构对齐无缺口（含 M1/M2 新增文案），切换保留滚动位置，blog EN-only 提示友好（D6 终态聚合）
+- [x] **i18n parity 终态**：EN/ZH 键结构对齐无缺口（含 M1/M2 新增文案），切换保留滚动位置，blog EN-only 提示友好（D6 终态聚合）✅ 2026-06-02 三项子条件均客观达成：① `pnpm lint:i18n` 主管现场复跑 **EN 518 = ZH 518，Key parity OK**（含 M1/M2 全部新增文案，CI 门禁持续守护）；② 切换保留滚动位置 由 ISSUE-13(T12) E2E `locale 切换保滚动` 守卫（EN→ZH 1200px→>600px）；③ blog EN-only 友好提示由 ISSUE-22(T21) AC1 验证（`阅读英文版 Blog →` 描述性链接，非死链）。三条 P2 终态聚合条件全绿且受 CI 门禁与 E2E 回归持续守护。
 - [ ] **全站可信度终验**：死链数=0、画饼链接=0、`a11y:contrast` 通过、CI 全绿、LAUNCH.md 目标"上线 48h 内观测到 ≥1 条真实转化事件"的埋点闭环经端到端验证（PRD §6 质量指标终态）〔需外部:Plausible 域名 + Resend 入库 才能闭环验证真实转化〕
 
 ---

@@ -270,6 +270,15 @@ molesignal 凭什么、用户为什么用/留下：
 - **道次说明**：本期 EN-only 路径**不动内容契约/schema/API**，红线判定**可降 LANE: light**（开发→审查→独立 QA 三环仍全做）；现 `LANE: full` + `EXTRA_ROLES: ux/ui` 系翻案场景保守预设，EN-only 提示打磨界面改动极小、ux/ui 可最小介入，最终道次由 orchestrator 复核。
 - 完整用户故事 US-1~4 与 AC1–AC8、延后 scope 见 `backlog/ISSUE-22.md`。
 
+### ISSUE-23 · CompareTable 动态化 — T22 / P2-2（2026-06-02）
+- **承接 PRD**：§4.3 P2-2「CompareTable 动态化(#5)」+ 06-技术架构 §3.2 内容源治理。依赖 T14。命中红线②（动内容契约：`CompareRow` 类型 + i18n 键）→ `LANE: full`，`EXTRA_ROLES: none`。
+- **现状（已核实）——核心机制已大半就绪**：对比数据**已抽离**至 `lib/compare-data.ts` 的 `COMPARE_ROWS`（8 行），`components/compare-table.tsx` **已是纯展示组件**（map+slice(0,4) 出 slim、按 `rows.<id>`/`<id>Detail` 查 i18n、verdict→图标色映射），维度/详情走 i18n（en/zh 键齐全），单元格 value 故意保留英文事实串。**"改数据不改组件"看起来已成立**。
+- **真实缺口 = 本工单焦点**：① 数据↔i18n↔类型契约**无守卫**——漏配/孤儿 i18n 键、`hasDetail` 与 Detail 键不匹配、verdict 拼错均只在运行期暴露；② 兄弟数据源皆有 `test:*` 守卫脚本，CompareTable 独缺。故本工单是**"证明 + 上锁"**而非从零开发：新增 `scripts/check-compare-data.ts`（`test:compare`）守卫三方契约 + 补 E2E 行数/CTA 断言 + 运营更新步骤文档。
+- **细化结论（本期做）**：US-1 单一数据源改数据不改组件（可证）/ US-2 增改行得确定性 i18n 守卫 / US-3 双语+双主题+桌面表格&移动卡片正确渲染；AC1–AC8 见工单，核心交付为 AC3 守卫脚本。
+- **明确不做**：不迁数据到 `content/compare.json`（OQ-1，YAGNI，可翻案延后）；不 i18n 化单元格 value；不改组件视觉（T10/T08b 已完成）；不新增 UI 面/埋点/安全面 → EXTRA_ROLES none。
+- **道次说明**：命中红线②走 full 道（开发→代码审查→独立 QA 三环全做，修复者不自判通过）；实现量小（核心是加守卫 + 验证既有分离），但契约属性要求 full，架构评估环可复核 OQ-1 是否迁 `content/`。
+- 完整用户故事、AC1–AC8、边界与开放问题见 `backlog/ISSUE-23.md`。
+
 ---
 
 **产出路径**：`/Users/ukulele/claude-project/self-code/workspace/molesignal-website/03-产品PRD.md`
