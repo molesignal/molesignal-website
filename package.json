@@ -72,5 +72,11 @@
     "tsx": "^4.22.3",
     "typescript": "^5",
     "wcag-contrast": "^3.0.0"
+  },
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "sharp",
+      "unrs-resolver"
+    ]
   }
 }
