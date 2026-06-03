@@ -1,0 +1,9 @@
+# MoleSignal security policy — RFC 9116
+# https://www.rfc-editor.org/rfc/rfc9116
+
+Contact: mailto:security@molesignal.io
+Contact: https://github.com/molesignal/molesignal/security/advisories/new
+Expires: 2050-06-03T00:00:00.000Z
+Preferred-Languages: en, zh-Hans
+Canonical: https://molesignal.io/.well-known/security.txt
+Policy: https://github.com/molesignal/molesignal/blob/main/SECURITY.md
