@@ -29,10 +29,14 @@ import { test, expect, type Page } from "@playwright/test";
  * Runs against `next start` (production build) per playwright.config.ts.
  */
 
-// Canonical Teal/Amber token hex (05-UI terminal values) → rgb, per theme.
+// Canonical brand/accent token hex → rgb, per theme. Mirrors the product UI
+// palette (web/src/shell/tokens-palette-default.css): brand is Indigo,
+// --marketing-accent is repointed to Orange (replaced the prior Teal/Amber
+// marketing palette). `amber` field name retained for spec history; the
+// asserted element is `.text-marketing-accent`.
 const TOKEN = {
-  light: { brand: "rgb(15, 118, 110)", amber: "rgb(180, 83, 9)" }, // #0f766e / #b45309
-  dark: { brand: "rgb(45, 212, 191)", amber: "rgb(251, 191, 36)" }, // #2dd4bf / #fbbf24
+  light: { brand: "rgb(55, 66, 199)", amber: "rgb(194, 80, 24)" }, // #3742c7 / #c25018
+  dark: { brand: "rgb(79, 96, 224)", amber: "rgb(232, 130, 52)" }, // #4f60e0 / #e88234
 } as const;
 
 const DAY_MS = 24 * 60 * 60 * 1000;

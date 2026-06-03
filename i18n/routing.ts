@@ -16,6 +16,11 @@ export const routing = defineRouting({
   // EN at root (/), ZH prefixed (/zh/...). EN explicit prefix `/en/*` 301s
   // to root via the proxy.
   localePrefix: "as-needed",
+  // Always default to EN at `/`. Without this, next-intl reads the
+  // `Accept-Language` header and silently 307s zh-* browsers to `/zh/...`,
+  // which makes EN feel non-default. The explicit language switcher still
+  // works.
+  localeDetection: false,
 });
 
 export type Locale = (typeof routing.locales)[number];

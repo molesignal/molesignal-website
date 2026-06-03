@@ -24,60 +24,74 @@
 /* Layer 1 + Layer 2 + Layer 4 — LIGHT default                             */
 /* ────────────────────────────────────────────────────────────────────── */
 :root {
-  /* Layer 1: background ramp (warm neutral near-white — 05-UI §5) */
-  --bg-0:      #f9f9f8;
-  --bg-1:      #f4f3f1;
-  --bg-2:      #edecea;
-  --bg-3:      #e3e1de;
-  --bg-4:      #d5d2ce;
-  --bg-hover:  #eae8e5;
+  /* Layer 1: background ramp — cool indigo-tinted near-white (mirror web light) */
+  --bg-0: #fbfbfd;
+  --bg-1: #f5f7fb;
+  --bg-2: #eef0f5;
+  --bg-3: #e3e6ee;
+  --bg-4: #d3d8e4;
+  --bg-hover: #ebeef4;
 
-  /* Layer 1: borders (warm) */
-  --bd-0: #dddbd7;
-  --bd-1: #ccc9c4;
-  --bd-2: #b8b4ae;
+  /* Layer 1: borders (cool) */
+  --bd-0: #e0e4ed;
+  --bd-1: #cdd2df;
+  --bd-2: #b5bcce;
 
   /* Layer 1: text */
-  --tx-0: #151b28;
-  --tx-1: #3e4456;
-  --tx-2: #666e88;
-  --tx-3: #8f94a8;
-  --tx-4: #bcbfcc;
+  --tx-0: #131825;
+  --tx-1: #404763;
+  --tx-2: #686f8d;
+  --tx-3: #8c92ad;
+  --tx-4: #b5b9c9;
 
-  /* Layer 1: Brand — Teal (05-UI §5; AA-tuned teal-700 for body text). */
-  --brand:      #0f766e;   /* teal-700, 5.20:1 on bg-0 ✓ */
-  --brand-soft: #14b8a6;   /* teal-500 — soft/hover */
-  --brand-dim:  rgba(15, 118, 110, 0.12);
-  /* Legacy --indigo* names retained as aliases → Teal brand. The 32-file fleet
-   * of `*-indigo*` utility classes keeps working; class renames are T09/T10/T08b. */
-  --indigo:      var(--brand);
-  --indigo-soft: var(--brand-soft);
-  --indigo-dim:  var(--brand-dim);
+  /* Layer 1: Brand — Indigo (mirror web light). --brand* alias retained
+   * for marketing call sites; class renames not required. */
+  --indigo:      #3742c7;
+  --indigo-soft: #5a66d8;
+  --indigo-dim:  rgba(55, 66, 199, 0.12);
+  --brand:      var(--indigo);
+  --brand-soft: var(--indigo-soft);
+  --brand-dim:  var(--indigo-dim);
 
-  /* Layer 1: Accent — Amber (05-UI §5; AA-tuned amber-700) + Warn (NEW). */
-  --amber:      #b45309;   /* amber-700, 4.77:1 on bg-0 ✓ */
-  --amber-soft: #f59e0b;   /* amber-400 — soft/hover */
-  --amber-dim:  rgba(180, 83, 9, 0.12);
-  --amber-fg:   #ffffff;   /* #fff on amber-700 = 5.03:1 ✓ */
-  --warn:       #ca8a04;
-  --warn-soft:  #eab308;
-  --warn-dim:   rgba(202, 138, 4, 0.12);
-  /* Legacy --marketing-accent* names retained as aliases → Amber. */
-  --marketing-accent:      var(--amber);
-  --marketing-accent-soft: var(--amber-soft);
-  --marketing-accent-dim:  var(--amber-dim);
-  --marketing-accent-fg:   #ffffff;
-
-  /* Layer 1: Status (form / link / success) */
+  /* Layer 1: Status — mirror web light status palette */
   --red:        #d1252a;
   --red-soft:   #e54a4f;
   --red-dim:    rgba(209, 37, 42, 0.10);
+
   --green:      #157f3f;
   --green-soft: #2aa05a;
   --green-dim:  rgba(21, 127, 63, 0.10);
+
+  --yellow:     #9c6600;
+  --yellow-soft:#c08515;
+  --yellow-dim: rgba(156, 102, 0, 0.10);
+
   --blue:       #1f6cbe;
   --blue-soft:  #4189d2;
   --blue-dim:   rgba(31, 108, 190, 0.10);
+
+  --orange:     #c25018;
+  --orange-soft:#e0723c;
+  --orange-dim: rgba(194, 80, 24, 0.10);
+
+  --purple:     #8839b6;
+  --purple-soft:#a35dca;
+  --purple-dim: rgba(136, 57, 182, 0.10);
+
+  /* Legacy amber / warn / marketing-accent — repointed to web orange / yellow */
+  --amber:      var(--orange);
+  --amber-soft: var(--orange-soft);
+  --amber-dim:  var(--orange-dim);
+  --amber-fg:   #ffffff;
+
+  --warn:       var(--yellow);
+  --warn-soft:  var(--yellow-soft);
+  --warn-dim:   var(--yellow-dim);
+
+  --marketing-accent:      var(--orange);
+  --marketing-accent-soft: var(--orange-soft);
+  --marketing-accent-dim:  var(--orange-dim);
+  --marketing-accent-fg:   #ffffff;
 
   /* Layer 2: Semantic aliases */
   --bg:              var(--bg-0);
@@ -87,6 +101,7 @@
   --fg-muted:        var(--tx-2);
   --border:          var(--bd-0);
 
+  /* primary === accent === indigo (single brand expression, mirror web) */
   --primary:         var(--indigo);
   --primary-bg:      var(--indigo-dim);
   --primary-muted:   var(--indigo-soft);
@@ -103,29 +118,37 @@
   --green-bg:    var(--green-dim);
   --green-muted: var(--green-soft);
   --green-fg:    #ffffff;
+  --yellow-bg:   var(--yellow-dim);
+  --yellow-muted:var(--yellow-soft);
+  --yellow-fg:   #ffffff;
   --blue-bg:    var(--blue-dim);
   --blue-muted: var(--blue-soft);
   --blue-fg:    #ffffff;
+  --orange-bg:   var(--orange-dim);
+  --orange-muted:var(--orange-soft);
+  --orange-fg:   #ffffff;
+  --purple-bg:   var(--purple-dim);
+  --purple-muted:var(--purple-soft);
+  --purple-fg:   #ffffff;
 
   --overlay:      rgba(19, 24, 37, 0.50);
   --overlay-soft: rgba(19, 24, 37, 0.20);
 
-  /* Shadows (light values — minimal, border-led; 05-UI §5) */
-  --shadow-sm-token: 0 1px 4px rgba(0, 0, 0, 0.08);
-  --shadow-md-token: 0 4px 16px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
-  --shadow-lg-token: 0 12px 40px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.06);
-  --shadow-focus-token: 0 0 0 2px var(--bg-0), 0 0 0 4px var(--brand);
+  /* Shadows — cool-tone base (mirror web light shadow palette) */
+  --shadow-sm-token: 0 1px 4px rgba(19, 24, 37, 0.08);
+  --shadow-md-token: 0 4px 16px rgba(19, 24, 37, 0.12), 0 0 0 1px rgba(19, 24, 37, 0.04);
+  --shadow-lg-token: 0 12px 40px rgba(19, 24, 37, 0.16), 0 0 0 1px rgba(19, 24, 37, 0.06);
+  --shadow-focus-token: 0 0 0 2px var(--bg-0), 0 0 0 4px var(--indigo);
 
-  /* Layer 4: Marketing aliases (Hero glow removed; CTA → teal; 05-UI §5) */
+  /* Layer 4: Marketing aliases — CTA gradient now indigo; glows repointed */
   --marketing-code-bg:     var(--bg-1);
   --marketing-code-border: var(--bd-0);
   --marketing-hero-bg:     none;
-  --marketing-grid-line:   rgba(221, 219, 215, 0.6);
-  --marketing-gradient-cta: linear-gradient(90deg, #0f766e 0%, #14b8a6 100%);
-  /* Legacy glow token names retained → repointed to simplified teal/amber glow. */
-  --shadow-glow-indigo-token: 0 0 20px rgba(15, 118, 110, 0.30);
-  --shadow-glow-pink-token:   0 0 20px rgba(180, 83, 9, 0.30);
-  --shadow-hero-card-token:   0 0 0 1px var(--bd-0), 0 24px 48px rgba(0, 0, 0, 0.08);
+  --marketing-grid-line:   rgba(224, 228, 237, 0.6);
+  --marketing-gradient-cta: linear-gradient(90deg, #3742c7 0%, #5a66d8 100%);
+  --shadow-glow-indigo-token: 0 0 20px rgba(55, 66, 199, 0.30);
+  --shadow-glow-pink-token:   0 0 20px rgba(194, 80, 24, 0.30);
+  --shadow-hero-card-token:   0 0 0 1px var(--bd-0), 0 24px 48px rgba(19, 24, 37, 0.08);
 
   /* Static tokens (not theme-dependent) — radius tightened one step (05-UI §5) */
   --radius-xs-token:   2px;
@@ -160,55 +183,79 @@
 /* Dark theme — explicit override via [data-theme="dark"]                  */
 /* ────────────────────────────────────────────────────────────────────── */
 [data-theme="dark"] {
-  --bg-0:      #0e1117;
-  --bg-1:      #131923;
-  --bg-2:      #1a2030;
-  --bg-3:      #22293a;
-  --bg-4:      #2c3347;
-  --bg-hover:  #1a2030;
-  --bd-0: #21283a;
-  --bd-1: #2c364d;
-  --bd-2: #3a4566;
-  --tx-0: #eeede9;
-  --tx-1: #c8c5be;
-  --tx-2: #878d9f;
-  --tx-3: #596070;
-  --tx-4: #373d4f;
+  /* Layer 1: background ramp — cool indigo-tinted dark (mirror web dark) */
+  --bg-0: #0d101a;
+  --bg-1: #131725;
+  --bg-2: #1a1f30;
+  --bg-3: #232839;
+  --bg-4: #2c3247;
+  --bg-hover: #1d2335;
 
-  /* Brand — bright Teal on deep bg (05-UI §5) */
-  --brand:      #2dd4bf;
-  --brand-soft: #5eead4;
-  --brand-dim:  rgba(45, 212, 191, 0.16);
-  --indigo:      var(--brand);
-  --indigo-soft: var(--brand-soft);
-  --indigo-dim:  var(--brand-dim);
+  --bd-0: #20253a;
+  --bd-1: #2c324b;
+  --bd-2: #3a4263;
 
-  /* Accent — bright Amber + Warn (05-UI §5) */
-  --amber:      #fbbf24;
-  --amber-soft: #fde68a;
-  --amber-dim:  rgba(251, 191, 36, 0.18);
-  --warn:       #fde047;
-  --warn-soft:  #fef08a;
-  --warn-dim:   rgba(253, 224, 71, 0.18);
-  --marketing-accent:      var(--amber);
-  --marketing-accent-soft: var(--amber-soft);
-  --marketing-accent-dim:  var(--amber-dim);
+  --tx-0: #ecedf3;
+  --tx-1: #b9bdcb;
+  --tx-2: #888da0;
+  --tx-3: #5b6077;
+  --tx-4: #383d52;
 
-  /* 🔑 Bright teal/amber need DARK foreground (white = ~1.7:1 FAIL). 05-UI §5. */
-  --primary-fg:          #0e1117;   /* 11.6:1 on teal ✓ */
-  --accent-fg:           #0e1117;   /* accent == brand in dark → dark fg */
-  --amber-fg:            #0e1117;   /* canonical twin of --marketing-accent-fg; dark fg on bright amber */
-  --marketing-accent-fg: #0e1117;   /* 12.3:1 on amber ✓ */
+  /* Brand — Indigo on deep bg (mirror web dark). Dark enough that white fg works. */
+  --indigo:      #4f60e0;
+  --indigo-soft: #7682eb;
+  --indigo-dim:  rgba(79, 96, 224, 0.16);
+  --brand:      var(--indigo);
+  --brand-soft: var(--indigo-soft);
+  --brand-dim:  var(--indigo-dim);
 
   --red:        #f25b56;
   --red-soft:   #f78784;
   --red-dim:    rgba(242, 91, 86, 0.16);
+
   --green:      #3dc26e;
   --green-soft: #66d28e;
   --green-dim:  rgba(61, 194, 110, 0.14);
+
+  --yellow:     #e0a020;
+  --yellow-soft:#f2b53d;
+  --yellow-dim: rgba(224, 160, 32, 0.14);
+
   --blue:       #4d97e0;
   --blue-soft:  #74afe8;
   --blue-dim:   rgba(77, 151, 224, 0.14);
+
+  --orange:     #e88234;
+  --orange-soft:#f0a06b;
+  --orange-dim: rgba(232, 130, 52, 0.14);
+
+  --purple:     #a87edb;
+  --purple-soft:#c2a3e6;
+  --purple-dim: rgba(168, 126, 219, 0.14);
+
+  /* Legacy amber / warn / marketing-accent — repointed to web orange / yellow */
+  --amber:      var(--orange);
+  --amber-soft: var(--orange-soft);
+  --amber-dim:  var(--orange-dim);
+  --warn:       var(--yellow);
+  --warn-soft:  var(--yellow-soft);
+  --warn-dim:   var(--yellow-dim);
+  --marketing-accent:      var(--orange);
+  --marketing-accent-soft: var(--orange-soft);
+  --marketing-accent-dim:  var(--orange-dim);
+
+  /* Foreground colors — indigo brand stays white-fg (mirror web).
+   * Bright orange / yellow need dark fg. */
+  --primary-fg:          #ffffff;
+  --accent-fg:           #ffffff;
+  --red-fg:              #ffffff;
+  --green-fg:            #ffffff;
+  --yellow-fg:           #1a1300;
+  --blue-fg:             #ffffff;
+  --orange-fg:           #1a0d00;
+  --purple-fg:           #ffffff;
+  --amber-fg:            #1a0d00;
+  --marketing-accent-fg: #1a0d00;
 
   --overlay:      rgba(8, 10, 16, 0.72);
   --overlay-soft: rgba(8, 10, 16, 0.40);
@@ -216,75 +263,101 @@
   --shadow-sm-token: 0 1px 4px rgba(0, 0, 0, 0.45);
   --shadow-md-token: 0 4px 16px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(0, 0, 0, 0.30);
   --shadow-lg-token: 0 12px 40px rgba(0, 0, 0, 0.60), 0 0 0 1px rgba(0, 0, 0, 0.45);
-  --shadow-focus-token: 0 0 0 2px var(--bg-0), 0 0 0 4px var(--brand);
+  --shadow-focus-token: 0 0 0 2px var(--bg-0), 0 0 0 4px var(--indigo);
 
   --marketing-code-bg:     var(--bg-2);
   --marketing-code-border: var(--bd-1);
   --marketing-hero-bg:     none;
-  --marketing-grid-line:   rgba(33, 40, 58, 0.8);
-  --shadow-glow-indigo-token: 0 0 24px rgba(45, 212, 191, 0.40);
-  --shadow-glow-pink-token:   0 0 24px rgba(251, 191, 36, 0.40);
+  --marketing-grid-line:   rgba(32, 37, 58, 0.8);
+  --marketing-gradient-cta: linear-gradient(90deg, #4f60e0 0%, #7682eb 100%);
+  --shadow-glow-indigo-token: 0 0 24px rgba(79, 96, 224, 0.40);
+  --shadow-glow-pink-token:   0 0 24px rgba(232, 130, 52, 0.40);
   --shadow-hero-card-token:   0 0 0 1px var(--bd-1), 0 24px 64px rgba(0, 0, 0, 0.60);
 }
 
 /* System dark (unless user explicitly picked) */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]):not([data-theme="dark"]) {
-    /* Mirror of [data-theme="dark"] — kept in sync manually (05-UI §5). */
-    --bg-0:      #0e1117;
-    --bg-1:      #131923;
-    --bg-2:      #1a2030;
-    --bg-3:      #22293a;
-    --bg-4:      #2c3347;
-    --bg-hover:  #1a2030;
-    --bd-0: #21283a;
-    --bd-1: #2c364d;
-    --bd-2: #3a4566;
-    --tx-0: #eeede9;
-    --tx-1: #c8c5be;
-    --tx-2: #878d9f;
-    --tx-3: #596070;
-    --tx-4: #373d4f;
-    --brand:      #2dd4bf;
-    --brand-soft: #5eead4;
-    --brand-dim:  rgba(45, 212, 191, 0.16);
-    --indigo:      var(--brand);
-    --indigo-soft: var(--brand-soft);
-    --indigo-dim:  var(--brand-dim);
-    --amber:      #fbbf24;
-    --amber-soft: #fde68a;
-    --amber-dim:  rgba(251, 191, 36, 0.18);
-    --warn:       #fde047;
-    --warn-soft:  #fef08a;
-    --warn-dim:   rgba(253, 224, 71, 0.18);
-    --marketing-accent:      var(--amber);
-    --marketing-accent-soft: var(--amber-soft);
-    --marketing-accent-dim:  var(--amber-dim);
-    --primary-fg:          #0e1117;
-    --accent-fg:           #0e1117;
-    --amber-fg:            #0e1117;
-    --marketing-accent-fg: #0e1117;
+    /* Mirror of [data-theme="dark"] above — kept in sync manually */
+    --bg-0: #0d101a;
+    --bg-1: #131725;
+    --bg-2: #1a1f30;
+    --bg-3: #232839;
+    --bg-4: #2c3247;
+    --bg-hover: #1d2335;
+
+    --bd-0: #20253a;
+    --bd-1: #2c324b;
+    --bd-2: #3a4263;
+
+    --tx-0: #ecedf3;
+    --tx-1: #b9bdcb;
+    --tx-2: #888da0;
+    --tx-3: #5b6077;
+    --tx-4: #383d52;
+
+    --indigo:      #4f60e0;
+    --indigo-soft: #7682eb;
+    --indigo-dim:  rgba(79, 96, 224, 0.16);
+    --brand:      var(--indigo);
+    --brand-soft: var(--indigo-soft);
+    --brand-dim:  var(--indigo-dim);
+
     --red:        #f25b56;
     --red-soft:   #f78784;
     --red-dim:    rgba(242, 91, 86, 0.16);
     --green:      #3dc26e;
     --green-soft: #66d28e;
     --green-dim:  rgba(61, 194, 110, 0.14);
+    --yellow:     #e0a020;
+    --yellow-soft:#f2b53d;
+    --yellow-dim: rgba(224, 160, 32, 0.14);
     --blue:       #4d97e0;
     --blue-soft:  #74afe8;
     --blue-dim:   rgba(77, 151, 224, 0.14);
+    --orange:     #e88234;
+    --orange-soft:#f0a06b;
+    --orange-dim: rgba(232, 130, 52, 0.14);
+    --purple:     #a87edb;
+    --purple-soft:#c2a3e6;
+    --purple-dim: rgba(168, 126, 219, 0.14);
+
+    --amber:      var(--orange);
+    --amber-soft: var(--orange-soft);
+    --amber-dim:  var(--orange-dim);
+    --warn:       var(--yellow);
+    --warn-soft:  var(--yellow-soft);
+    --warn-dim:   var(--yellow-dim);
+    --marketing-accent:      var(--orange);
+    --marketing-accent-soft: var(--orange-soft);
+    --marketing-accent-dim:  var(--orange-dim);
+
+    --primary-fg:          #ffffff;
+    --accent-fg:           #ffffff;
+    --red-fg:              #ffffff;
+    --green-fg:            #ffffff;
+    --yellow-fg:           #1a1300;
+    --blue-fg:             #ffffff;
+    --orange-fg:           #1a0d00;
+    --purple-fg:           #ffffff;
+    --amber-fg:            #1a0d00;
+    --marketing-accent-fg: #1a0d00;
+
     --overlay:      rgba(8, 10, 16, 0.72);
     --overlay-soft: rgba(8, 10, 16, 0.40);
+
     --shadow-sm-token: 0 1px 4px rgba(0, 0, 0, 0.45);
     --shadow-md-token: 0 4px 16px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(0, 0, 0, 0.30);
     --shadow-lg-token: 0 12px 40px rgba(0, 0, 0, 0.60), 0 0 0 1px rgba(0, 0, 0, 0.45);
-    --shadow-focus-token: 0 0 0 2px var(--bg-0), 0 0 0 4px var(--brand);
+    --shadow-focus-token: 0 0 0 2px var(--bg-0), 0 0 0 4px var(--indigo);
+
     --marketing-code-bg:     var(--bg-2);
     --marketing-code-border: var(--bd-1);
     --marketing-hero-bg:     none;
-    --marketing-grid-line:   rgba(33, 40, 58, 0.8);
-    --shadow-glow-indigo-token: 0 0 24px rgba(45, 212, 191, 0.40);
-    --shadow-glow-pink-token:   0 0 24px rgba(251, 191, 36, 0.40);
+    --marketing-grid-line:   rgba(32, 37, 58, 0.8);
+    --marketing-gradient-cta: linear-gradient(90deg, #4f60e0 0%, #7682eb 100%);
+    --shadow-glow-indigo-token: 0 0 24px rgba(79, 96, 224, 0.40);
+    --shadow-glow-pink-token:   0 0 24px rgba(232, 130, 52, 0.40);
     --shadow-hero-card-token:   0 0 0 1px var(--bd-1), 0 24px 64px rgba(0, 0, 0, 0.60);
   }
 }
