@@ -11,9 +11,7 @@ import { CodeBlock } from "@/components/ui/code-block";
 import { Pill } from "@/components/ui/pill";
 import { Section } from "@/components/ui/section";
 import { Link } from "@/i18n/navigation";
-
-const DOCKER_LINE =
-  "docker compose -f deploy/docker/docker-compose.yaml --profile standalone up";
+import { DOCKER_STANDALONE_CMD } from "@/lib/commands";
 
 export async function generateMetadata({
   params,
@@ -52,22 +50,34 @@ export default async function Home({
           <p className="text-fg-muted max-w-2xl font-mono text-base">
             <span className="text-primary">$</span> {tHero("command")}
           </p>
+          {/* Two parallel paths: self-host now (the real free action) + Cloud
+              waitlist (the future SaaS). GitHub chip is the trust signal, not
+              the subject. */}
           <div className="flex flex-wrap items-center gap-3">
             <Link
               href="/start"
               data-analytics-event="cta_click"
               data-analytics-source-page
-              data-analytics-props='{"label":"Try it","destination":"/start"}'
+              data-analytics-props='{"label":"Self-host free","destination":"/start"}'
               className="bg-primary text-primary-foreground hover:bg-primary/90 duration-fast inline-flex h-11 items-center gap-2 rounded-md px-5 text-base font-strong transition-colors"
             >
-              {tCommon("tryIt")} <ArrowRight size={16} aria-hidden />
+              {tHero("ctaPrimary")} <ArrowRight size={16} aria-hidden />
+            </Link>
+            <Link
+              href="/cloud"
+              data-analytics-event="cta_click"
+              data-analytics-source-page
+              data-analytics-props='{"label":"Cloud waitlist","destination":"/cloud"}'
+              className="border-border text-fg hover:bg-bg-hover duration-fast inline-flex h-11 items-center gap-2 rounded-md border px-5 text-base font-strong transition-colors"
+            >
+              {tHero("ctaSecondary")}
             </Link>
             <GitHubStatsChip size="chip" className="h-11 px-4 text-sm" />
           </div>
           {/* Real command preview — signals "this is a real tool, not a pitch" */}
           <div className="max-w-2xl pt-1">
             <CodeBlock
-              code={DOCKER_LINE}
+              code={DOCKER_STANDALONE_CMD}
               language="bash"
               filename={t("startTerminalLabel")}
             />
@@ -135,7 +145,7 @@ export default async function Home({
         </div>
         <div className="space-y-4">
           <CodeBlock
-            code={DOCKER_LINE}
+            code={DOCKER_STANDALONE_CMD}
             language="bash"
             filename={t("startTerminalLabel")}
           />

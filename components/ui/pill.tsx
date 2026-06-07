@@ -39,7 +39,6 @@ export type PillProps = HTMLAttributes<HTMLSpanElement> &
 /**
  * Compact uppercase tag. Used for:
  *   - `pre-1.0` callout label
- *   - changelog `feat` / `fix` / `breaking`
  *   - roadmap `now` / `next` / `later` / `done`
  *
  * Different from shadcn's Badge: Pill is denser, all-caps, and uses our

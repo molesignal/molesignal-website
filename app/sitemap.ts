@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 
 import { BLOG_POSTS } from "@/content/blog";
-import { CHANGELOG } from "@/content/changelog";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://molesignal.io";
 
@@ -11,10 +10,12 @@ const STATIC_PATHS = [
   { path: "/architecture", priority: 0.9, changeFrequency: "monthly" as const },
   { path: "/start", priority: 0.9, changeFrequency: "monthly" as const },
   { path: "/pricing", priority: 0.9, changeFrequency: "monthly" as const },
+  { path: "/enterprise", priority: 0.8, changeFrequency: "monthly" as const },
+  { path: "/security", priority: 0.6, changeFrequency: "monthly" as const },
+  { path: "/stewardship", priority: 0.6, changeFrequency: "monthly" as const },
   { path: "/design-partner", priority: 0.8, changeFrequency: "monthly" as const },
   { path: "/cloud", priority: 0.6, changeFrequency: "monthly" as const },
   { path: "/roadmap", priority: 0.7, changeFrequency: "weekly" as const },
-  { path: "/changelog", priority: 0.7, changeFrequency: "weekly" as const },
   { path: "/privacy", priority: 0.2, changeFrequency: "yearly" as const },
   { path: "/terms", priority: 0.2, changeFrequency: "yearly" as const },
 ];
@@ -75,16 +76,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(post.date),
       changeFrequency: "yearly",
       priority: 0.6,
-    });
-  }
-
-  // Changelog version permalinks (anchors on the same page)
-  for (const entry of CHANGELOG) {
-    entries.push({
-      url: `${SITE}/changelog#v${entry.version.replace(/\./g, "-")}`,
-      lastModified: new Date(entry.date),
-      changeFrequency: "yearly",
-      priority: 0.4,
     });
   }
 

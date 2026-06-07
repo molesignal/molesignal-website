@@ -629,7 +629,15 @@ textarea::placeholder {
 *:focus {
   outline: none;
 }
-*:focus-visible {
+/* Dropdown menu items AND their triggers manage their own open/highlight
+   feedback (filled bg / darkened text / faint bg-hover), so they opt out of the
+   global ring — otherwise this unlayered rule would override their outline-none
+   (unlayered beats Tailwind's @layer utilities). Mouse-clicking a trigger must
+   not leave a ring; the open-state styling is the feedback. Other focusable
+   elements (links, CTA, the mobile menu button) keep the keyboard focus ring. */
+*:focus-visible:not([data-slot="dropdown-menu-item"]):not(
+    [data-slot="dropdown-menu-trigger"]
+  ) {
   outline: 2px solid var(--indigo);
   outline-offset: 2px;
   border-radius: 2px;
@@ -639,6 +647,19 @@ textarea::placeholder {
 ::selection {
   background: var(--marketing-accent-dim);
   color: var(--fg);
+}
+
+/* Dark terminal blocks override the global selection — the marketing-dim
+   background + page `--fg` text washes out to an unreadable dark-on-dark on the
+   terminal surface. Scope a bright indigo selection to the terminal and its
+   descendants instead. */
+.terminal ::selection {
+  background: rgba(96, 125, 255, 0.4);
+  color: #fff;
+}
+.terminal::selection {
+  background: rgba(96, 125, 255, 0.4);
+  color: #fff;
 }
 
 /* Scrollbar */

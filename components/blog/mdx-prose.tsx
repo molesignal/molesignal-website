@@ -91,7 +91,7 @@ export const mdxProseComponents: MDXComponents = {
     <h4 className="text-fg mt-6 mb-2 text-base font-strong first:mt-0" {...props} />
   ),
   p: (props) => (
-    <p className="text-fg my-4 text-base leading-relaxed" {...props} />
+    <p className="text-fg my-5 text-base leading-[1.7]" {...props} />
   ),
   ul: (props) => (
     <ul

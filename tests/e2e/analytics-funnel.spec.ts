@@ -283,22 +283,3 @@ test("github_star_click fires with {source_page}", async ({ page }) => {
   expect(evs.length).toBeGreaterThanOrEqual(1);
   expect(evs[0].props).toMatchObject({ source_page: "/design-partner" });
 });
-
-// ---------------------------------------------------------------------------
-// 11. rss_subscribe — no props (abort the rss.xml navigation; capture fired first)
-// ---------------------------------------------------------------------------
-test("rss_subscribe fires (no props)", async ({ page }) => {
-  await page.goto("/changelog");
-  await clearEvents(page);
-  const rss = page.locator('[data-analytics-event="rss_subscribe"]').first();
-  // Cancel only the default navigation (capture-phase analytics listener still
-  // runs first), so we can read sessionStorage on the same document.
-  await rss.evaluate((el) =>
-    el.addEventListener("click", (e) => e.preventDefault()),
-  );
-  await rss.click();
-  await page.waitForTimeout(300);
-  const evs = only(await events(page), "rss_subscribe");
-  expect(evs.length).toBeGreaterThanOrEqual(1);
-  expect(evs[0].props).toBeNull();
-});

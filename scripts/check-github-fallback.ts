@@ -3,8 +3,7 @@
  *   - getRepoStats() returns the honest fallback (fallback:true, stars:0,
  *     lastCommitISO:null) on network error AND on a non-ok response
  *     (e.g. 403 rate limit / 404 private-or-missing repo) — never a fake number;
- *   - getReleases() / getContributors() degrade to [] on the same failures,
- *     so the changelog renders the "previewing" static fallback and the
+ *   - getContributors() degrades to [] on the same failures, so the
  *     contributor wall renders the "Be the first contributor" empty state;
  *   - when the repo is public + the API responds 200 (the GITHUB_TOKEN /
  *     public-repo path), the SAME code parses real data with fallback:false —
@@ -25,7 +24,6 @@
 import {
   formatStars,
   getContributors,
-  getReleases,
   getRepoStats,
   timeAgo,
 } from "../lib/github";
@@ -75,10 +73,6 @@ async function run(): Promise<void> {
   assert(stats.stars === 0, "getRepoStats().stars === 0 (no fake count)");
   assert(stats.lastCommitISO === null, "getRepoStats().lastCommitISO === null");
   assert(
-    (await getReleases()).length === 0,
-    "getReleases() === [] on throw (→ changelog 'previewing' fallback)",
-  );
-  assert(
     (await getContributors()).length === 0,
     "getContributors() === [] on throw (→ 'Be the first contributor' empty state)",
   );
@@ -90,10 +84,6 @@ async function run(): Promise<void> {
   assert(stats.fallback === true, "getRepoStats().fallback === true on !ok");
   assert(stats.stars === 0, "getRepoStats().stars === 0 on !ok");
   assert(
-    (await getReleases()).length === 0,
-    "getReleases() === [] on !ok",
-  );
-  assert(
     (await getContributors()).length === 0,
     "getContributors() === [] on !ok",
   );
@@ -104,30 +94,6 @@ async function run(): Promise<void> {
     if (url.includes("/commits")) {
       return jsonResponse(true, [
         { commit: { author: { date: "2026-05-30T12:00:00Z" } } },
-      ]);
-    }
-    if (url.includes("/releases")) {
-      return jsonResponse(true, [
-        {
-          tag_name: "v0.8.0",
-          name: "v0.8.0 — Teal brand",
-          published_at: "2026-05-12T00:00:00Z",
-          created_at: "2026-05-12T00:00:00Z",
-          body: "- feat: cross-signal correlation\n- fix(core): tenant leak",
-          html_url: "https://github.com/molesignal/molesignal/releases/tag/v0.8.0",
-          draft: false,
-          prerelease: false,
-        },
-        {
-          tag_name: "v0.9.0-rc.1",
-          name: null,
-          published_at: null,
-          created_at: "2026-05-20T00:00:00Z",
-          body: "- chore: rc",
-          html_url: "https://github.com/molesignal/molesignal/releases/tag/v0.9.0-rc.1",
-          draft: true, // drafts must be dropped
-          prerelease: true,
-        },
       ]);
     }
     if (url.includes("/contributors")) {
@@ -158,14 +124,6 @@ async function run(): Promise<void> {
   assert(
     stats.lastCommitISO === "2026-05-30T12:00:00Z",
     "getRepoStats() parses last commit ISO",
-  );
-
-  const releases = await getReleases();
-  assert(releases.length === 1, "getReleases() drops drafts (1 of 2 kept)");
-  assert(releases[0]?.version === "0.8.0", "release version strips leading v");
-  assert(
-    releases[0]?.tag === "v0.8.0",
-    "release tag preserves leading v",
   );
 
   const contributors = await getContributors();

@@ -243,19 +243,45 @@ function LogsView() {
 // Metric sparkline — DB pool saturation with the incident annotated
 // ─────────────────────────────────────────────────────────────────────────
 function MetricView({ incidentLabel }: { incidentLabel: string }) {
-  const points = [22, 24, 28, 35, 47, 62, 84, 98, 96, 71, 48, 34, 28];
-  const w = 380;
-  const h = 90;
-  const max = 100;
-  const path = points
-    .map(
-      (p, i) =>
-        `${i === 0 ? "M" : "L"} ${
-          (i * w) / (points.length - 1)
-        },${h - (p / max) * h}`,
-    )
+  // Per-minute saturation samples, 12:00–12:12. Hand-tuned (NOT Math.random,
+  // which would break SSR hydration) to read like a real noisy metric: a jagged
+  // climb that crosses the 80% threshold and tops out at the 12:04 incident,
+  // then a noisy decay.
+  const series = [
+    { t: "12:00", v: 18 },
+    { t: "12:01", v: 26 },
+    { t: "12:02", v: 22 },
+    { t: "12:03", v: 41 },
+    { t: "12:04", v: 96 },
+    { t: "12:05", v: 83 },
+    { t: "12:06", v: 71 },
+    { t: "12:07", v: 77 },
+    { t: "12:08", v: 62 },
+    { t: "12:09", v: 54 },
+    { t: "12:10", v: 58 },
+    { t: "12:11", v: 43 },
+    { t: "12:12", v: 38 },
+  ];
+  const THRESHOLD = 80;
+  const incidentIdx = 4; // 12:04
+  const n = series.length;
+  // Fixed plot height in px so the Y-axis labels and grid lines line up.
+  const PLOT_H = 150;
+  const TOP_PAD = 20; // px band above the plot for the incident annotation
+  // Graphics live in a 120×100 viewBox (x = minute·10, y = 100 − sat%) and are
+  // stretched to fill the plot box (preserveAspectRatio="none"); every stroke
+  // uses non-scaling-stroke and all text is a fixed-px overlay, so nothing
+  // scales with the card width. value→% is identity (viewBox y is 0–100).
+  const xVB = (i: number) => (i * 120) / (n - 1);
+  const yVB = (v: number) => 100 - v;
+  const linePath = series
+    .map((s, i) => `${i === 0 ? "M" : "L"} ${xVB(i).toFixed(1)},${yVB(s.v).toFixed(1)}`)
     .join(" ");
-  const incidentX = (7 * w) / (points.length - 1);
+  const areaPath = `${linePath} L 120,100 L 0,100 Z`;
+  const yTicks = [100, 75, 50, 25, 0];
+  const xTicks = series.filter((_, i) => i % 2 === 0);
+  const incidentLeftPct = (incidentIdx / (n - 1)) * 100;
+  const incidentTopPct = yVB(series[incidentIdx].v);
 
   return (
     <div className="space-y-2">
@@ -267,34 +293,113 @@ function MetricView({ incidentLabel }: { incidentLabel: string }) {
           {TRACE_ID}
         </code>
       </div>
-      <svg
-        viewBox={`0 0 ${w} ${h + 14}`}
-        className="w-full"
-        aria-label="DB pool saturation timeseries"
-      >
-        <line
-          x1={0}
-          x2={w}
-          y1={h * 0.2}
-          y2={h * 0.2}
-          stroke="var(--bd-1)"
-          strokeDasharray="4 4"
-          strokeWidth="0.8"
-        />
-        <path d={path} stroke="var(--indigo)" strokeWidth="2" fill="none" />
-        <circle cx={incidentX} cy={h - (98 / max) * h} r="4" fill="var(--marketing-accent)" />
-        <text
-          x={incidentX + 8}
-          y={h - (98 / max) * h + 4}
-          fontSize="10"
-          fill="var(--marketing-accent)"
-          fontWeight="700"
-        >
-          {incidentLabel}
-        </text>
-        <text x={0} y={h + 12} fontSize="10" fill="var(--fg-muted)">12:00</text>
-        <text x={w - 30} y={h + 12} fontSize="10" fill="var(--fg-muted)">12:12</text>
-      </svg>
+      {/* Grafana-style chart: Y ticks in the left gutter, a full-bleed plot box
+          (grid + area + threshold + curve as SVG), X ticks underneath. Every
+          stroke uses non-scaling-stroke and all text + the marker dot are
+          fixed-px overlays, so nothing scales with the card width. */}
+      <div className="relative w-full pl-9" style={{ paddingTop: `${TOP_PAD}px` }}>
+        {/* Y-axis tick labels */}
+        {yTicks.map((v) => (
+          <span
+            key={v}
+            className="text-fg-muted absolute left-0 -translate-y-1/2 text-[10px] tabular-nums"
+            style={{ top: `${TOP_PAD + ((100 - v) / 100) * PLOT_H}px` }}
+          >
+            {v}%
+          </span>
+        ))}
+
+        {/* Plot box */}
+        <div className="relative w-full" style={{ height: `${PLOT_H}px` }}>
+          <svg
+            className="absolute inset-0 block h-full w-full overflow-visible"
+            viewBox="0 0 120 100"
+            preserveAspectRatio="none"
+            aria-label="DB pool saturation timeseries"
+          >
+            <defs>
+              <linearGradient id="msig-area-fill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="var(--indigo)" stopOpacity="0.15" />
+                <stop offset="100%" stopColor="var(--indigo)" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            {yTicks.map((v) => (
+              <line
+                key={v}
+                x1="0"
+                x2="120"
+                y1={yVB(v)}
+                y2={yVB(v)}
+                stroke="var(--bd-1)"
+                strokeWidth="1"
+                opacity="0.45"
+                vectorEffect="non-scaling-stroke"
+              />
+            ))}
+            <path d={areaPath} fill="url(#msig-area-fill)" />
+            <line
+              x1="0"
+              x2="120"
+              y1={yVB(THRESHOLD)}
+              y2={yVB(THRESHOLD)}
+              stroke="var(--red)"
+              strokeWidth="1"
+              strokeDasharray="4 3"
+              opacity="0.6"
+              vectorEffect="non-scaling-stroke"
+            />
+            <path
+              d={linePath}
+              fill="none"
+              stroke="var(--indigo)"
+              strokeWidth="2"
+              strokeLinejoin="round"
+              strokeLinecap="round"
+              vectorEffect="non-scaling-stroke"
+            />
+          </svg>
+
+          {/* threshold label at the right end of the threshold line */}
+          <span
+            className="text-red/80 bg-bg-2 absolute right-1 -translate-y-1/2 rounded px-1 text-[10px] font-strong"
+            style={{ top: `${((100 - THRESHOLD) / 100) * PLOT_H}px` }}
+          >
+            threshold {THRESHOLD}%
+          </span>
+
+          {/* incident marker dot — exactly on the 12:04 data point */}
+          <span
+            aria-hidden
+            className="bg-marketing-accent ring-bg-2 absolute h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full ring-2"
+            style={{ left: `${incidentLeftPct}%`, top: `${incidentTopPct}%` }}
+          />
+          {/* incident annotation, above-right of the dot */}
+          <span
+            className="text-marketing-accent font-strong absolute -translate-y-full whitespace-nowrap text-[13px]"
+            style={{
+              left: `${incidentLeftPct}%`,
+              top: `${incidentTopPct}%`,
+              marginLeft: "0.5rem",
+              marginTop: "-0.3rem",
+            }}
+          >
+            {incidentLabel}
+          </span>
+        </div>
+
+        {/* X-axis tick labels */}
+        <div className="relative mt-1.5 h-3 w-full">
+          {xTicks.map((s, i) => (
+            <span
+              key={s.t}
+              className="text-fg-muted absolute -translate-x-1/2 text-[10px] tabular-nums"
+              style={{ left: `${(i / (xTicks.length - 1)) * 100}%` }}
+            >
+              {s.t}
+            </span>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

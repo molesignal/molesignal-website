@@ -93,7 +93,7 @@ export default async function BlogPostPage({
               </Pill>
             ))}
           </div>
-          <h1 className="text-display-xl md:text-display-2xl font-display-strong tracking-tighter">
+          <h1 className="text-display-lg md:text-display-xl font-display-strong tracking-tighter text-balance">
             {post.title}
           </h1>
           <div className="text-fg-muted flex items-center gap-3 text-sm">
@@ -110,11 +110,11 @@ export default async function BlogPostPage({
         </div>
       </Section>
 
+      {/* Header + body share one centered max-w-3xl column so their left edges
+          align — no width mismatch between the title block and the prose. */}
       <Section padding="md">
-        <article className="prose-container">
-          <div className="text-fg text-base leading-relaxed">
-            <MdxBody source={post.body} />
-          </div>
+        <article className="mx-auto max-w-3xl">
+          <MdxBody source={post.body} />
         </article>
       </Section>
 

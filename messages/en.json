@@ -33,8 +33,8 @@
     "resources": "Resources",
     "roadmap": "Roadmap",
     "roadmapSub": "What's coming",
-    "changelog": "Changelog",
-    "changelogSub": "Release notes",
+    "docs": "Docs",
+    "docsSub": "Guides & reference",
     "blog": "Blog",
     "blogSub": "Engineering notes",
     "download": "Download",
@@ -44,7 +44,15 @@
     "closeMenu": "Close menu",
     "skipToContent": "Skip to content",
     "themeLabel": "Theme",
-    "languageLabel": "Language"
+    "languageLabel": "Language",
+    "product": "Product",
+    "community": "Community",
+    "enterprise": "Enterprise",
+    "github": "GitHub",
+    "githubSub": "Star & contribute",
+    "whySub": "Why it exists",
+    "architectureSub": "How it works",
+    "quickStartSub": "Run it in 5 min"
   },
 
   "banner": {
@@ -69,6 +77,7 @@
     "product": "Product",
     "resources": "Resources",
     "community": "Community",
+    "enterprise": "Enterprise",
     "legal": "Legal",
     "privacy": "Privacy",
     "terms": "Terms",
@@ -80,13 +89,16 @@
       "why": "Why molesignal",
       "architecture": "Architecture",
       "roadmap": "Roadmap",
-      "changelog": "Changelog",
+      "docs": "Docs",
       "pricing": "Pricing",
       "cloud": "Cloud",
       "quickStart": "Quick Start",
       "blog": "Blog",
       "download": "Download",
       "designPartner": "Design Partner",
+      "enterprise": "Enterprise",
+      "security": "Security",
+      "stewardship": "Stewardship",
       "github": "GitHub",
       "discord": "Discord",
       "twitter": "Twitter / X",
@@ -100,7 +112,9 @@
     "titleHighlight": "Without the Datadog bill.",
     "subtitle": "Logs, metrics, traces — one storage, one engine, self-hosted. OpenTelemetry-native.",
     "command": "self-hosted · OpenTelemetry-native · logs + metrics + traces",
-    "preReleasePill": "pre-1.0 · building in the open"
+    "preReleasePill": "pre-1.0 · building in the open",
+    "ctaPrimary": "Self-host free",
+    "ctaSecondary": "Cloud — join waitlist"
   },
 
   "home": {
@@ -168,7 +182,7 @@
 
   "architecture": {
     "metaTitle": "Architecture",
-    "metaDescription": "How molesignal stores three signals in one Parquet layer, queries them with DataFusion + Arrow, and stays multi-tenant from the planner down.",
+    "metaDescription": "How molesignal keeps three signals in one columnar layer, queries them with a vectorized engine, and stays multi-tenant from the planner down.",
     "title": "Architecture",
     "lede": "One storage layer. One query engine. One metadata layer.",
     "pill": "architecture",
@@ -176,9 +190,9 @@
     "dataPathBody": "Tap a node to see what it does.",
     "tapOrHover": "Tap or hover a node to see what it does.",
     "storageTitle": "Three signals, one storage",
-    "storageBody": "Logs, metrics, and traces all serialize to Parquet on object storage. The columnar layout makes cross-signal filters and time-range prunes cheap.",
+    "storageBody": "Logs, metrics, and traces all land in one columnar format on object storage. The columnar layout makes cross-signal filters and time-range prunes cheap.",
     "queryTitle": "Query engine",
-    "queryBody": "DataFusion plans SQL, PromQL, and VRL against Parquet. The planner does multi-tenant org-rewrite, so tenant isolation lives at the query layer rather than at the deployment layer.",
+    "queryBody": "A vectorized query engine plans SQL, PromQL, and VRL against the columnar store. The planner does multi-tenant org-rewrite, so tenant isolation lives at the query layer rather than at the deployment layer.",
     "ingestTitle": "Ingest protocols",
     "ingestBody": "Ten supported on day one: OTLP HTTP, OTLP gRPC, Vector, Fluent Bit, Prometheus remote_write, Loki push, Splunk HEC, Jaeger, Zipkin, Syslog.",
     "realtimeTitle": "Real-time alerts",
@@ -195,23 +209,23 @@
     "nodes": {
       "ingest": {
         "label": "Ingest",
-        "sublabel": "OTLP · Vector · Fluent Bit",
+        "sublabel": "10+ protocols, one write path",
         "tooltip": "Ten ingest protocols. OTLP HTTP/gRPC are first-class; Vector, Fluent Bit, Prometheus remote_write, Loki push, Splunk HEC, Jaeger, Zipkin, and Syslog all land on the same write path."
       },
       "wal": {
         "label": "WAL",
-        "sublabel": "Postgres metadata",
-        "tooltip": "Postgres holds the metadata layer (org, streams, partitions, schema). The WAL durably accepts writes before they roll up to Parquet on object storage."
+        "sublabel": "Durable, zero data loss",
+        "tooltip": "A write-ahead log durably accepts every write before it rolls up to columnar storage — no data loss on a crash. A metadata store tracks orgs, streams, partitions, and schema."
       },
       "storage": {
-        "label": "Parquet",
-        "sublabel": "S3 / MinIO",
-        "tooltip": "All three signals (logs, metrics, traces) share one columnar storage format on object storage. Time-partitioned for prune-and-scan queries."
+        "label": "Storage",
+        "sublabel": "Columnar, object-store native",
+        "tooltip": "All three signals (logs, metrics, traces) share one columnar format on object storage. Time-partitioned for cheap prune-and-scan queries."
       },
       "engine": {
-        "label": "Engine",
-        "sublabel": "DataFusion + Arrow",
-        "tooltip": "DataFusion plans SQL / PromQL / VRL against the Parquet store. The planner does multi-tenant org-rewrite, so tenant isolation lives at the query layer."
+        "label": "Query Engine",
+        "sublabel": "Vectorized, sub-second",
+        "tooltip": "A vectorized engine plans SQL / PromQL / VRL directly against columnar storage. The planner does multi-tenant org-rewrite, so tenant isolation lives at the query layer."
       },
       "api": {
         "label": "Query API",
@@ -398,24 +412,6 @@
     "emptyPhase": "Nothing in this phase yet. Check the others."
   },
 
-  "changelog": {
-    "metaTitle": "Changelog",
-    "metaDescription": "What shipped, when, and why. The project is alive — every commit lands publicly.",
-    "title": "Changelog",
-    "lede": "Every release, the changes that mattered.",
-    "subscribeTitle": "Stay in the loop",
-    "subscribeBody": "We'll email a monthly digest with releases plus an architecture note. Or grab the RSS feed.",
-    "rss": "RSS",
-    "sourceLive": "live from GitHub",
-    "sourceFallback": "previewing",
-    "noReleasesTitle": "No releases yet",
-    "noReleasesBody": "We'll publish the first GitHub Release soon. Watch the repo for notifications, or grab the RSS feed above.",
-    "versionsLabel": "Versions",
-    "githubLink": "GitHub",
-    "preReleasePill": "pre-release",
-    "getDigest": "Get digest emails"
-  },
-
   "pricing": {
     "metaTitle": "Pricing",
     "metaDescription": "Three ways to run molesignal — Open Source (self-hosted, free), Enterprise (self-hosted with vendor support), and Cloud (fully managed, waitlist).",
@@ -518,8 +514,18 @@
       "migrate": {
         "q": "Can I migrate from Open Source to Cloud later?",
         "a": "Yes. Same Parquet schema and same query engine — your dashboards and queries port over without rewrites."
+      },
+      "open-core": {
+        "q": "Will a feature I rely on get moved behind a paywall later?",
+        "a": "No. Our open-core promise is explicit: the Apache-2.0 core stays fully usable for a single team, forever. We only charge for buyer-side features like SSO, audit logs, and SLA support — never core observability."
+      },
+      "cloud-free": {
+        "q": "Will Cloud have a free tier?",
+        "a": "Yes — a free tier is planned for launch, so you can try managed molesignal without a contract. Cloud isn't live yet; join the waitlist for first access."
       }
     },
+    "stewardshipNote": "Worried a feature you depend on will get paywalled later?",
+    "stewardshipCta": "Read our open-core promise",
     "ctaTitle": "Not sure which tier?",
     "ctaBody": "If you're running observability for fun, learning, or under ~100 GB/day, Open Source is enough. If you need SLAs or compliance support, talk to us. If you want zero ops, get on the Cloud waitlist.",
     "ctaTalk": "Talk to founders",
@@ -745,5 +751,109 @@
     "scrollToTop": {
       "label": "Back to top"
     }
+  },
+
+  "enterprise": {
+    "metaTitle": "Enterprise",
+    "metaDescription": "Self-host molesignal with a support SLA, backported security patches, and a team on the line. Built for organisations with audit and uptime obligations.",
+    "pill": "Enterprise",
+    "title": "Self-host molesignal, with us on the line",
+    "lede": "Run the open-source engine on your own infrastructure — with a support SLA, security patches, and a direct line to the people who build it.",
+    "getTitle": "What Enterprise adds",
+    "getLede": "Everything in Open Source, plus the commitments an organisation needs to depend on it.",
+    "get": {
+      "slaTitle": "99.5% support-response SLA",
+      "slaBody": "A contractual response time, not community best-effort. Email plus a private channel.",
+      "patchesTitle": "Backported security patches",
+      "patchesBody": "Critical fixes backported to your pinned version, so you don't have to chase main to stay safe.",
+      "auditTitle": "Audit assistance + architecture review",
+      "auditBody": "We help you answer security questionnaires and review your deployment against your reliability targets.",
+      "onboardingTitle": "Onboarding + admin training",
+      "onboardingBody": "Hands-on setup and operator training so your team runs it confidently from day one.",
+      "supportTitle": "Dedicated support channel",
+      "supportBody": "A private line to the maintainers — not a ticket queue.",
+      "priorityTitle": "Priority feature input",
+      "priorityBody": "Your requirements move up the roadmap. You help shape what v1 and beyond look like."
+    },
+    "securityTitle": "Security & compliance",
+    "securityBody": "Apache-2.0 means the full source is auditable, and self-hosting means your telemetry never leaves your infrastructure. SOC2 Type II is on the roadmap.",
+    "securityCta": "See our security posture",
+    "roadmapTitle": "On the Enterprise roadmap",
+    "roadmapBody": "These are the controls the person signing the check usually needs. They're planned, not shipped — tell us which ones you need and we'll prioritise.",
+    "roadmap": {
+      "sso": "SSO / SAML",
+      "audit": "Audit logs",
+      "rbac": "Fine-grained RBAC",
+      "compliance": "Compliance reports"
+    },
+    "roadmapTag": "Planned",
+    "deployTitle": "Your infrastructure, your data",
+    "deployBody": "Enterprise is self-hosted: deploy anywhere you run Docker or Kubernetes and keep all data in your own environment. We're on the line for support — we never need access to your telemetry.",
+    "ctaTitle": "Let's talk",
+    "ctaBody": "We're pre-1.0 and building in the open with a small group of design partners. If you have audit or uptime obligations, tell us what you need — we'll be honest about what's ready today and what's on the way.",
+    "ctaTalk": "Talk to founders",
+    "ctaPartner": "Become a design partner"
+  },
+
+  "security": {
+    "metaTitle": "Security & trust",
+    "metaDescription": "How molesignal handles vulnerability disclosure, source transparency, and your data. Apache-2.0, self-hosted, SOC2 on the roadmap.",
+    "pill": "Trust",
+    "title": "Security & trust",
+    "lede": "How we handle vulnerability disclosure, source transparency, and your data — stated plainly, pre-1.0 and all.",
+    "disclosureTitle": "Responsible disclosure",
+    "disclosureBody": "Found something? Email security@molesignal.io or open a private GitHub Security Advisory. We acknowledge reports quickly and credit reporters who want it.",
+    "disclosureEmail": "Email security@molesignal.io",
+    "disclosureAdvisory": "Open a security advisory",
+    "disclosurePolicy": "Read security.txt",
+    "openTitle": "Open by default",
+    "openBody": "The full source is Apache-2.0 and auditable — no closed core to take on faith. Self-hosted means your telemetry never leaves your own infrastructure; we never need access to it.",
+    "dataTitle": "Your data",
+    "dataBody": "Self-host: data stays entirely in your environment. Cloud (in development): bring-your-own-cloud keeps storage and compute in your account, or fully managed multi-tenant — you choose.",
+    "complianceTitle": "Compliance — where we honestly stand",
+    "complianceBody": "We are pre-1.0 and not yet certified. We won't claim a badge we don't hold.",
+    "compliance": {
+      "soc2": "SOC2 Type II — on the roadmap",
+      "hipaa": "HIPAA — targeted post-1.0",
+      "gdpr": "Self-hosting keeps you in control of data residency today"
+    },
+    "requestTitle": "Security review or questionnaire?",
+    "requestBody": "Sending us a vendor security questionnaire, or need an NDA before a deeper review? Reach out — we'll tell you what we can share today and what's coming.",
+    "requestCta": "Contact security@molesignal.io"
+  },
+
+  "stewardship": {
+    "metaTitle": "Our open-core promise",
+    "metaDescription": "What stays free and open forever, and what we charge for. molesignal's open-core stewardship commitment, Apache-2.0.",
+    "pill": "Open core",
+    "title": "Our open-core promise",
+    "lede": "The honest version of what stays free forever and what we charge for — so you can depend on the open-source core without fear.",
+    "promiseTitle": "The promise",
+    "promiseBody": "The Apache-2.0 core stays fully usable for a single team, forever. We will not move core observability features behind a paywall. If you can run it today, you can run it tomorrow.",
+    "freeTitle": "Free and open, forever",
+    "freeLede": "The whole engine — everything a team needs to actually run observability.",
+    "free": {
+      "ingest": "All ingest protocols (OpenTelemetry-native)",
+      "correlation": "Cross-signal correlation",
+      "realtime": "Real-time alerting",
+      "multitenant": "Multi-tenant out of the box",
+      "query": "The full query engine",
+      "selfhost": "Self-host anywhere, no usage caps"
+    },
+    "paidTitle": "What we charge for",
+    "paidLede": "The features the person who signs the check needs — not the person who uses the tool every day. Charging here is what keeps the core free.",
+    "paid": {
+      "sso": "SSO / SAML",
+      "audit": "Audit logs",
+      "rbac": "Fine-grained RBAC",
+      "compliance": "Compliance reports",
+      "sla": "SLA-backed support",
+      "managed": "Multi-tenant management & managed Cloud ops"
+    },
+    "codeTitle": "How the code is organised",
+    "codeBody": "As we add Enterprise features, they live in a clearly separated module under a commercial license — the Apache-2.0 core stays whole and auditable. You always know which line you're on.",
+    "ctaTitle": "Read it for yourself",
+    "ctaLicense": "Read the LICENSE",
+    "ctaStar": "Star on GitHub"
   }
 }

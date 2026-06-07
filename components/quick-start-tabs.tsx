@@ -1,16 +1,20 @@
 import { Construction } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
+import { InstallTabs } from "@/components/install-tabs.client";
 import { CodeBlock } from "@/components/ui/code-block";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { quickStartArtifactsReady } from "@/lib/artifact-readiness";
-import { cn } from "@/lib/utils";
+import { DOCKER_STANDALONE_CMD } from "@/lib/commands";
 
-const DOCKER_CMD = `# Postgres + MinIO + molesignal standalone, 1 command
-docker compose -f deploy/docker/docker-compose.yaml --profile standalone up
+// Marketing page: say what it does, not which components it bundles. The
+// standalone profile happens to run a metadata store + object store, but those
+// are deployment details for the docs / troubleshooting, not the first
+// impression. No default credentials on a marketing page. The command itself
+// comes from the shared constant so it can never drift from the hero copy.
+const DOCKER_CMD = `# molesignal standalone — everything in one command
+${DOCKER_STANDALONE_CMD}
 
-# UI:        http://localhost:5080
-# S3 admin:  http://localhost:9001  (minioadmin / minioadmin)`;
+# UI: http://localhost:5080`;
 
 const HELM_CMD = `# Add the molesignal Helm repo
 helm repo add molesignal https://charts.molesignal.io
@@ -28,26 +32,14 @@ curl -L https://github.com/molesignal/molesignal/releases/latest/download/molesi
   -o /usr/local/bin/molesignal
 chmod +x /usr/local/bin/molesignal
 
-# Quick standalone start (uses sqlite + local FS)
+# Quick standalone start
 molesignal --listen 0.0.0.0:5080 --workdir /var/molesignal`;
 
 /**
- * The three install paths in tabs (docker / helm / binary), initial tab
- * `docker`. NOTE: these are Radix tab panels with auto-generated ids — there
- * is no `#docker`/`#helm`/`#binary` anchor and no client-side hash sync. Link
- * to the wrapping section (`/start#install`) to scroll here.
- *
- * Tab labels + CodeBlock filename strings resolve via `start.tabs.*` /
- * `start.tabFilenames.*` so they swap with the locale. The command bodies
- * themselves stay English — they're shell commands.
- */
-/**
  * Honest "not yet shippable" banner for the Helm / binary tabs (P0-4). The
  * Helm repo and prebuilt binaries are a v1.0 target; the Docker path works
- * today. Shown above the command so nobody pastes a command that 404s.
- *
- * Hidden once `NEXT_PUBLIC_QUICKSTART_ARTIFACTS_READY=true` flips the artifacts
- * to ready (T19) — see `quickStartArtifactsReady()`.
+ * today. Shown above the command so nobody pastes a command that 404s. Hidden
+ * once `NEXT_PUBLIC_QUICKSTART_ARTIFACTS_READY=true` flips the artifacts ready.
  */
 function V1TargetNotice({ message }: { message: string }) {
   return (
@@ -61,11 +53,15 @@ function V1TargetNotice({ message }: { message: string }) {
   );
 }
 
+/**
+ * The three install paths as horizontal tabs (docker / helm / binary) above a
+ * full-width code block. Tab labels + CodeBlock filenames resolve via
+ * `start.tabs.*` / `start.tabFilenames.*`; command bodies stay English (they're
+ * shell commands). Each tab's CodeBlock is pre-rendered on the server and
+ * toggled by the client `InstallTabs` shell.
+ */
 export async function QuickStartTabs({ className }: { className?: string }) {
   const t = await getTranslations("start");
-  // T19: when the Helm repo + binary release are published, one env var flips
-  // both tabs to their ready state — drop the notice and the "(v1.0 target)"
-  // filename suffix. Until then the honest v1.0-target labels stay.
   const ready = quickStartArtifactsReady();
   const helmFilename = ready
     ? t("tabFilenamesReady.helm")
@@ -73,42 +69,58 @@ export async function QuickStartTabs({ className }: { className?: string }) {
   const binaryFilename = ready
     ? t("tabFilenamesReady.binary")
     : t("tabFilenames.binary");
-  return (
-    <Tabs defaultValue="docker" className={cn("w-full", className)}>
-      <TabsList className="bg-surface border-border inline-flex h-auto rounded-md border p-1">
-        <TabsTrigger value="docker">{t("tabs.docker")}</TabsTrigger>
-        <TabsTrigger value="helm">{t("tabs.helm")}</TabsTrigger>
-        <TabsTrigger value="binary">{t("tabs.binary")}</TabsTrigger>
-      </TabsList>
 
-      <TabsContent value="docker" className="mt-4">
+  const panels = [
+    {
+      value: "docker",
+      label: t("tabs.docker"),
+      node: (
         <CodeBlock
           code={DOCKER_CMD}
           language="bash"
           filename={t("tabFilenames.docker")}
           analytics={{ tab: "docker", snippet_type: "install" }}
         />
-      </TabsContent>
+      ),
+    },
+    {
+      value: "helm",
+      label: t("tabs.helm"),
+      node: (
+        <>
+          {!ready && <V1TargetNotice message={t("v1Notice")} />}
+          <CodeBlock
+            code={HELM_CMD}
+            language="bash"
+            filename={helmFilename}
+            analytics={{ tab: "helm", snippet_type: "install" }}
+          />
+        </>
+      ),
+    },
+    {
+      value: "binary",
+      label: t("tabs.binary"),
+      node: (
+        <>
+          {!ready && <V1TargetNotice message={t("v1Notice")} />}
+          <CodeBlock
+            code={BINARY_CMD}
+            language="bash"
+            filename={binaryFilename}
+            analytics={{ tab: "binary", snippet_type: "install" }}
+          />
+        </>
+      ),
+    },
+  ];
 
-      <TabsContent value="helm" className="mt-4">
-        {!ready && <V1TargetNotice message={t("v1Notice")} />}
-        <CodeBlock
-          code={HELM_CMD}
-          language="bash"
-          filename={helmFilename}
-          analytics={{ tab: "helm", snippet_type: "install" }}
-        />
-      </TabsContent>
-
-      <TabsContent value="binary" className="mt-4">
-        {!ready && <V1TargetNotice message={t("v1Notice")} />}
-        <CodeBlock
-          code={BINARY_CMD}
-          language="bash"
-          filename={binaryFilename}
-          analytics={{ tab: "binary", snippet_type: "install" }}
-        />
-      </TabsContent>
-    </Tabs>
+  return (
+    <InstallTabs
+      panels={panels}
+      defaultValue="docker"
+      ariaLabel={t("installTitle")}
+      className={className}
+    />
   );
 }

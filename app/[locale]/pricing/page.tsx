@@ -8,7 +8,9 @@ import { cn } from "@/lib/utils";
 
 type TierKey = "oss" | "enterprise" | "cloud";
 
-const TIER_KEYS: TierKey[] = ["oss", "enterprise", "cloud"];
+// Order left→right by self-serve depth: free now → managed (future) → assisted.
+// PLG default is the self-serve path, so Enterprise sits last, not centre-stage.
+const TIER_KEYS: TierKey[] = ["oss", "cloud", "enterprise"];
 
 const FEATURE_KEYS: Record<TierKey, string[]> = {
   oss: ["code", "ingest", "correlation", "realtime", "multiTenant", "community"],
@@ -18,7 +20,7 @@ const FEATURE_KEYS: Record<TierKey, string[]> = {
 
 const TIER_HREF: Record<TierKey, string> = {
   oss: "/start",
-  enterprise: "mailto:founders@molesignal.io?subject=Enterprise%20inquiry",
+  enterprise: "/enterprise",
   cloud: "/cloud",
 };
 
@@ -32,7 +34,7 @@ const TIER_CTA_LABEL: Record<TierKey, string> = {
 
 const COMPARE_DIMS = ["billing", "ops", "support", "deployment", "audit"] as const;
 
-const FAQ_KEYS = ["free", "oss-vs-cloud", "enterprise-when", "cloud-launch", "migrate"] as const;
+const FAQ_KEYS = ["free", "oss-vs-cloud", "open-core", "enterprise-when", "cloud-launch", "cloud-free", "migrate"] as const;
 
 export async function generateMetadata({
   params,
@@ -87,6 +89,16 @@ export default async function PricingPage({
             />
           ))}
         </div>
+        {/* Open-core reassurance — answers "will my feature get paywalled?" */}
+        <div className="mt-6 flex flex-col items-center gap-1.5 text-center">
+          <p className="text-fg-muted text-sm">{t("stewardshipNote")}</p>
+          <Link
+            href="/stewardship"
+            className="text-primary hover:text-marketing-accent duration-fast inline-flex items-center gap-1 text-sm font-strong transition-colors"
+          >
+            {t("stewardshipCta")} <ArrowRight size={14} aria-hidden />
+          </Link>
+        </div>
       </Section>
 
       {/* Compact comparison */}
@@ -110,8 +122,8 @@ export default async function PricingPage({
                     scope="col"
                     className={cn(
                       "px-4 py-3 text-left text-sm font-strong",
+                      tier === "oss" && "bg-primary-bg",
                       tier === "cloud" && "bg-marketing-accent-dim",
-                      tier === "enterprise" && "bg-primary-bg",
                     )}
                   >
                     {t(`tiers.${tier}.badge`)}
@@ -134,15 +146,18 @@ export default async function PricingPage({
                   >
                     {t(`compareDimensions.${dim}`)}
                   </th>
-                  <td className="text-fg px-4 py-3 align-top">
-                    {t(`compareCells.oss${capitalize(dim)}`)}
-                  </td>
-                  <td className="text-fg bg-primary-bg/40 px-4 py-3 align-top">
-                    {t(`compareCells.enterprise${capitalize(dim)}`)}
-                  </td>
-                  <td className="text-fg bg-marketing-accent-dim/40 px-4 py-3 align-top">
-                    {t(`compareCells.cloud${capitalize(dim)}`)}
-                  </td>
+                  {TIER_KEYS.map((tier) => (
+                    <td
+                      key={tier}
+                      className={cn(
+                        "text-fg px-4 py-3 align-top",
+                        tier === "oss" && "bg-primary-bg/40",
+                        tier === "cloud" && "bg-marketing-accent-dim/40",
+                      )}
+                    >
+                      {t(`compareCells.${tier}${capitalize(dim)}`)}
+                    </td>
+                  ))}
                 </tr>
               ))}
             </tbody>
@@ -229,7 +244,7 @@ function TierCard({
   features: string[];
   cta: string;
 }) {
-  const isPrimary = tier === "enterprise"; // Most commercially relevant — visually emphasized
+  const isPrimary = tier === "oss"; // PLG default — the free, available-now path is the emphasized one
   const isMarketing = tier === "cloud";
   const href = TIER_HREF[tier];
   const externalCTA = href.startsWith("mailto:") || href.startsWith("http");

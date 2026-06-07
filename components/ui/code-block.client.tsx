@@ -58,12 +58,12 @@ export function CodeBlockCopy({
       onClick={onCopy}
       aria-label={tc("copy")}
       className={cn(
-        "border-border bg-surface hover:bg-bg-hover text-fg-muted hover:text-fg duration-fast inline-flex h-6 items-center gap-1 rounded-md border px-2 text-[11px] font-strong transition-colors",
+        "duration-fast inline-flex h-6 items-center gap-1 rounded-md border border-white/15 bg-white/5 px-2 text-[11px] font-strong text-slate-300 transition-colors hover:bg-white/10 hover:text-white",
         className,
       )}
     >
       {copied ? (
-        <Check size={11} aria-hidden className="text-green" />
+        <Check size={11} aria-hidden className="text-emerald-400" />
       ) : (
         <Copy size={11} aria-hidden />
       )}

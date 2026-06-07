@@ -156,15 +156,6 @@ test.describe("CodeBlock copy", () => {
 // #16 / #18 / #19 feeds & SEO routes — RSS, OG image, sitemap, robots, hreflang
 // ---------------------------------------------------------------------------
 test.describe("feeds & SEO routes", () => {
-  test("RSS feed → 200 application/rss+xml", async ({ request }) => {
-    const res = await request.get("/changelog/rss.xml");
-    expect(res.status()).toBe(200);
-    expect(res.headers()["content-type"]).toContain("application/rss+xml");
-    const body = await res.text();
-    expect(body).toContain("<rss");
-    expect(body).toContain("molesignal changelog");
-  });
-
   test("default OG image → 200 image/png", async ({ request }) => {
     const res = await request.get("/opengraph-image");
     expect(res.status()).toBe(200);

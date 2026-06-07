@@ -12,7 +12,6 @@ const API_BASE = "https://api.github.com";
 
 const REPO_REVALIDATE_SECONDS = 60 * 60;        // 1h for stars / last commit
 const CONTRIBUTORS_REVALIDATE_SECONDS = 24 * 60 * 60; // 24h for contributor wall
-const RELEASES_REVALIDATE_SECONDS = 60 * 60;    // 1h for releases (drives /changelog)
 
 type Headers = Record<string, string>;
 
@@ -85,70 +84,6 @@ export async function getRepoStats(): Promise<RepoStats> {
     };
   } catch {
     return REPO_FALLBACK;
-  }
-}
-
-export type GithubRelease = {
-  /** semver-ish tag, with leading `v` preserved when present (`v0.7.0`). */
-  tag: string;
-  /** Stripped version label without leading `v` — used for anchors/permalinks. */
-  version: string;
-  /** Release name (often equal to tag, sometimes a custom title). */
-  name: string;
-  /** ISO 8601 publication timestamp. */
-  publishedAt: string;
-  /** Raw markdown body from the GitHub Release. */
-  bodyMarkdown: string;
-  /** Web URL to the release on GitHub. */
-  htmlUrl: string;
-  /** Marked as pre-release on GitHub (e.g. `0.x.x-rc.1`). */
-  prerelease: boolean;
-};
-
-type GithubReleaseApi = {
-  tag_name: string;
-  name: string | null;
-  published_at: string | null;
-  created_at: string;
-  body: string | null;
-  html_url: string;
-  draft: boolean;
-  prerelease: boolean;
-};
-
-/**
- * Fetch all published releases for the repo (excluding drafts). Sorted by
- * publication time newest-first; the GitHub API already returns that order.
- *
- * Returns [] on rate-limit / network failure so the changelog page can
- * render a graceful empty state rather than 500ing.
- */
-export async function getReleases(
-  limit = 30,
-): Promise<GithubRelease[]> {
-  try {
-    const res = await fetch(
-      `${API_BASE}/repos/${REPO}/releases?per_page=${limit}`,
-      {
-        headers: authHeaders(),
-        next: { revalidate: RELEASES_REVALIDATE_SECONDS },
-      },
-    );
-    if (!res.ok) return [];
-    const raw = (await res.json()) as GithubReleaseApi[];
-    return raw
-      .filter((r) => !r.draft)
-      .map<GithubRelease>((r) => ({
-        tag: r.tag_name,
-        version: r.tag_name.replace(/^v/, ""),
-        name: r.name ?? r.tag_name,
-        publishedAt: r.published_at ?? r.created_at,
-        bodyMarkdown: r.body ?? "",
-        htmlUrl: r.html_url,
-        prerelease: r.prerelease,
-      }));
-  } catch {
-    return [];
   }
 }
 

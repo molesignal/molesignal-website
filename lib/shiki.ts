@@ -28,36 +28,25 @@ export function resolveLanguage(lang?: string): BundledLanguage {
  * the same Node process.
  */
 
-const THEME_LIGHT = "vitesse-light";
 const THEME_DARK = "vitesse-dark";
 
 /**
- * Render a code string to dual-theme highlighted HTML.
+ * Render a code string to dark-theme highlighted HTML.
  *
- * The output contains two `<pre>` blocks — Shiki's "dual theme" mode
- * (`themes`). One is shown in light mode, the other in dark. The shadcn
- * @custom-variant dark in globals.css activates the dark one via CSS.
+ * Code blocks are styled as terminals (dark in both light and dark site
+ * themes), so we highlight against a single dark theme. The `<pre>` background
+ * is overridden to transparent by `CodeBlock` so it sits on the terminal body.
+ * Only used for non-shell languages (sql, json, …); shell commands get a
+ * custom prompt-aware renderer in `CodeBlock`.
  */
 export async function highlight(
   code: string,
   language: BundledLanguage = "bash",
 ): Promise<string> {
   try {
-    return await codeToHtml(code, {
-      lang: language,
-      themes: {
-        light: THEME_LIGHT,
-        dark: THEME_DARK,
-      },
-      defaultColor: false,
-    });
+    return await codeToHtml(code, { lang: language, theme: THEME_DARK });
   } catch {
     // Defensive: a grammar load failure must never break the page render.
-    // Fall back to an un-highlighted but still styled block.
-    return await codeToHtml(code, {
-      lang: "text",
-      themes: { light: THEME_LIGHT, dark: THEME_DARK },
-      defaultColor: false,
-    });
+    return await codeToHtml(code, { lang: "text", theme: THEME_DARK });
   }
 }

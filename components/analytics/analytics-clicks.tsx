@@ -6,10 +6,10 @@ import { track } from "@/lib/analytics";
 
 /**
  * Delegated click tracker for funnel events that live on server-rendered
- * links/buttons (CTAs, the compare-table expand link, GitHub star links, the
- * changelog RSS button). Those elements can't call `track()` themselves
- * without becoming client components, so instead they carry data attributes
- * and this single mounted listener reads them on click:
+ * links/buttons (CTAs, the compare-table expand link, GitHub star links).
+ * Those elements can't call `track()` themselves without becoming client
+ * components, so instead they carry data attributes and this single mounted
+ * listener reads them on click:
  *
  *   data-analytics-event="cta_click"          → the event name to emit
  *   data-analytics-props='{"label":"Try it"}' → static props (JSON object)

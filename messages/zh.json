@@ -33,8 +33,8 @@
     "resources": "资源",
     "roadmap": "Roadmap",
     "roadmapSub": "即将到来",
-    "changelog": "Changelog",
-    "changelogSub": "更新日志",
+    "docs": "文档",
+    "docsSub": "指南与参考",
     "blog": "Blog",
     "blogSub": "工程笔记",
     "download": "下载",
@@ -44,7 +44,15 @@
     "closeMenu": "关闭菜单",
     "skipToContent": "跳到正文",
     "themeLabel": "主题",
-    "languageLabel": "语言"
+    "languageLabel": "语言",
+    "product": "产品",
+    "community": "社区",
+    "enterprise": "Enterprise",
+    "github": "GitHub",
+    "githubSub": "Star 与贡献",
+    "whySub": "为什么存在",
+    "architectureSub": "工作原理",
+    "quickStartSub": "5 分钟跑起来"
   },
 
   "banner": {
@@ -69,6 +77,7 @@
     "product": "产品",
     "resources": "资源",
     "community": "社区",
+    "enterprise": "Enterprise",
     "legal": "法律",
     "privacy": "隐私政策",
     "terms": "服务条款",
@@ -80,13 +89,16 @@
       "why": "为什么是 molesignal",
       "architecture": "架构",
       "roadmap": "Roadmap",
-      "changelog": "Changelog",
+      "docs": "文档",
       "pricing": "定价",
       "cloud": "Cloud",
       "quickStart": "快速开始",
       "blog": "Blog",
       "download": "下载",
       "designPartner": "Design Partner",
+      "enterprise": "Enterprise",
+      "security": "安全",
+      "stewardship": "开源治理",
       "github": "GitHub",
       "discord": "Discord",
       "twitter": "Twitter / X",
@@ -100,7 +112,9 @@
     "titleHighlight": "但不必付 Datadog 的账单。",
     "subtitle": "日志、指标、链路 —— 同一存储、同一引擎、自托管。OpenTelemetry 原生。",
     "command": "自托管 · OpenTelemetry 原生 · 日志 + 指标 + 链路",
-    "preReleasePill": "pre-1.0 · 公开构建中"
+    "preReleasePill": "pre-1.0 · 公开构建中",
+    "ctaPrimary": "免费自托管",
+    "ctaSecondary": "Cloud — 加入候补"
   },
 
   "home": {
@@ -168,7 +182,7 @@
 
   "architecture": {
     "metaTitle": "架构",
-    "metaDescription": "molesignal 如何把三种信号放进同一 Parquet 存储，用 DataFusion + Arrow 查询，并在 planner 层做多租户隔离。",
+    "metaDescription": "molesignal 如何把三种信号放进同一列式存储，用向量化引擎查询，并在 planner 层做多租户隔离。",
     "title": "架构",
     "lede": "一个存储层。一个查询引擎。一个元数据层。",
     "pill": "架构",
@@ -176,9 +190,9 @@
     "dataPathBody": "点节点看它在干什么。",
     "tapOrHover": "轻点或悬停节点查看说明。",
     "storageTitle": "三信号同存储",
-    "storageBody": "日志、指标、链路都写入对象存储上的 Parquet。列式布局让跨信号过滤和时间窗 prune 都很便宜。",
+    "storageBody": "日志、指标、链路都落入对象存储上的同一列式格式。列式布局让跨信号过滤和时间窗 prune 都很便宜。",
     "queryTitle": "查询引擎",
-    "queryBody": "DataFusion 在 Parquet 上规划 SQL、PromQL、VRL。planner 做多租户 org-rewrite，租户隔离在查询层而非部署层。",
+    "queryBody": "一个向量化查询引擎在列式存储上规划 SQL、PromQL、VRL。planner 做多租户 org-rewrite，租户隔离在查询层而非部署层。",
     "ingestTitle": "采集协议",
     "ingestBody": "首日支持十种：OTLP HTTP、OTLP gRPC、Vector、Fluent Bit、Prometheus remote_write、Loki push、Splunk HEC、Jaeger、Zipkin、Syslog。",
     "realtimeTitle": "实时告警",
@@ -195,23 +209,23 @@
     "nodes": {
       "ingest": {
         "label": "采集",
-        "sublabel": "OTLP · Vector · Fluent Bit",
+        "sublabel": "10+ 协议，统一写入",
         "tooltip": "十种采集协议。OTLP HTTP/gRPC 是一等公民；Vector、Fluent Bit、Prometheus remote_write、Loki push、Splunk HEC、Jaeger、Zipkin、Syslog 走同一写路径。"
       },
       "wal": {
         "label": "WAL",
-        "sublabel": "Postgres 元数据",
-        "tooltip": "Postgres 保存元数据层（org、stream、partition、schema）。WAL 在数据滚动到对象存储 Parquet 之前先持久化接受写入。"
+        "sublabel": "持久化，零数据丢失",
+        "tooltip": "预写日志在数据滚动到列式存储之前先持久化接受每一次写入——崩溃不丢数据。一个元数据存储记录 org、stream、partition、schema。"
       },
       "storage": {
-        "label": "Parquet",
-        "sublabel": "S3 / MinIO",
+        "label": "存储",
+        "sublabel": "列式，对象存储原生",
         "tooltip": "三种信号（日志、指标、链路）共享对象存储上的同一列式格式。按时间分区，便于 prune-and-scan 查询。"
       },
       "engine": {
-        "label": "引擎",
-        "sublabel": "DataFusion + Arrow",
-        "tooltip": "DataFusion 在 Parquet 上规划 SQL / PromQL / VRL。planner 做多租户 org-rewrite，租户隔离在查询层。"
+        "label": "查询引擎",
+        "sublabel": "向量化，亚秒级",
+        "tooltip": "向量化引擎直接在列式存储上规划 SQL / PromQL / VRL。planner 做多租户 org-rewrite，租户隔离在查询层。"
       },
       "api": {
         "label": "查询 API",
@@ -398,24 +412,6 @@
     "emptyPhase": "这个阶段还没有事项。看看别的吧。"
   },
 
-  "changelog": {
-    "metaTitle": "Changelog",
-    "metaDescription": "我们 ship 了什么、什么时候、为什么。这个项目是活的——每一次提交都公开。",
-    "title": "Changelog",
-    "lede": "每次发布，那些重要的变化。",
-    "subscribeTitle": "保持同步",
-    "subscribeBody": "我们会每月一封邮件汇总 release + 一条架构笔记。或者订阅 RSS。",
-    "rss": "RSS",
-    "sourceLive": "GitHub 实时",
-    "sourceFallback": "预览",
-    "noReleasesTitle": "还没有发布",
-    "noReleasesBody": "我们很快会发第一个 GitHub Release。Watch 仓库获取通知，或订阅上方的 RSS。",
-    "versionsLabel": "版本",
-    "githubLink": "GitHub",
-    "preReleasePill": "预发布",
-    "getDigest": "订阅汇总邮件"
-  },
-
   "pricing": {
     "metaTitle": "定价",
     "metaDescription": "molesignal 三种使用方式 —— 开源版（自托管、免费）、企业版（自托管 + 厂商支持）、Cloud（全托管，候补中）。",
@@ -518,8 +514,18 @@
       "migrate": {
         "q": "以后能从开源版迁移到 Cloud 吗？",
         "a": "可以。同一份 Parquet schema、同一个查询引擎 —— 你的 dashboard 和查询不用重写。"
+      },
+      "open-core": {
+        "q": "我依赖的功能以后会不会被挪到付费墙后？",
+        "a": "不会。我们的开源承诺写得很明确：Apache-2.0 内核对单团队永久完整可用。我们只对 SSO、审计日志、SLA 支持这类买单人要的功能收费 —— 永远不动核心可观测能力。"
+      },
+      "cloud-free": {
+        "q": "Cloud 会有免费档吗？",
+        "a": "会 —— launch 时计划提供免费档，让你不签合同也能试托管版。Cloud 还没上线，加入候补可获得优先访问。"
       }
     },
+    "stewardshipNote": "担心你依赖的功能以后被挪进付费版？",
+    "stewardshipCta": "读读我们的开源承诺",
     "ctaTitle": "不知道选哪一档？",
     "ctaBody": "如果你只是兴趣、学习，或每天用量在 100 GB/天以下，开源版够用。需要 SLA 或合规辅助就找我们。想完全不运维就加入 Cloud 候补。",
     "ctaTalk": "找 founders 聊聊",
@@ -743,5 +749,109 @@
     "scrollToTop": {
       "label": "回到顶部"
     }
+  },
+
+  "enterprise": {
+    "metaTitle": "Enterprise",
+    "metaDescription": "在你自己的基础设施上自托管 molesignal —— 带支持 SLA、回传安全补丁、随时能找到人。为有审计与可用性义务的组织而建。",
+    "pill": "Enterprise",
+    "title": "自托管 molesignal，我们随时在线",
+    "lede": "在你自己的基础设施上跑这套开源引擎 —— 配一份支持 SLA、安全补丁，以及一条直达开发者的通道。",
+    "getTitle": "Enterprise 多给你什么",
+    "getLede": "开源版的全部能力，外加一个组织要长期依赖它时需要的承诺。",
+    "get": {
+      "slaTitle": "99.5% 支持响应 SLA",
+      "slaBody": "白纸黑字的响应时间，不是社区尽力而为。邮件 + 私有通道。",
+      "patchesTitle": "回传安全补丁",
+      "patchesBody": "关键修复回传到你锁定的版本，不必为了安全去追 main 分支。",
+      "auditTitle": "审计协助 + 架构评审",
+      "auditBody": "帮你回答安全问卷，并对照你的可靠性目标评审部署。",
+      "onboardingTitle": "Onboarding + 管理员培训",
+      "onboardingBody": "手把手部署与运维培训，让团队第一天就能放心跑。",
+      "supportTitle": "专属支持通道",
+      "supportBody": "直达维护者的私有通道 —— 不是工单队列。",
+      "priorityTitle": "优先功能输入",
+      "priorityBody": "你的需求在 roadmap 上靠前。你来塑造 v1 及之后的样子。"
+    },
+    "securityTitle": "安全与合规",
+    "securityBody": "Apache-2.0 意味着全部源码可审计，自托管意味着你的遥测数据从不离开你的基础设施。SOC2 Type II 在 roadmap 上。",
+    "securityCta": "查看我们的安全姿态",
+    "roadmapTitle": "Enterprise roadmap 上的能力",
+    "roadmapBody": "这些是签字买单的人通常需要的控制项。它们在规划中、尚未发布 —— 告诉我们你需要哪些，我们来排优先级。",
+    "roadmap": {
+      "sso": "SSO / SAML",
+      "audit": "审计日志",
+      "rbac": "细粒度 RBAC",
+      "compliance": "合规报表"
+    },
+    "roadmapTag": "规划中",
+    "deployTitle": "你的基础设施，你的数据",
+    "deployBody": "Enterprise 是自托管的：在任何能跑 Docker 或 Kubernetes 的地方部署，所有数据留在你自己的环境里。我们负责支持 —— 永远不需要访问你的遥测数据。",
+    "ctaTitle": "聊聊吧",
+    "ctaBody": "我们处于 pre-1.0，正和一小群设计伙伴公开构建。如果你有审计或可用性义务，告诉我们你的需求 —— 我们会诚实地说清楚今天有什么、什么还在路上。",
+    "ctaTalk": "联系创始人",
+    "ctaPartner": "成为设计伙伴"
+  },
+
+  "security": {
+    "metaTitle": "安全与信任",
+    "metaDescription": "molesignal 如何处理漏洞披露、源码透明与你的数据。Apache-2.0、自托管、SOC2 在 roadmap 上。",
+    "pill": "信任",
+    "title": "安全与信任",
+    "lede": "我们如何处理漏洞披露、源码透明与你的数据 —— 实话实说，包括 pre-1.0 的部分。",
+    "disclosureTitle": "责任披露",
+    "disclosureBody": "发现了问题？发邮件到 security@molesignal.io，或开一个私有的 GitHub Security Advisory。我们会很快确认，并按报告者意愿署名致谢。",
+    "disclosureEmail": "发邮件 security@molesignal.io",
+    "disclosureAdvisory": "开 security advisory",
+    "disclosurePolicy": "查看 security.txt",
+    "openTitle": "默认开放",
+    "openBody": "全部源码 Apache-2.0、可审计 —— 没有需要你凭信任接受的闭源内核。自托管意味着你的遥测数据从不离开你自己的基础设施；我们也不需要访问它。",
+    "dataTitle": "你的数据",
+    "dataBody": "自托管：数据完全留在你的环境里。Cloud（开发中）：bring-your-own-cloud 让存储与计算留在你的账户内，或选择全托管多租户 —— 由你决定。",
+    "complianceTitle": "合规 —— 我们诚实的现状",
+    "complianceBody": "我们处于 pre-1.0，尚未认证。我们不会挂一个自己还没拿到的徽章。",
+    "compliance": {
+      "soc2": "SOC2 Type II —— 在 roadmap 上",
+      "hipaa": "HIPAA —— 目标 post-1.0",
+      "gdpr": "自托管让你今天就掌控数据驻留"
+    },
+    "requestTitle": "安全评审或问卷？",
+    "requestBody": "要发供应商安全问卷，或在深入评审前需要 NDA？联系我们 —— 我们会说清楚今天能提供什么、什么还在路上。",
+    "requestCta": "联系 security@molesignal.io"
+  },
+
+  "stewardship": {
+    "metaTitle": "我们的开源承诺",
+    "metaDescription": "什么永远免费开放，什么我们收费。molesignal 的开源治理承诺，Apache-2.0。",
+    "pill": "开源内核",
+    "title": "我们的开源承诺",
+    "lede": "实话实说什么永远免费、什么我们收费 —— 让你可以放心依赖开源内核，不用担心哪天被收割。",
+    "promiseTitle": "承诺",
+    "promiseBody": "Apache-2.0 内核对单团队永久完整可用。我们不会把核心可观测能力挪到付费墙后。今天能跑的，明天也能跑。",
+    "freeTitle": "永久免费开放",
+    "freeLede": "整套引擎 —— 一个团队真正跑可观测所需的一切。",
+    "free": {
+      "ingest": "全部 ingest 协议（OpenTelemetry 原生）",
+      "correlation": "跨信号关联",
+      "realtime": "实时告警",
+      "multitenant": "原生多租户",
+      "query": "完整查询引擎",
+      "selfhost": "随处自托管，无用量上限"
+    },
+    "paidTitle": "我们收费的部分",
+    "paidLede": "签字买单的人需要的功能 —— 不是每天用工具的人需要的。在这里收费，才让内核保持免费。",
+    "paid": {
+      "sso": "SSO / SAML",
+      "audit": "审计日志",
+      "rbac": "细粒度 RBAC",
+      "compliance": "合规报表",
+      "sla": "SLA 支持",
+      "managed": "多租户管理与托管 Cloud 运维"
+    },
+    "codeTitle": "代码如何组织",
+    "codeBody": "随 Enterprise 功能加入，它们会放在一个清晰分离、单独商业协议的模块里 —— Apache-2.0 内核保持完整、可审计。你始终清楚自己在哪条线上。",
+    "ctaTitle": "自己读一读",
+    "ctaLicense": "阅读 LICENSE",
+    "ctaStar": "在 GitHub 上 Star"
   }
 }

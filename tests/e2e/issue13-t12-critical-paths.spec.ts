@@ -157,7 +157,6 @@ const ROUTES = [
   "/start",
   "/pricing",
   "/architecture",
-  "/changelog",
   "/roadmap",
   "/blog",
   "/privacy",

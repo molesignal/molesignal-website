@@ -60,6 +60,17 @@ export async function ArchitectureDiagram({
 }
 
 /**
+ * Wrap a node sublabel onto two lines at its comma (EN `,` or ZH `，`) so long
+ * capability phrases like "10+ protocols, one write path" don't overflow the
+ * fixed node width. Short, comma-less sublabels (e.g. "REST / gRPC") stay on
+ * one line.
+ */
+function splitSublabel(s: string): string[] {
+  const m = s.match(/^(.*?[,，])\s*(.+)$/);
+  return m ? [m[1].trim(), m[2].trim()] : [s];
+}
+
+/**
  * The actual SVG. Shared by slim and full variants; the full variant wraps
  * it with the interactive layer in `architecture-diagram.client.tsx`.
  */
@@ -73,7 +84,7 @@ export function Diagram({
   activeId?: string | null;
 }) {
   const nodeWidth = 144;
-  const nodeHeight = 88;
+  const nodeHeight = 96;
   const gap = 28;
   const padX = 12;
   const padY = 16;
@@ -139,7 +150,7 @@ export function Diagram({
             />
             <text
               x={nodeWidth / 2}
-              y={36}
+              y={38}
               textAnchor="middle"
               fontSize="15"
               fontWeight="700"
@@ -152,11 +163,15 @@ export function Diagram({
                 x={nodeWidth / 2}
                 y={58}
                 textAnchor="middle"
-                fontSize="11"
+                fontSize="10.5"
                 fontWeight="500"
                 fill="var(--fg-muted)"
               >
-                {node.sublabel}
+                {splitSublabel(node.sublabel).map((ln, li) => (
+                  <tspan key={li} x={nodeWidth / 2} dy={li === 0 ? 0 : 13}>
+                    {ln}
+                  </tspan>
+                ))}
               </text>
             )}
           </g>

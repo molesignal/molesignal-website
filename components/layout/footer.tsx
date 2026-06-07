@@ -36,23 +36,28 @@ function buildColumns(discordInvite: string | null): Col[] {
       titleKey: "product",
       items: [
         { key: "why", href: "/why" },
-        { key: "quickStart", href: "/start" },
         { key: "architecture", href: "/architecture" },
+        { key: "quickStart", href: "/start" },
         { key: "pricing", href: "/pricing" },
         { key: "cloud", href: "/cloud" },
-        { key: "roadmap", href: "/roadmap" },
-        { key: "changelog", href: "/changelog" },
+      ],
+    },
+    {
+      // Commercial / trust cluster — where procurement & security reviewers go.
+      // Enterprise, Security, and the open-core Stewardship promise.
+      titleKey: "enterprise",
+      items: [
+        { key: "enterprise", href: "/enterprise" },
+        { key: "security", href: "/security" },
+        { key: "stewardship", href: "/stewardship" },
       ],
     },
     {
       titleKey: "resources",
       items: [
+        { key: "docs", href: "https://docs.molesignal.io", external: true },
         { key: "blog", href: "/blog" },
-        // Anchors to the /start install section (Quick Start tabs). The binary
-        // tab's "v1.0 target" notice lives there. Uses #install — the Section's
-        // real id — because #binary maps to no DOM element (Radix auto-ids its
-        // tab panels and unmounts the inactive ones).
-        { key: "download", href: "/start#install" },
+        { key: "roadmap", href: "/roadmap" },
         { key: "designPartner", href: "/design-partner" },
       ],
     },
@@ -67,13 +72,6 @@ function buildColumns(discordInvite: string | null): Col[] {
           : { key: "discord", disabled: true },
         // Twitter / X isn't live yet — honest disabled state.
         { key: "twitter", disabled: true },
-      ],
-    },
-    {
-      titleKey: "legal",
-      items: [
-        { key: "privacy", href: "/privacy" },
-        { key: "terms", href: "/terms" },
       ],
     },
   ];
@@ -146,7 +144,19 @@ export function Footer() {
             <LogoMark size={18} />
             <p className="text-fg-muted text-xs">{t("copyright", { year })}</p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <Link
+              href="/privacy"
+              className="text-fg-muted hover:text-fg duration-fast text-xs transition-colors"
+            >
+              {tLinks("privacy")}
+            </Link>
+            <Link
+              href="/terms"
+              className="text-fg-muted hover:text-fg duration-fast text-xs transition-colors"
+            >
+              {tLinks("terms")}
+            </Link>
             <Link
               href="/cloud"
               className="text-fg-muted hover:text-primary duration-fast inline-flex items-center gap-1 text-xs transition-colors"

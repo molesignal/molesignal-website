@@ -21,7 +21,9 @@ const SEEDS = [
   "/design-partner",
   "/cloud",
   "/roadmap",
-  "/changelog",
+  "/enterprise",
+  "/security",
+  "/stewardship",
   "/blog",
   "/blog/why-parquet-for-three-signals",
   "/blog/what-we-learned-from-100-incident-reviews",
@@ -29,7 +31,6 @@ const SEEDS = [
   "/terms",
   "/sitemap.xml",
   "/robots.txt",
-  "/changelog/rss.xml",
   "/opengraph-image",
 ];
 
