@@ -18,9 +18,12 @@ import { fileURLToPath } from "node:url";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..");
 const README_PATH = resolve(ROOT, "..", "README.md");
-const QUICK_START_TABS = resolve(ROOT, "components", "quick-start-tabs.tsx");
 const START_PAGE = resolve(ROOT, "app", "[locale]", "start", "page.tsx");
-const HOME_PAGE = resolve(ROOT, "app", "[locale]", "page.tsx");
+// The standalone docker command now lives in exactly one place — the shared
+// `lib/commands.ts` constant — and every surface (hero, install tabs, home page)
+// imports it instead of repeating the literal. So we assert the canonical string
+// against that single source of truth rather than each component file.
+const COMMANDS = resolve(ROOT, "lib", "commands.ts");
 
 const PHRASES = {
   docker:
@@ -37,10 +40,10 @@ type Check = {
 };
 
 const CHECKS: Check[] = [
-  // docker compose command exists in three places
+  // docker compose command: canonical in README, and on the website it lives in
+  // the shared `lib/commands.ts` constant that every surface imports.
   { label: "docker compose in README", needle: PHRASES.docker, filePath: README_PATH },
-  { label: "docker compose in QuickStartTabs", needle: PHRASES.docker, filePath: QUICK_START_TABS },
-  { label: "docker compose in home page", needle: PHRASES.docker, filePath: HOME_PAGE },
+  { label: "docker compose in lib/commands", needle: PHRASES.docker, filePath: COMMANDS },
 
   // OTLP curl URL
   { label: "OTLP ingest URL in README", needle: PHRASES.otlpUrl, filePath: README_PATH },
