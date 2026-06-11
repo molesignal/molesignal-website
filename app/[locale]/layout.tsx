@@ -3,6 +3,7 @@ import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { AnalyticsClicks } from "@/components/analytics/analytics-clicks";
+import { FloatingAssistant } from "@/components/assistant/floating-assistant";
 import { GitHubStatsChip } from "@/components/github-stats-chip";
 import { Footer } from "@/components/layout/footer";
 import { PreReleaseBanner } from "@/components/layout/pre-release-banner";
@@ -12,6 +13,8 @@ import { SkipToContent } from "@/components/skip-to-content";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { routing } from "@/i18n/routing";
+import { getCmsContact } from "@/lib/cms";
+import { GITHUB_REPO_URL } from "@/lib/community";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -37,6 +40,10 @@ export default async function LocaleLayout({
   }
   setRequestLocale(locale);
 
+  // Contact channels for the floating assistant — CMS-managed with static
+  // fallbacks, so the widget works without a CMS.
+  const contact = await getCmsContact();
+
   return (
     <NextIntlClientProvider>
       <ThemeProvider>
@@ -49,6 +56,11 @@ export default async function LocaleLayout({
         </main>
         <Footer />
         <ScrollToTop />
+        <FloatingAssistant
+          supportEmail={contact?.supportEmail ?? "founders@molesignal.io"}
+          githubUrl={contact?.github ?? GITHUB_REPO_URL}
+          docsUrl="https://docs.molesignal.io"
+        />
         <Toaster position="bottom-right" richColors closeButton />
       </ThemeProvider>
     </NextIntlClientProvider>

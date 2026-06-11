@@ -73,6 +73,43 @@
     "zh": "中文"
   },
 
+  "assistant": {
+    "buttonLabel": "Support & sales",
+    "close": "Close",
+    "title": "How can we help?",
+    "subtitle": "Support questions or commercial interest — we read everything.",
+    "tabs": {
+      "commercial": "Commercial interest",
+      "support": "Support"
+    },
+    "commercial": {
+      "lede": "Evaluating the Enterprise or Cloud edition? Tell us a bit about your team and we'll reply within one business day.",
+      "name": "Name",
+      "namePlaceholder": "Ada Lovelace",
+      "email": "Work email",
+      "emailPlaceholder": "you@company.com",
+      "company": "Company (optional)",
+      "companyPlaceholder": "Acme Corp",
+      "teamSize": "Team size",
+      "teamSizePlaceholder": "Select…",
+      "message": "What do you need?",
+      "messagePlaceholder": "We're evaluating molesignal Enterprise for ~50 services…",
+      "submit": "Send",
+      "submitting": "Sending…",
+      "successTitle": "Got it — thanks!",
+      "successBody": "We'll reply to your email within one business day.",
+      "rateLimited": "Too many messages from this network. Please try again in a bit.",
+      "error": "Something went wrong. Please try again."
+    },
+    "support": {
+      "lede": "Fastest ways to get unstuck:",
+      "emailLabel": "Email support",
+      "githubLabel": "Open a GitHub issue",
+      "docsLabel": "Read the docs",
+      "communityNote": "Community support is free for everyone running the open-source edition."
+    }
+  },
+
   "footer": {
     "product": "Product",
     "resources": "Resources",

@@ -4,7 +4,12 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Pill } from "@/components/ui/pill";
 import { Section } from "@/components/ui/section";
 import { Link } from "@/i18n/navigation";
+import { getCmsPlans, getCmsPricingCopy } from "@/lib/cms";
 import { cn } from "@/lib/utils";
+
+// ISR so plan/copy edits in the CMS reach the page without a redeploy.
+// Literal on purpose — keep in sync with CMS_REVALIDATE_SECONDS in lib/cms.ts.
+export const revalidate = 300;
 
 type TierKey = "oss" | "enterprise" | "cloud";
 
@@ -13,9 +18,30 @@ type TierKey = "oss" | "enterprise" | "cloud";
 const TIER_KEYS: TierKey[] = ["oss", "cloud", "enterprise"];
 
 const FEATURE_KEYS: Record<TierKey, string[]> = {
-  oss: ["code", "ingest", "correlation", "realtime", "multiTenant", "community"],
-  enterprise: ["everything", "sla", "patches", "audit", "onboarding", "priority"],
-  cloud: ["managed", "byoc", "multitenant", "compliance", "waitlist", "migration"],
+  oss: [
+    "code",
+    "ingest",
+    "correlation",
+    "realtime",
+    "multiTenant",
+    "community",
+  ],
+  enterprise: [
+    "everything",
+    "sla",
+    "patches",
+    "audit",
+    "onboarding",
+    "priority",
+  ],
+  cloud: [
+    "managed",
+    "byoc",
+    "multitenant",
+    "compliance",
+    "waitlist",
+    "migration",
+  ],
 };
 
 const TIER_HREF: Record<TierKey, string> = {
@@ -32,9 +58,23 @@ const TIER_CTA_LABEL: Record<TierKey, string> = {
   cloud: "Pricing — Join cloud waitlist",
 };
 
-const COMPARE_DIMS = ["billing", "ops", "support", "deployment", "audit"] as const;
+const COMPARE_DIMS = [
+  "billing",
+  "ops",
+  "support",
+  "deployment",
+  "audit",
+] as const;
 
-const FAQ_KEYS = ["free", "oss-vs-cloud", "open-core", "enterprise-when", "cloud-launch", "cloud-free", "migrate"] as const;
+const FAQ_KEYS = [
+  "free",
+  "oss-vs-cloud",
+  "open-core",
+  "enterprise-when",
+  "cloud-launch",
+  "cloud-free",
+  "migrate",
+] as const;
 
 export async function generateMetadata({
   params,
@@ -58,15 +98,27 @@ export default async function PricingPage({
   setRequestLocale(locale);
   const t = await getTranslations("pricing");
 
+  // CMS overlay: plan numbers come from the Plans collection (the same record
+  // that syncs to Stripe — incl. Billing Meters), page copy from the
+  // PricingPage global. Every field falls back to the i18n strings so the
+  // page renders identically when the CMS is unreachable.
+  const cmsLocale = locale === "zh" ? ("zh" as const) : ("en" as const);
+  const [plans, copy] = await Promise.all([
+    getCmsPlans(cmsLocale),
+    getCmsPricingCopy(cmsLocale),
+  ]);
+  const planFor = (tier: TierKey) => plans.find((p) => p.tier === tier);
+  const cmsFaq = copy?.faq ?? [];
+
   return (
     <>
       <Section padding="lg" tint="hero">
         <div className="mx-auto max-w-3xl space-y-4 text-center">
-          <Pill variant="marketing">{t("pill")}</Pill>
+          <Pill variant="marketing">{copy?.pill ?? t("pill")}</Pill>
           <h1 className="text-display-xl md:text-display-2xl font-display-strong tracking-tighter">
-            {t("title")}
+            {copy?.title ?? t("title")}
           </h1>
-          <p className="text-fg-muted text-lg">{t("lede")}</p>
+          <p className="text-fg-muted text-lg">{copy?.lede ?? t("lede")}</p>
         </div>
       </Section>
 
@@ -78,13 +130,17 @@ export default async function PricingPage({
               key={tier}
               tier={tier}
               badge={t(`tiers.${tier}.badge`)}
-              price={t(`tiers.${tier}.price`)}
-              priceSub={t(`tiers.${tier}.priceSub`)}
+              price={planFor(tier)?.priceDisplay ?? t(`tiers.${tier}.price`)}
+              priceSub={planFor(tier)?.priceNote ?? t(`tiers.${tier}.priceSub`)}
               headline={t(`tiers.${tier}.headline`)}
               bestFor={t(`tiers.${tier}.bestFor`)}
-              features={FEATURE_KEYS[tier].map((k) =>
-                t(`tiers.${tier}.features.${k}`),
-              )}
+              features={
+                (planFor(tier)?.features.length ?? 0) > 0
+                  ? planFor(tier)!.features
+                  : FEATURE_KEYS[tier].map((k) =>
+                      t(`tiers.${tier}.features.${k}`),
+                    )
+              }
               cta={t(`tiers.${tier}.cta`)}
             />
           ))}
@@ -94,7 +150,7 @@ export default async function PricingPage({
           <p className="text-fg-muted text-sm">{t("stewardshipNote")}</p>
           <Link
             href="/stewardship"
-            className="text-primary hover:text-marketing-accent duration-fast inline-flex items-center gap-1 text-sm font-strong transition-colors"
+            className="text-primary hover:text-marketing-accent duration-fast font-strong inline-flex items-center gap-1 text-sm transition-colors"
           >
             {t("stewardshipCta")} <ArrowRight size={14} aria-hidden />
           </Link>
@@ -112,7 +168,7 @@ export default async function PricingPage({
               <tr className="border-border border-b">
                 <th
                   scope="col"
-                  className="bg-surface text-fg-muted sticky left-0 z-10 px-4 py-3 text-left text-xs font-strong uppercase tracking-wide"
+                  className="bg-surface text-fg-muted font-strong sticky left-0 z-10 px-4 py-3 text-left text-xs tracking-wide uppercase"
                 >
                   &nbsp;
                 </th>
@@ -121,7 +177,7 @@ export default async function PricingPage({
                     key={tier}
                     scope="col"
                     className={cn(
-                      "px-4 py-3 text-left text-sm font-strong",
+                      "font-strong px-4 py-3 text-left text-sm",
                       tier === "oss" && "bg-primary-bg",
                       tier === "cloud" && "bg-marketing-accent-dim",
                     )}
@@ -142,7 +198,7 @@ export default async function PricingPage({
                 >
                   <th
                     scope="row"
-                    className="bg-surface text-fg sticky left-0 z-10 px-4 py-3 text-left text-sm font-strong"
+                    className="bg-surface text-fg font-strong sticky left-0 z-10 px-4 py-3 text-left text-sm"
                   >
                     {t(`compareDimensions.${dim}`)}
                   </th>
@@ -172,18 +228,32 @@ export default async function PricingPage({
             {t("faqTitle")}
           </h2>
           <ul className="space-y-2">
-            {FAQ_KEYS.map((key) => (
-              <li key={key}>
-                <details className="border-border bg-surface group rounded-md border">
-                  <summary className="text-fg cursor-pointer select-none px-4 py-3 text-sm font-strong">
-                    {t(`faqs.${key}.q`)}
-                  </summary>
-                  <div className="text-fg-muted border-border border-t px-4 py-3 text-sm">
-                    {t(`faqs.${key}.a`)}
-                  </div>
-                </details>
-              </li>
-            ))}
+            {/* CMS FAQ wins when the content team has filled it; i18n otherwise. */}
+            {cmsFaq.length > 0
+              ? cmsFaq.map((faq) => (
+                  <li key={faq.question}>
+                    <details className="border-border bg-surface group rounded-md border">
+                      <summary className="text-fg font-strong cursor-pointer px-4 py-3 text-sm select-none">
+                        {faq.question}
+                      </summary>
+                      <div className="text-fg-muted border-border border-t px-4 py-3 text-sm">
+                        {faq.answer}
+                      </div>
+                    </details>
+                  </li>
+                ))
+              : FAQ_KEYS.map((key) => (
+                  <li key={key}>
+                    <details className="border-border bg-surface group rounded-md border">
+                      <summary className="text-fg font-strong cursor-pointer px-4 py-3 text-sm select-none">
+                        {t(`faqs.${key}.q`)}
+                      </summary>
+                      <div className="text-fg-muted border-border border-t px-4 py-3 text-sm">
+                        {t(`faqs.${key}.a`)}
+                      </div>
+                    </details>
+                  </li>
+                ))}
           </ul>
         </div>
       </Section>
@@ -201,7 +271,7 @@ export default async function PricingPage({
               data-analytics-event="cta_click"
               data-analytics-source-page
               data-analytics-props='{"label":"Talk to founders","destination":"mailto:founders"}'
-              className="bg-primary text-primary-foreground hover:shadow-glow-indigo duration-fast inline-flex h-11 items-center gap-2 rounded-md px-5 text-base font-strong transition-shadow"
+              className="bg-primary text-primary-foreground hover:shadow-glow-indigo duration-fast font-strong inline-flex h-11 items-center gap-2 rounded-md px-5 text-base transition-shadow"
             >
               {t("ctaTalk")} <ArrowRight size={16} aria-hidden />
             </a>
@@ -210,7 +280,7 @@ export default async function PricingPage({
               data-analytics-event="cta_click"
               data-analytics-source-page
               data-analytics-props='{"label":"Join the waitlist","destination":"/cloud"}'
-              className="border-border text-fg hover:bg-bg-hover duration-fast inline-flex h-11 items-center gap-2 rounded-md border px-5 text-base font-strong transition-colors"
+              className="border-border text-fg hover:bg-bg-hover duration-fast font-strong inline-flex h-11 items-center gap-2 rounded-md border px-5 text-base transition-colors"
             >
               {t("ctaWaitlist")}
             </Link>
@@ -267,9 +337,7 @@ function TierCard({
     >
       <div className="space-y-2">
         <Pill
-          variant={
-            isPrimary ? "brand" : isMarketing ? "marketing" : "default"
-          }
+          variant={isPrimary ? "brand" : isMarketing ? "marketing" : "default"}
         >
           {badge}
         </Pill>
@@ -285,10 +353,7 @@ function TierCard({
 
       <ul className="border-border space-y-2 border-t pt-4">
         {features.map((feature, i) => (
-          <li
-            key={i}
-            className="text-fg flex items-start gap-2 text-sm"
-          >
+          <li key={i} className="text-fg flex items-start gap-2 text-sm">
             <Check
               size={14}
               className={cn(
@@ -312,7 +377,7 @@ function TierCard({
             href={href}
             {...ctaAnalytics}
             className={cn(
-              "duration-fast inline-flex h-10 w-full items-center justify-center gap-1 rounded-md text-sm font-strong transition-shadow",
+              "duration-fast font-strong inline-flex h-10 w-full items-center justify-center gap-1 rounded-md text-sm transition-shadow",
               isPrimary
                 ? "bg-primary text-primary-foreground hover:shadow-glow-indigo"
                 : isMarketing
@@ -332,7 +397,7 @@ function TierCard({
             href={href}
             {...ctaAnalytics}
             className={cn(
-              "duration-fast inline-flex h-10 w-full items-center justify-center gap-1 rounded-md text-sm font-strong transition-shadow",
+              "duration-fast font-strong inline-flex h-10 w-full items-center justify-center gap-1 rounded-md text-sm transition-shadow",
               isPrimary
                 ? "bg-primary text-primary-foreground hover:shadow-glow-indigo"
                 : isMarketing

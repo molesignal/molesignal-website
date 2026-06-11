@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { BLOG_POSTS } from "@/content/blog";
+import { getAllPosts } from "@/lib/blog-source";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://molesignal.io";
 
@@ -13,7 +13,11 @@ const STATIC_PATHS = [
   { path: "/enterprise", priority: 0.8, changeFrequency: "monthly" as const },
   { path: "/security", priority: 0.6, changeFrequency: "monthly" as const },
   { path: "/stewardship", priority: 0.6, changeFrequency: "monthly" as const },
-  { path: "/design-partner", priority: 0.8, changeFrequency: "monthly" as const },
+  {
+    path: "/design-partner",
+    priority: 0.8,
+    changeFrequency: "monthly" as const,
+  },
   { path: "/cloud", priority: 0.6, changeFrequency: "monthly" as const },
   { path: "/roadmap", priority: 0.7, changeFrequency: "weekly" as const },
   { path: "/privacy", priority: 0.2, changeFrequency: "yearly" as const },
@@ -27,7 +31,7 @@ const STATIC_PATHS = [
  *
  * Per next-intl `as-needed` policy, EN is at root and ZH is prefixed.
  */
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const entries: MetadataRoute.Sitemap = [];
 
@@ -69,8 +73,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   });
 
-  // Individual blog posts (EN only)
-  for (const post of BLOG_POSTS) {
+  // Individual blog posts (EN only) — CMS + repo MDX merged
+  for (const post of await getAllPosts()) {
     entries.push({
       url: `${SITE}/blog/${post.slug}`,
       lastModified: new Date(post.date),

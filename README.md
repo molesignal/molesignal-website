@@ -48,6 +48,26 @@ pnpm dev                     # http://localhost:3000
 | `pnpm format:check` | Prettier (check only) |
 | `pnpm a11y:contrast` | WCAG contrast audit (added in M7.1) |
 
+## CMS integration (molesignal-cms)
+
+The sibling [`molesignal-cms`](../molesignal-cms/) (Payload v3 + Postgres) is an
+**optional overlay** — set `CMS_URL` (e.g. `http://localhost:3001`) and the
+site picks up, with ISR (5 min):
+
+- **Blog**: CMS posts merged with the repo's MDX posts (CMS wins on slug);
+  CMS bodies render as projected HTML via `components/blog/cms-body.tsx`.
+- **Pricing**: price/note/features per tier from the CMS `plans` catalog (the
+  same records that sync to Stripe Billing Meters), page copy + FAQ from the
+  `pricing-page` global.
+- **Footer**: columns + bottom tags from the `navigation` global.
+- **Floating assistant** (bottom-right 客服 / commercial-intent widget):
+  contact channels from `site-settings`; form submissions POST to
+  `/api/commercial-intent` → stored as CMS leads + emailed to founders.
+
+Every fetch fails open: without `CMS_URL` (or with the CMS down) the site
+renders entirely from MDX + i18n + static footer, and the widget still works
+(email sink only).
+
 ## Deployment
 
 Vercel (recommended) — connect this folder as a Vercel project:
@@ -55,7 +75,7 @@ Vercel (recommended) — connect this folder as a Vercel project:
 - Install command: `pnpm install`
 - Build command: `pnpm build`
 - Output directory: `.next` (auto-detected)
-- Required env vars (see `.env.example`): `RESEND_API_KEY`, `FOUNDERS_EMAIL`, `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`, `NEXT_PUBLIC_SITE_URL`. `GITHUB_TOKEN` is optional but recommended to raise the public API rate limit.
+- Required env vars (see `.env.example`): `RESEND_API_KEY`, `FOUNDERS_EMAIL`, `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`, `NEXT_PUBLIC_SITE_URL`. `GITHUB_TOKEN` is optional but recommended to raise the public API rate limit. `CMS_URL` is optional — point it at a deployed `molesignal-cms` to enable CMS-managed blog/pricing/footer/leads.
 
 Custom domain `molesignal.io` configured at the Vercel project level; `docs.molesignal.io` is a placeholder for the future standalone docs site.
 

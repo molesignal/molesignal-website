@@ -1,15 +1,19 @@
 import { ArrowUpRight } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { LogoMark } from "@/components/logo-mark";
 import { Link } from "@/i18n/navigation";
+import { getCmsFooterNav } from "@/lib/cms";
 import { GITHUB_REPO_URL, getDiscordInviteUrl } from "@/lib/community";
 
-type LinkItem = {
-  /** Translation key inside `footer.links.*` */
-  key: string;
-  /** Omitted for `disabled` items, which render as non-clickable text. */
+/**
+ * Render model shared by both footer sources. Labels are already resolved
+ * strings here — either from the CMS (Navigation global, localized) or from
+ * `messages/{locale}.json` for the static fallback.
+ */
+type FooterItem = {
+  label: string;
   href?: string;
   external?: boolean;
   /**
@@ -20,58 +24,64 @@ type LinkItem = {
 };
 
 type Col = {
-  /** Translation key inside `footer.*` for the column title */
-  titleKey: string;
-  items: LinkItem[];
+  title: string;
+  items: FooterItem[];
 };
 
+type Translate = (key: string) => string;
+
 /**
- * Builds the footer columns. The Discord item is config-driven (T17): when
- * `discordInvite` is set it renders a real external link; otherwise it keeps
- * the honest disabled "launching soon" state (never a placeholder `href="#"`).
+ * Static fallback columns — used whenever the CMS is unreachable or its
+ * Navigation global is empty, so the footer never ships blank. The Discord
+ * item is config-driven (T17): with an invite URL it's a real external link;
+ * otherwise it keeps the honest disabled "launching soon" state.
  */
-function buildColumns(discordInvite: string | null): Col[] {
+function staticColumns(
+  t: Translate,
+  tLinks: Translate,
+  discordInvite: string | null,
+): Col[] {
   return [
     {
-      titleKey: "product",
+      title: t("product"),
       items: [
-        { key: "why", href: "/why" },
-        { key: "architecture", href: "/architecture" },
-        { key: "quickStart", href: "/start" },
-        { key: "pricing", href: "/pricing" },
-        { key: "cloud", href: "/cloud" },
+        { label: tLinks("why"), href: "/why" },
+        { label: tLinks("architecture"), href: "/architecture" },
+        { label: tLinks("quickStart"), href: "/start" },
+        { label: tLinks("pricing"), href: "/pricing" },
+        { label: tLinks("cloud"), href: "/cloud" },
       ],
     },
     {
       // Commercial / trust cluster — where procurement & security reviewers go.
-      // Enterprise, Security, and the open-core Stewardship promise.
-      titleKey: "enterprise",
+      title: t("enterprise"),
       items: [
-        { key: "enterprise", href: "/enterprise" },
-        { key: "security", href: "/security" },
-        { key: "stewardship", href: "/stewardship" },
+        { label: tLinks("enterprise"), href: "/enterprise" },
+        { label: tLinks("security"), href: "/security" },
+        { label: tLinks("stewardship"), href: "/stewardship" },
       ],
     },
     {
-      titleKey: "resources",
+      title: t("resources"),
       items: [
-        { key: "docs", href: "https://docs.molesignal.io", external: true },
-        { key: "blog", href: "/blog" },
-        { key: "roadmap", href: "/roadmap" },
-        { key: "designPartner", href: "/design-partner" },
+        {
+          label: tLinks("docs"),
+          href: "https://docs.molesignal.io",
+          external: true,
+        },
+        { label: tLinks("blog"), href: "/blog" },
+        { label: tLinks("roadmap"), href: "/roadmap" },
+        { label: tLinks("designPartner"), href: "/design-partner" },
       ],
     },
     {
-      titleKey: "community",
+      title: t("community"),
       items: [
-        { key: "github", href: GITHUB_REPO_URL, external: true },
-        // Discord flips to a real external link once an invite URL is
-        // configured; until then it stays an honest disabled state, not `href="#"`.
+        { label: tLinks("github"), href: GITHUB_REPO_URL, external: true },
         discordInvite
-          ? { key: "discord", href: discordInvite, external: true }
-          : { key: "discord", disabled: true },
-        // Twitter / X isn't live yet — honest disabled state.
-        { key: "twitter", disabled: true },
+          ? { label: tLinks("discord"), href: discordInvite, external: true }
+          : { label: tLinks("discord"), disabled: true },
+        { label: tLinks("twitter"), disabled: true },
       ],
     },
   ];
@@ -79,36 +89,52 @@ function buildColumns(discordInvite: string | null): Col[] {
 
 /**
  * Site footer: 4 columns on desktop, single stacked column on mobile.
- * Bottom bar contains logo + copyright + cloud teaser + locale switcher.
+ * Bottom bar contains logo + copyright + CMS-managed tags + cloud teaser +
+ * locale switcher.
  *
- * All column titles and link labels resolve through `messages/{locale}.json`
- * under the `footer` and `footer.links` namespaces.
+ * Columns and bottom tags come from the CMS Navigation global when available
+ * (content team can edit them without a deploy); otherwise the static columns
+ * above render from `messages/{locale}.json`.
  */
-export function Footer() {
-  const t = useTranslations("footer");
-  const tLinks = useTranslations("footer.links");
+export async function Footer() {
+  const t = await getTranslations("footer");
+  const tLinks = await getTranslations("footer.links");
+  const locale = (await getLocale()) === "zh" ? "zh" : "en";
   const year = new Date().getFullYear();
-  const columns = buildColumns(getDiscordInviteUrl());
+
+  const nav = await getCmsFooterNav(locale);
+  const columns: Col[] = nav
+    ? nav.columns.map((col) => ({
+        title: col.title,
+        items: col.links.map((link) => ({
+          label: link.label,
+          href: link.href,
+          external: link.external,
+          disabled: link.comingSoon,
+        })),
+      }))
+    : staticColumns(t, tLinks, getDiscordInviteUrl());
+  const badges = nav?.badges ?? [];
 
   return (
     <footer className="bg-surface border-border mt-section-md border-t">
       <div className="page-container py-section-md">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           {columns.map((col) => (
-            <div key={col.titleKey} className="space-y-3">
+            <div key={col.title} className="space-y-3">
               <h3 className="text-fg-muted font-strong text-xs tracking-wide uppercase">
-                {t(col.titleKey)}
+                {col.title}
               </h3>
               <ul className="space-y-2">
                 {col.items.map((item) => (
-                  <li key={item.key}>
-                    {item.disabled ? (
+                  <li key={item.label}>
+                    {item.disabled || !item.href ? (
                       <span
                         title={t("launchingSoon")}
                         aria-disabled="true"
                         className="text-tx-3 inline-flex cursor-default items-center gap-1.5 text-sm"
                       >
-                        {tLinks(item.key)}
+                        {item.label}
                         <span className="border-border text-fg-muted rounded border px-1 py-px text-[10px] tracking-wide uppercase">
                           {t("soon")}
                         </span>
@@ -120,15 +146,15 @@ export function Footer() {
                         rel="noreferrer"
                         className="text-fg-muted hover:text-fg duration-fast inline-flex items-center gap-1 text-sm transition-colors"
                       >
-                        {tLinks(item.key)}
+                        {item.label}
                         <ArrowUpRight size={9} aria-hidden />
                       </a>
                     ) : (
                       <Link
-                        href={item.href!}
+                        href={item.href}
                         className="text-fg-muted hover:text-fg duration-fast text-sm transition-colors"
                       >
-                        {tLinks(item.key)}
+                        {item.label}
                       </Link>
                     )}
                   </li>
@@ -140,9 +166,38 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="border-border mt-section-md flex flex-col items-start gap-4 border-t pt-6 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
             <LogoMark size={18} />
             <p className="text-fg-muted text-xs">{t("copyright", { year })}</p>
+            {/* CMS-managed footer tags (Navigation.footerBadges) */}
+            {badges.map((badge) =>
+              badge.href && badge.href.startsWith("/") ? (
+                <Link
+                  key={badge.label}
+                  href={badge.href}
+                  className="border-border text-fg-muted hover:text-fg duration-fast rounded-full border px-2 py-0.5 text-[10px] tracking-wide uppercase transition-colors"
+                >
+                  {badge.label}
+                </Link>
+              ) : badge.href ? (
+                <a
+                  key={badge.label}
+                  href={badge.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="border-border text-fg-muted hover:text-fg duration-fast rounded-full border px-2 py-0.5 text-[10px] tracking-wide uppercase transition-colors"
+                >
+                  {badge.label}
+                </a>
+              ) : (
+                <span
+                  key={badge.label}
+                  className="border-border text-fg-muted rounded-full border px-2 py-0.5 text-[10px] tracking-wide uppercase"
+                >
+                  {badge.label}
+                </span>
+              ),
+            )}
           </div>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <Link

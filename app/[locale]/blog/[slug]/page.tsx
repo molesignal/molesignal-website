@@ -2,18 +2,25 @@ import { Clock } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
+import { CmsBody } from "@/components/blog/cms-body";
 import { MdxBody } from "@/components/blog/mdx-body";
 import { BlogPostCard } from "@/components/blog-post-card";
 import { Pill } from "@/components/ui/pill";
 import { Section } from "@/components/ui/section";
-import { BLOG_POSTS, getPostBySlug, getRelatedPosts } from "@/content/blog";
+import { BLOG_POSTS } from "@/content/blog";
 import { Link } from "@/i18n/navigation";
+import { getPost, getRelated, isCmsPost } from "@/lib/blog-source";
 
 const DATE_FMT = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
   month: "long",
   day: "numeric",
 });
+
+// ISR: repo MDX slugs are prerendered below; CMS-only slugs render on demand
+// (dynamicParams default) and revalidate on the same cadence as the index.
+// Literal on purpose — keep in sync with CMS_REVALIDATE_SECONDS in lib/cms.ts.
+export const revalidate = 300;
 
 export function generateStaticParams() {
   return BLOG_POSTS.map((p) => ({ slug: p.slug }));
@@ -25,7 +32,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPost(slug);
   if (!post) return {};
   return {
     title: post.title,
@@ -51,10 +58,10 @@ export default async function BlogPostPage({
 
   // Blog is EN-only — ZH users get a friendly redirect notice (M4.15).
   // Dead-link guard (AC2): only deep-link to the EN post when the slug really
-  // exists; otherwise fall back to the EN blog index so an unknown slug never
-  // links to a 404.
+  // exists (in either source); otherwise fall back to the EN blog index so an
+  // unknown slug never links to a 404.
   if (locale === "zh") {
-    const exists = Boolean(getPostBySlug(slug));
+    const exists = Boolean(await getPost(slug));
     const href = exists ? `/blog/${slug}` : "/blog";
     const label = exists ? t("zhReadEnglishPost") : t("zhReadEnglish");
     return (
@@ -67,7 +74,7 @@ export default async function BlogPostPage({
             <Link
               href={href}
               locale="en"
-              className="text-primary hover:text-marketing-accent text-sm font-strong"
+              className="text-primary hover:text-marketing-accent font-strong text-sm"
             >
               {label}
             </Link>
@@ -77,10 +84,10 @@ export default async function BlogPostPage({
     );
   }
 
-  const post = getPostBySlug(slug);
+  const post = await getPost(slug);
   if (!post) notFound();
 
-  const related = getRelatedPosts(slug, 3);
+  const related = await getRelated(slug, 3);
 
   return (
     <>
@@ -114,7 +121,11 @@ export default async function BlogPostPage({
           align — no width mismatch between the title block and the prose. */}
       <Section padding="md">
         <article className="mx-auto max-w-3xl">
-          <MdxBody source={post.body} />
+          {isCmsPost(post) ? (
+            <CmsBody html={post.bodyHtml} />
+          ) : (
+            <MdxBody source={post.body} />
+          )}
         </article>
       </Section>
 

@@ -3,8 +3,13 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BlogPostCard } from "@/components/blog-post-card";
 import { Pill } from "@/components/ui/pill";
 import { Section } from "@/components/ui/section";
-import { BLOG_POSTS } from "@/content/blog";
 import { Link } from "@/i18n/navigation";
+import { getAllPosts } from "@/lib/blog-source";
+
+// ISR so newly published CMS posts appear without a redeploy. Must be a
+// literal (Next statically analyzes segment config) — keep in sync with
+// CMS_REVALIDATE_SECONDS in lib/cms.ts.
+export const revalidate = 300;
 
 export async function generateMetadata({
   params,
@@ -40,7 +45,7 @@ export default async function BlogIndex({
             <Link
               href="/blog"
               locale="en"
-              className="text-primary hover:text-marketing-accent text-sm font-strong"
+              className="text-primary hover:text-marketing-accent font-strong text-sm"
             >
               {t("zhReadEnglish")}
             </Link>
@@ -50,9 +55,8 @@ export default async function BlogIndex({
     );
   }
 
-  const sorted = [...BLOG_POSTS].sort(
-    (a, b) => +new Date(b.date) - +new Date(a.date),
-  );
+  // CMS posts merged with repo MDX posts, newest first (CMS wins on slug).
+  const sorted = await getAllPosts();
   const [featured, ...rest] = sorted;
 
   return (
@@ -77,9 +81,7 @@ export default async function BlogIndex({
           </div>
         ) : (
           <div className="space-y-8">
-            {featured && (
-              <BlogPostCard post={featured} size="featured" />
-            )}
+            {featured && <BlogPostCard post={featured} size="featured" />}
             {rest.length > 0 && (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {rest.map((post) => (
