@@ -642,6 +642,16 @@ textarea::placeholder {
   outline-offset: 2px;
   border-radius: 2px;
 }
+/* Form fields (text inputs, selects, textareas) opt out of the indigo ring:
+   focus keeps the resting gray border — the caret / open dropdown is the
+   feedback. Range sliders are NOT exempt: the ring is their only focus
+   indicator. This must out-rank the unlayered rule above, hence the
+   element-qualified selectors below it. */
+input:not([type="range"]):focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
+}
 
 /* Selection — marketing pink for brand-warm copy-paste feedback */
 ::selection {

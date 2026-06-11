@@ -195,7 +195,7 @@ function SliderField({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.currentTarget.value))}
-        className="border-border bg-bg-0 text-fg focus-visible:border-primary mt-1 block h-8 w-full rounded-md border px-2 text-sm outline-none md:hidden"
+        className="border-border bg-bg-0 text-fg mt-1 block h-8 w-full rounded-md border px-2 text-sm outline-none md:hidden"
       />
     </div>
   );

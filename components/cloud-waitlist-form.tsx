@@ -161,7 +161,7 @@ export function CloudWaitlistForm({
             aria-describedby={
               errors.email ? "footer-waitlist-error" : undefined
             }
-            className="border-border bg-surface text-fg placeholder:text-tx-3 focus-visible:border-primary min-w-0 flex-1 rounded-md border px-3 text-xs h-8 outline-none"
+            className="border-border bg-surface text-fg placeholder:text-tx-3 min-w-0 flex-1 rounded-md border px-3 text-xs h-8 outline-none"
           />
           <button
             type="submit"
@@ -201,7 +201,7 @@ export function CloudWaitlistForm({
           placeholder={tf("placeholder")}
           aria-invalid={!!errors.email || undefined}
           aria-describedby={errors.email ? "cw-email-error" : undefined}
-          className="border-border bg-surface text-fg placeholder:text-tx-3 focus-visible:border-primary block w-full rounded-md border px-3 py-2 text-base outline-none"
+          className="border-border bg-surface text-fg placeholder:text-tx-3 block w-full rounded-md border px-3 py-2 text-base outline-none"
         />
         {errors.email && (
           <p id="cw-email-error" className="text-red text-xs">

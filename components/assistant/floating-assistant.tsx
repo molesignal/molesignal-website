@@ -38,7 +38,7 @@ type FormInput = z.infer<typeof formSchema>;
 type Tab = "commercial" | "support";
 
 const INPUT_CLS =
-  "border-border bg-bg-0 text-fg placeholder:text-tx-3 focus-visible:border-primary block w-full rounded-md border px-3 py-2 text-sm outline-none";
+  "border-border bg-bg-0 text-fg placeholder:text-tx-3 block w-full rounded-md border px-3 py-2 text-sm outline-none";
 
 /**
  * Floating assistant — the bottom-right "客服 / commercial interest" widget.

@@ -129,7 +129,7 @@ export function DesignPartnerForm({ className }: { className?: string }) {
           type="text"
           autoComplete="name"
           aria-invalid={!!errors.name || undefined}
-          className="border-border bg-bg-0 text-fg placeholder:text-tx-3 focus-visible:border-primary block w-full rounded-md border px-3 py-2 text-base outline-none"
+          className="border-border bg-bg-0 text-fg placeholder:text-tx-3 block w-full rounded-md border px-3 py-2 text-base outline-none"
         />
       </Field>
 
@@ -140,7 +140,7 @@ export function DesignPartnerForm({ className }: { className?: string }) {
           type="email"
           autoComplete="email"
           aria-invalid={!!errors.email || undefined}
-          className="border-border bg-bg-0 text-fg placeholder:text-tx-3 focus-visible:border-primary block w-full rounded-md border px-3 py-2 text-base outline-none"
+          className="border-border bg-bg-0 text-fg placeholder:text-tx-3 block w-full rounded-md border px-3 py-2 text-base outline-none"
         />
       </Field>
 
@@ -154,7 +154,7 @@ export function DesignPartnerForm({ className }: { className?: string }) {
             id="dp-size"
             {...register("companySize")}
             aria-invalid={!!errors.companySize || undefined}
-            className="border-border bg-bg-0 text-fg focus-visible:border-primary block w-full rounded-md border px-3 py-2 text-base outline-none"
+            className="border-border bg-bg-0 text-fg block w-full rounded-md border px-3 py-2 text-base outline-none"
             defaultValue=""
           >
             <option value="" disabled>
@@ -177,7 +177,7 @@ export function DesignPartnerForm({ className }: { className?: string }) {
             id="dp-stack"
             {...register("currentStack")}
             aria-invalid={!!errors.currentStack || undefined}
-            className="border-border bg-bg-0 text-fg focus-visible:border-primary block w-full rounded-md border px-3 py-2 text-base outline-none"
+            className="border-border bg-bg-0 text-fg block w-full rounded-md border px-3 py-2 text-base outline-none"
             defaultValue=""
           >
             <option value="" disabled>
@@ -204,7 +204,7 @@ export function DesignPartnerForm({ className }: { className?: string }) {
           rows={4}
           maxLength={400}
           aria-invalid={!!errors.biggestPain || undefined}
-          className="border-border bg-bg-0 text-fg placeholder:text-tx-3 focus-visible:border-primary block w-full resize-y rounded-md border px-3 py-2 text-base outline-none"
+          className="border-border bg-bg-0 text-fg placeholder:text-tx-3 block w-full resize-y rounded-md border px-3 py-2 text-base outline-none"
         />
       </Field>
 
